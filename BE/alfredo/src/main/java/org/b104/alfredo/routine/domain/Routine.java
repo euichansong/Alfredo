@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +20,7 @@ public class Routine {
     private String routineTitle;
 
     @Column(name="start_time")
-    private LocalDateTime startTime;
+    private LocalTime startTime;
 
     //TODO LAZY로 바꾸기(서비스 메서드에 트랜잭셔널 걸어야 될 수도)
     @ElementCollection(fetch = FetchType.EAGER)
