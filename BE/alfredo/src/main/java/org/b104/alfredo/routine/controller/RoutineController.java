@@ -31,7 +31,7 @@ public class RoutineController {
                     .id(r.getId())
                     .routineTitle(r.getRoutineTitle())
                     .startTime(r.getStartTime())
-                    .day(r.getDay())
+                    .days(r.getDays())
                     .alarmSound(r.getAlarmSound())
                     .memo(r.getMemo())
                     .build();
@@ -47,7 +47,7 @@ public class RoutineController {
                 .id(routine.getId())
                 .routineTitle(routine.getRoutineTitle())
                 .startTime(routine.getStartTime())
-                .day(routine.getDay())
+                .days(routine.getDays())
                 .alarmSound(routine.getAlarmSound())
                 .memo(routine.getMemo())
                 .build();
