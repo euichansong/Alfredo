@@ -26,7 +26,7 @@ public class Routine {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "routine_days", joinColumns = @JoinColumn(name = "routine_id"))
     @Column(name="days")
-    private Set<String> days = new HashSet<>(); // 요일을 저장할 세트
+    private Set<String> days = new HashSet<>();
 
     @Column(name="alarm_sound")
     private String alarmSound;
