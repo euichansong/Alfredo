@@ -2,15 +2,13 @@ package org.b104.alfredo.routine.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.routine.domain.Routine;
+import org.b104.alfredo.routine.request.RoutineRequestDto;
 import org.b104.alfredo.routine.response.RoutineDto;
 import org.b104.alfredo.routine.service.RoutineService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,4 +51,23 @@ public class RoutineController {
                 .build();
         return ResponseEntity.ok().body(routineDto);
     }
+
+//    String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo
+//    routineTitle,startTime,days,alarmSound,memo
+    @PostMapping
+    public ResponseEntity<RoutineDto> createRoutine(@RequestBody RoutineRequestDto routineRequestDto){
+        Routine routine = routineService.createRoutine(routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo());
+        RoutineDto routineDto = RoutineDto.builder()
+                .id(routine.getId())
+                .routineTitle(routine.getRoutineTitle())
+                .startTime(routine.getStartTime())
+                .days(routine.getDays())
+                .alarmSound(routine.getAlarmSound())
+                .memo(routine.getMemo())
+                .build();
+        return ResponseEntity.ok().body(routineDto);
+    }
+
+
+//    @PostMapping("/{id}")
 }
