@@ -37,4 +37,21 @@ public class RoutineServiceImpl implements RoutineService {
         routine.setMemo(memo);
         return routineRepository.save(routine);
     }
+
+    @Override
+    public void deleteRoutine(Long routineId) {
+        routineRepository.deleteById(routineId);
+    }
+
+    @Override
+    public Routine updateRoutine(Long routineId,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo) {
+        Routine routine = routineRepository.findById(routineId)
+                .orElseThrow(() -> new RuntimeException("Routine not found with id: " + routineId));
+        routine.setRoutineTitle(routineTitle);
+        routine.setStartTime(startTime);
+        routine.setDays(days);
+        routine.setAlarmSound(alarmSound);
+        routine.setMemo(memo);
+        return routineRepository.save(routine);
+    }
 }
