@@ -8,10 +8,10 @@ import java.util.Set;
 
 public interface RoutineService {
 
-    List<Routine> getAllRoutines();
+    List<Routine> getAllRoutines(Long userId);
     Routine getRoutine(Long id);
 
-    Routine createRoutine(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo);
+    Routine createRoutine(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo, Long userId);
 
     void deleteRoutine(Long routineId);
 
