@@ -17,7 +17,6 @@ alfredo104-firebase-adminsdk-qhdta-be4ef2b790.json
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-!**/src/main/resources/*
 
 ### IntelliJ IDEA ###
 .idea
