@@ -21,7 +21,7 @@ public class RoutineServiceImpl implements RoutineService {
 
     @Override
     public List<Routine> getAllRoutines(Long userId) {
-        return routineRepository.findByUserId(userId);
+        return routineRepository.findByUserIdOrderByStartTimeAsc(userId);
     }
 
     @Override

@@ -40,15 +40,4 @@ public class Routine {
     @Column(nullable = true)
     private String memo;
 
-    // 요일을 추가하는 메소드
-    public void addDay(String day) {
-        this.days.add(day);
-    }
-
-    // 요일을 삭제하는 메소드
-    public void removeDay(String day) {
-        this.days.remove(day);
-    }
-
-
 }
