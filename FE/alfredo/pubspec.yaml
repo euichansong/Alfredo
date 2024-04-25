@@ -69,6 +69,10 @@ flutter:
   assets:
     - assets/web_neutral_rd_ctn@3x.png
     - assets/android_light_rd_ctn@2x.png
+    - assets/startpage.png
+    - assets/alfredologo1.png
+    - assets/alfredologo2.png
+    - assets/alfredoback1.png
    
 
   # An image asset can refer to one or more resolution-specific "variants", see
