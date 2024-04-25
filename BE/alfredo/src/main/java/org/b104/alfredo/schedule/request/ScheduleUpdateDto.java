@@ -1,0 +1,19 @@
+package org.b104.alfredo.schedule.request;
+
+import lombok.Getter;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+@Getter
+public class ScheduleUpdateDto {
+
+    private String scheduleTitle;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Boolean startAlarm;
+    private String place;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private Boolean withTime;
+
+}
