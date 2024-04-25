@@ -4,6 +4,7 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
+alfredo104-firebase-adminsdk-qhdta-be4ef2b790.json
 
 ### STS ###
 .apt_generated
