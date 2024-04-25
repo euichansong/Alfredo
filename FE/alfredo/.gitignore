@@ -45,3 +45,4 @@ app.*.map.json
 # 설정파일들
 /lib/config/firebase_options.dart
 /android/app/google-services.json
+/output.txt
