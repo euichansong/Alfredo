@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../schedule/schedule_list_screen.dart';
 
 // 여기다가 각자 작업하는 페이지로 가는 push 버튼 만들어서 작업 ㄱㄱ
 class MainPage extends StatelessWidget {
@@ -24,6 +25,22 @@ class MainPage extends StatelessWidget {
             },
           ),
         ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ScheduleListScreen()),
+                );
+              },
+              child: const Text('Schedules'),
+            ),
+          ],
+        ),
       ),
     );
   }
