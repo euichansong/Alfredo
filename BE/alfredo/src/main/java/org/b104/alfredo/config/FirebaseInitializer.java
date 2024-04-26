@@ -17,7 +17,7 @@ public class FirebaseInitializer {
         try {
             // 환경변수에서 Firebase 설정 파일의 경로를 읽어옵니다.
             FileInputStream serviceAccount =
-                    new FileInputStream("C:\\Users\\SSAFY\\Desktop\\final_be\\S10P31B104\\BE\\alfredo\\alfredo104-firebase-adminsdk-qhdta-be4ef2b790.json");
+                    new FileInputStream("C:\\Users\\SSAFY\\Desktop\\class\\S10P31B104_BE\\BE\\alfredo\\alfredo104-firebase-adminsdk-qhdta-be4ef2b790.json");
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
                     .build();
