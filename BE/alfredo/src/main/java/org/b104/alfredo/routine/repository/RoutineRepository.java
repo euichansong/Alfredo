@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface RoutineRepository extends JpaRepository<Routine,Long> {
-    List<Routine> findByUser_UidOrderByStartTimeAsc(String uid);
 }

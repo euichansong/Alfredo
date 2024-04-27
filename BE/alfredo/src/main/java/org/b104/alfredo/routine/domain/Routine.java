@@ -17,10 +17,6 @@ public class Routine {
     @Column(name="routine_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_uid", referencedColumnName = "uid")
-    private User user;
-
     @Column(name="routine_title",nullable = false)
     private String routineTitle;
 

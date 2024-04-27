@@ -19,8 +19,8 @@ public class RoutineServiceImpl implements RoutineService {
     private final UserRepository userRepository;
 
     @Override
-    public List<Routine> getAllRoutines(String uid) {
-        return routineRepository.findByUser_UidOrderByStartTimeAsc(uid);
+    public List<Routine> getAllRoutines() {
+        return routineRepository.findAll();
     }
 
     @Override
@@ -31,10 +31,8 @@ public class RoutineServiceImpl implements RoutineService {
 
     //TODO dto사용구조가 아님(리팩토링 하기)
     @Override
-    public Routine createRoutine(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo, String uId) {
-        User user = userRepository.findByUid(uId).orElseThrow(() -> new RuntimeException("User not found"));
+    public Routine createRoutine(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo){
         Routine routine = new Routine();
-        routine.setUser(user);
         routine.setRoutineTitle(routineTitle);
         routine.setStartTime(startTime);
         routine.setDays(days);

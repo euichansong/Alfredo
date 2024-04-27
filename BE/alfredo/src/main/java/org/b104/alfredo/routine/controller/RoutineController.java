@@ -28,9 +28,8 @@ public class RoutineController {
     public ResponseEntity<List<RoutineDto>> getRoutineList() {
         //TODO 로그인 완성되면 바꾸기
         //        User user = getAuthenticatedUser();
-        Optional<User> user = userRepository.findByUid("1GiOJsjzRVkcQuUgHYqJHVOtZOcg2");
 
-        List<Routine> routineList = routineService.getAllRoutines(user.get().getUid());
+        List<Routine> routineList = routineService.getAllRoutines();
         List<RoutineDto> routineDtoList = new ArrayList<>();
         log.info("전체 루틴 정보");
         for (Routine r : routineList) {
@@ -65,11 +64,7 @@ public class RoutineController {
 //    routineTitle,startTime,days,alarmSound,memo
     @PostMapping
     public ResponseEntity<RoutineDto> createRoutine(@RequestBody RoutineRequestDto routineRequestDto){
-        //TODO 로그인 완성되면 바꾸기
-        //        User user = getAuthenticatedUser();
-        Optional<User> user = userRepository.findByUid("1GiOJsjzRVkcQuUgHYqJHVOtZOcg2");
-
-        Routine routine = routineService.createRoutine(routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo(), user.get().getUid());
+        Routine routine = routineService.createRoutine(routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo());
         RoutineDto routineDto = RoutineDto.builder()
                 .id(routine.getId())
                 .routineTitle(routine.getRoutineTitle())
