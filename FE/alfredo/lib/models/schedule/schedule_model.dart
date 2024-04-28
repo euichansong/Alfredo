@@ -1,22 +1,26 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'schedule_model.g.dart';
 
 @JsonSerializable()
 class Schedule {
-  int? id;
-  String title;
+  int? scheduleId;
+  String scheduleTitle;
   DateTime startDate;
   DateTime? endDate;
   bool startAlarm;
   String? place;
-  DateTime? startTime;
-  DateTime? endTime;
+  @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
+  TimeOfDay? startTime;
+  
+  @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
+  TimeOfDay? endTime;
   bool withTime;
 
   Schedule({
-    this.id,
-    required this.title,
+    this.scheduleId,
+    required this.scheduleTitle,
     required this.startDate,
     this.endDate,
     this.startAlarm = false,
@@ -28,5 +32,17 @@ class Schedule {
 
   factory Schedule.fromJson(Map<String, dynamic> json) =>
       _$ScheduleFromJson(json);
+  
   Map<String, dynamic> toJson() => _$ScheduleToJson(this);
+
+  static TimeOfDay _timeFromString(String? timeStr) {
+    if (timeStr == null) return TimeOfDay(hour: 0, minute: 0);
+    final timeParts = timeStr.split(':').map(int.parse).toList();
+    return TimeOfDay(hour: timeParts[0], minute: timeParts[1]);
+  }
+
+  static String _stringFromTime(TimeOfDay? time) {
+    if (time == null) return '';
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}:00';
+  }
 }
