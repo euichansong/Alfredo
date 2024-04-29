@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-// 여기다가 각자 작업하는 페이지로 가는 push 버튼 만들어서 작업 ㄱㄱ
+import '../routine/routine_list_screen.dart';
+
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
@@ -24,6 +25,24 @@ class MainPage extends StatelessWidget {
             },
           ),
         ],
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          RoutineListScreen()), // RoutineListScreen으로 이동
+                );
+              },
+              child: const Text('Routines'),
+            ),
+          ],
+        ),
       ),
     );
   }
