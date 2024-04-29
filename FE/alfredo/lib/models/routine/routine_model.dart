@@ -5,15 +5,15 @@ part 'routine_model.g.dart'; // 자동 생성될 파일 이름
 
 @JsonSerializable()
 class RoutineModel {
-  int? id;
+  int id;
 
-  String? routineTitle;
+  String routineTitle;
   @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
-  TimeOfDay? startTime;
+  TimeOfDay startTime;
 
-  Set<String>? days;
+  Set<String> days;
 
-  String? alarmSound;
+  String alarmSound;
 
   String? memo;
 
