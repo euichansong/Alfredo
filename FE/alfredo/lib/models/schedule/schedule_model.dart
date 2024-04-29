@@ -13,7 +13,7 @@ class Schedule {
   String? place;
   @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
   TimeOfDay? startTime;
-  
+
   @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
   TimeOfDay? endTime;
   bool withTime;
@@ -32,11 +32,11 @@ class Schedule {
 
   factory Schedule.fromJson(Map<String, dynamic> json) =>
       _$ScheduleFromJson(json);
-  
+
   Map<String, dynamic> toJson() => _$ScheduleToJson(this);
 
   static TimeOfDay _timeFromString(String? timeStr) {
-    if (timeStr == null) return TimeOfDay(hour: 0, minute: 0);
+    if (timeStr == null) return const TimeOfDay(hour: 0, minute: 0);
     final timeParts = timeStr.split(':').map(int.parse).toList();
     return TimeOfDay(hour: timeParts[0], minute: timeParts[1]);
   }

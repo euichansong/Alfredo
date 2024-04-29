@@ -45,6 +45,7 @@ dependencies:
   test: ^1.24.9
   syncfusion_flutter_calendar: ^25.1.41
   json_annotation: ^4.9.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

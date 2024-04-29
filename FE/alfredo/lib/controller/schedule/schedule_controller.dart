@@ -14,7 +14,7 @@ class ScheduleController {
   Future<Schedule> getScheduleDetail(int id) async {
     return await api.getScheduleDetail(id);
   }
-  
+
   // 스케줄 생성 메서드
   Future<Schedule> createSchedule(Schedule schedule) async {
     return await api.createSchedule(schedule);
