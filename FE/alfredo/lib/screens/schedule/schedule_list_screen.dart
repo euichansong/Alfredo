@@ -67,13 +67,13 @@ class _ScheduleListScreenState extends State<ScheduleListScreen> {
                     title: Text(schedule.scheduleTitle),
                     subtitle: Text(displayText),
                     onTap: () {
+                      // 수정 화면으로 이동
                       Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ScheduleEditScreen(
-                              scheduleId: schedule.scheduleId!),
-                        ),
-                      );
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScheduleEditScreen(
+                                scheduleId: schedule.scheduleId!),
+                          ));
                     },
                   ),
                 );
