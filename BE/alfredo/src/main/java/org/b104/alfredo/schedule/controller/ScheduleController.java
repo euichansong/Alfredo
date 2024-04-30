@@ -34,11 +34,9 @@ public class ScheduleController {
             String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             String uid = decodedToken.getUid();
-
             User user = userService.getUserByUid(uid);
-            System.out.println("유저아이디" );
-            System.out.println(uid);
             Schedule createdSchedule = scheduleService.create(scheduleCreateDto, user);
+            System.out.println("save");
             return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Failed to create schedule", e);
@@ -56,9 +54,10 @@ public class ScheduleController {
 
             User user = userService.getUserByUid(uid);
             List<ScheduleListDto> schedules = scheduleService.findAllByUser(user);
+            System.out.println("all list");
             return new ResponseEntity<>(schedules, HttpStatus.OK);
         } catch (Exception e) {
-            System.out.println("list");
+            log.error("Failed to read schedule list", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
@@ -73,6 +72,7 @@ public class ScheduleController {
     // 수정
     @PatchMapping("/detail/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ScheduleUpdateDto scheduleUpdateDto) {
+        System.out.println("update");
         scheduleService.updateSchedule(id, scheduleUpdateDto);
         return ResponseEntity.ok().build();
     }

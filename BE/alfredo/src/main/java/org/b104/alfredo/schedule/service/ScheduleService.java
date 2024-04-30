@@ -66,19 +66,17 @@ public class ScheduleService {
     public void updateSchedule(Long id, ScheduleUpdateDto dto) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Schedule not found for id=" + id));
-        updateScheduleEntity(schedule, dto);
-        scheduleRepository.save(schedule);
+
+        if (dto.getScheduleTitle() != null) schedule.updateScheduleTitle(dto.getScheduleTitle());
+        if (dto.getStartDate() != null) schedule.updateStartDate(dto.getStartDate());
+        if (dto.getEndDate() != null) schedule.updateEndDate(dto.getEndDate());
+        if (dto.getStartAlarm() != null) schedule.updateStartAlarm(dto.getStartAlarm());
+        if (dto.getPlace() != null) schedule.updatePlace(dto.getPlace());
+        if (dto.getStartTime() != null) schedule.updateStartTime(dto.getStartTime());
+        if (dto.getEndTime() != null) schedule.updateEndTime(dto.getEndTime());
+        if (dto.getWithTime() != null) schedule.updateWithTime(dto.getWithTime());
     }
 
-    public static void updateScheduleEntity(Schedule schedule, ScheduleUpdateDto scheduleUpdateDto) {
-        if (scheduleUpdateDto.getScheduleTitle() != null) schedule.setScheduleTitle(scheduleUpdateDto.getScheduleTitle());
-        if (scheduleUpdateDto.getStartDate() != null) schedule.setStartDate(scheduleUpdateDto.getStartDate());
-        if (scheduleUpdateDto.getEndDate() != null) schedule.setEndDate(scheduleUpdateDto.getEndDate());
-        if (scheduleUpdateDto.getStartAlarm() != null) schedule.setStartAlarm(scheduleUpdateDto.getStartAlarm());
-        if (scheduleUpdateDto.getPlace() != null) schedule.setPlace(scheduleUpdateDto.getPlace());
-        if (scheduleUpdateDto.getStartTime() != null) schedule.setStartTime(scheduleUpdateDto.getStartTime());
-        if (scheduleUpdateDto.getEndTime() != null) schedule.setEndTime(scheduleUpdateDto.getEndTime());
-        if (scheduleUpdateDto.getWithTime() != null) schedule.setWithTime(scheduleUpdateDto.getWithTime());
-    }
+
 
 }

@@ -13,7 +13,6 @@ import java.time.LocalTime;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Schedule {
 
@@ -57,15 +56,29 @@ public class Schedule {
         this.withTime = withTime != null ? withTime : Boolean.TRUE;
     }
 
-//    public void scheduleUpdate(String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
-//        this.scheduleTitle = scheduleTitle;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.startAlarm = startAlarm != null ? startAlarm : Boolean.FALSE;
-//        this.place = place;
-//        this.startTime = startTime;
-//        this.endTime = endTime;
-//        this.withTime = withTime != null ? withTime : Boolean.TRUE;
-//    }
+    public void updateScheduleTitle(String scheduleTitle) {
+        this.scheduleTitle = scheduleTitle;
+    }
+    public void updateStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+    public void updateEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+    public void updateStartAlarm(Boolean startAlarm) {
+        this.startAlarm = startAlarm;
+    }
+    public void updatePlace(String place) {
+        this.place = place;
+    }
+    public void updateStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+    public void updateEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+    public void updateWithTime(Boolean withTime) {
+        this.withTime = withTime;
+    }
 
 }
