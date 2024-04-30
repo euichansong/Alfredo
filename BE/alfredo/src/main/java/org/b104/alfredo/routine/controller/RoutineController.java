@@ -1,5 +1,8 @@
 package org.b104.alfredo.routine.controller;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.request.RoutineRequestDto;
@@ -25,11 +28,13 @@ public class RoutineController {
     private final RoutineService routineService;
     private final Logger log = LoggerFactory.getLogger(RoutineController.class);
     @GetMapping("/all")
-    public ResponseEntity<List<RoutineDto>> getRoutineList() {
-        //TODO 로그인 완성되면 바꾸기
-        //        User user = getAuthenticatedUser();
-
-        List<Routine> routineList = routineService.getAllRoutines();
+    public ResponseEntity<List<RoutineDto>> getRoutineList(@RequestHeader(value = "Authorization") String authHeader) throws FirebaseAuthException {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+        String uid = decodedToken.getUid();
+        Optional<User> user = userRepository.findByUid(uid);
+        Long userId = user.get().getUserId();
+        List<Routine> routineList = routineService.getAllRoutines(userId);
         List<RoutineDto> routineDtoList = new ArrayList<>();
         log.info("전체 루틴 정보");
         for (Routine r : routineList) {
@@ -63,8 +68,12 @@ public class RoutineController {
 //    String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo
 //    routineTitle,startTime,days,alarmSound,memo
     @PostMapping
-    public ResponseEntity<RoutineDto> createRoutine(@RequestBody RoutineRequestDto routineRequestDto){
-        Routine routine = routineService.createRoutine(routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo());
+    public ResponseEntity<RoutineDto> createRoutine(@RequestHeader(value = "Authorization") String authHeader,@RequestBody RoutineRequestDto routineRequestDto) throws FirebaseAuthException {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+        String uid = decodedToken.getUid();
+
+        Routine routine = routineService.createRoutine(uid,routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo());
         RoutineDto routineDto = RoutineDto.builder()
                 .id(routine.getId())
                 .routineTitle(routine.getRoutineTitle())

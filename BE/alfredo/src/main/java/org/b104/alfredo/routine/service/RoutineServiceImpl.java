@@ -1,11 +1,15 @@
 package org.b104.alfredo.routine.service;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.repository.RoutineRepository;
 import org.b104.alfredo.user.Domain.User;
 import org.b104.alfredo.user.Repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.time.LocalTime;
 import java.util.List;
@@ -19,8 +23,8 @@ public class RoutineServiceImpl implements RoutineService {
     private final UserRepository userRepository;
 
     @Override
-    public List<Routine> getAllRoutines() {
-        return routineRepository.findAll();
+    public List<Routine> getAllRoutines(Long userId) {
+        return routineRepository.findByUserUserId(userId);
     }
 
     @Override
@@ -31,8 +35,14 @@ public class RoutineServiceImpl implements RoutineService {
 
     //TODO dto사용구조가 아님(리팩토링 하기)
     @Override
-    public Routine createRoutine(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo){
+    public Routine createRoutine(String uid,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo){
+        Optional<User> user = userRepository.findByUid(uid);
+        if (user.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        User currentUser = user.get();
         Routine routine = new Routine();
+        routine.setUser(currentUser);
         routine.setRoutineTitle(routineTitle);
         routine.setStartTime(startTime);
         routine.setDays(days);

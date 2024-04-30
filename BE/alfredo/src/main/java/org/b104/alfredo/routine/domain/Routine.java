@@ -17,6 +17,10 @@ public class Routine {
     @Column(name="routine_id")
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="user_id")  //userId인가??
+    private User user;
+
     @Column(name="routine_title",nullable = false)
     private String routineTitle;
 
