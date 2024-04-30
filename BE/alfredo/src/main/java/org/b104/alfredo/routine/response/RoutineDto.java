@@ -7,6 +7,8 @@ import lombok.*;
 import java.time.LocalTime;
 import java.util.Set;
 
+
+//TODO routine list에서는 alarmSound,memo불필요
 @Getter @Setter
 @NoArgsConstructor
 @ToString
