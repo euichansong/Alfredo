@@ -1,10 +1,14 @@
 package org.b104.alfredo.schedule.request;
 
 import lombok.Getter;
+import lombok.Setter;
+import org.b104.alfredo.schedule.domain.Schedule;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Getter
+@Setter
 public class ScheduleUpdateDto {
 
     private String scheduleTitle;
@@ -15,5 +19,6 @@ public class ScheduleUpdateDto {
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean withTime;
+
 
 }

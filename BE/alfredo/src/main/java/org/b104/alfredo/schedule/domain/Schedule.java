@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.b104.alfredo.user.Domain.User;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ import java.time.LocalTime;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor
 public class Schedule {
 
@@ -18,31 +21,32 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long scheduleId;
 
-    //    // 유저 테이블 만들어 지면 추가
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id" )
-//    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id" )
+    private User userId;    // 유저 아이디
+
     @Column(nullable = false)
-    private String scheduleTitle;
+    private String scheduleTitle;   // 일정 제목
     @Column(nullable = false)
-    private LocalDate startDate;
+    private LocalDate startDate;    // 일정 시작일
     @Column
-    private LocalDate endDate;
+    private LocalDate endDate;      // 일정 종료일
     // false가 기본
     @ColumnDefault("false")
-    private Boolean startAlarm;
+    private Boolean startAlarm;     // 알람 유무
     @Column
-    private String place;
+    private String place;           // 장소
     @Column
-    private LocalTime startTime;
+    private LocalTime startTime;    // 일정 시작 시간
     @Column
-    private LocalTime endTime;
+    private LocalTime endTime;      // 일정 종료 시간
     // true가 기본
     @ColumnDefault("true")
-    private Boolean withTime;
+    private Boolean withTime;       // 시간 유무(하루종일)
 
     @Builder
-    public Schedule(String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
+    public Schedule(User userId, String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
+        this.userId = userId;
         this.scheduleTitle = scheduleTitle;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -53,15 +57,15 @@ public class Schedule {
         this.withTime = withTime != null ? withTime : Boolean.TRUE;
     }
 
-    public void scheduleUpdate(String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
-        this.scheduleTitle = scheduleTitle;
-        this.startDate = startDate;
-        this.endDate = endDate;
-        this.startAlarm = startAlarm != null ? startAlarm : Boolean.FALSE;
-        this.place = place;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.withTime = withTime != null ? withTime : Boolean.TRUE;
-    }
+//    public void scheduleUpdate(String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
+//        this.scheduleTitle = scheduleTitle;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.startAlarm = startAlarm != null ? startAlarm : Boolean.FALSE;
+//        this.place = place;
+//        this.startTime = startTime;
+//        this.endTime = endTime;
+//        this.withTime = withTime != null ? withTime : Boolean.TRUE;
+//    }
 
 }
