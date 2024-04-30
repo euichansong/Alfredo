@@ -86,7 +86,7 @@ public class RoutineController {
     }
 
     //TODO Patch로 해보기
-    @PutMapping("/{routineId}")
+    @PatchMapping("/{routineId}")
     public ResponseEntity<RoutineDto> updateRoutine(@PathVariable Long routineId,@RequestBody RoutineRequestDto routineRequestDto){
         Routine routine = routineService.updateRoutine(
                 routineId,
