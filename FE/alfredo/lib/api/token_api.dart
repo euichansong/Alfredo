@@ -14,7 +14,7 @@ class TokenApi {
       );
 
       if (response.statusCode == 200) {
-        print('Token sent successfully');
+        print('Token sent successfully $idToken');
       } else {
         print('Failed to send token: ${response.body}');
       }
