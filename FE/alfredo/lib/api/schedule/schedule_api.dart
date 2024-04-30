@@ -1,12 +1,30 @@
 import 'dart:convert';
+import 'package:alfredo/provider/user/future_provider.dart';
 import 'package:http/http.dart' as http;
 import '../../models/schedule/schedule_model.dart';
 
 class ScheduleApi {
   final String baseUrl = 'http://10.0.2.2:8080';
 
-  Future<List<Schedule>> fetchSchedules() async {
-    final response = await http.get(Uri.parse('$baseUrl/list'));
+  ScheduleApi();
+
+  // 헤더에 토큰이 필요 없는 경우
+  Map<String, String> get _headers => {
+        'Content-Type': 'application/json; charset=UTF-8',
+      };
+
+  // 헤더에 토큰이 필요한 경우
+  Map<String, String> _authHeaders(String authToken) => {
+        ..._headers,
+        'Authorization': 'Bearer $authToken',
+      };
+
+  // 사용자가 작성한 전체 일정 조회
+  Future<List<Schedule>> fetchSchedules(String authToken) async {
+    final response = await http.get(Uri.parse('$baseUrl/list'),
+        headers: _authHeaders(authToken));
+    print(authToken);
+    print("전체조회");
     if (response.statusCode == 200) {
       return (json.decode(response.body) as List)
           .map((data) => Schedule.fromJson(data))
@@ -17,47 +35,37 @@ class ScheduleApi {
   }
 
   Future<Schedule> getScheduleDetail(int id) async {
-    final response = await http.get(Uri.parse('$baseUrl/detail/$id'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/detail/$id'), headers: _headers);
     if (response.statusCode == 200) {
-      String responseBody = utf8.decode(response.bodyBytes);
-      print("Received data: $responseBody"); // 데이터 로깅
-      return Schedule.fromJson(json.decode(responseBody));
+      return Schedule.fromJson(json.decode(response.body));
     } else {
       throw Exception(
           'Failed to load schedule detail. Status: ${response.statusCode}');
     }
   }
 
+  // 일정 생성
   Future<Schedule> createSchedule(Schedule schedule) async {
-    String jsonBody = jsonEncode(schedule.toJson());
-    print("Sending JSON to server: $jsonBody"); // JSON 데이터 로깅
-
     final response = await http.post(
       Uri.parse('$baseUrl/save'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonBody,
+      headers: _authHeaders,
+      body: jsonEncode(schedule.toJson()),
     );
 
-    print('Response status: ${response.statusCode}');
-    // 응답을 UTF-8로 디코드하여 출력
-    String responseBody = utf8.decode(response.bodyBytes);
     if (response.statusCode == 201) {
-      // 응답 본문을 JSON으로 디코드하고, Schedule 객체로 파싱
-      return Schedule.fromJson(json.decode(responseBody));
+      return Schedule.fromJson(json.decode(response.body));
     } else {
       throw Exception(
-          'Failed to create schedule. Status: ${response.statusCode}, Body: $responseBody');
+          'Failed to create schedule. Status: ${response.statusCode}, Body: ${utf8.decode(response.bodyBytes)}');
     }
   }
 
+  // Update and delete do not require authorization in this setup
   Future<Schedule> updateSchedule(int id, Schedule schedule) async {
     final response = await http.put(
       Uri.parse('$baseUrl/detail/$id'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: _headers,
       body: jsonEncode(schedule.toJson()),
     );
 
@@ -69,9 +77,8 @@ class ScheduleApi {
   }
 
   Future<void> deleteSchedule(int id) async {
-    final response = await http.delete(
-      Uri.parse('$baseUrl/detail/$id'),
-    );
+    final response =
+        await http.delete(Uri.parse('$baseUrl/detail/$id'), headers: _headers);
 
     if (response.statusCode != 204) {
       throw Exception('Failed to delete schedule');

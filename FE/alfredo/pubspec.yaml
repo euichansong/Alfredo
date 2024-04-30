@@ -32,7 +32,8 @@ dependencies:
     sdk: flutter    
   google_sign_in: 6.2.1
   http: ^1.2.1
-
+  flutter_riverpod: ^1.0.0
+  intl: ^0.18.1
   flutter_localizations: # Add this line
     sdk: flutter # Add this line
 
@@ -45,7 +46,8 @@ dependencies:
   test: ^1.24.9
   syncfusion_flutter_calendar: ^25.1.41
   json_annotation: ^4.9.0
-  intl: ^0.18.1
+  persistent_bottom_nav_bar: ^5.0.2
+  fl_chart: ^0.67.0
 
 dev_dependencies:
   flutter_test:
