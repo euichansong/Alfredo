@@ -23,8 +23,6 @@ class ScheduleApi {
   Future<List<Schedule>> fetchSchedules(String authToken) async {
     final response = await http.get(Uri.parse('$baseUrl/list'),
         headers: _authHeaders(authToken));
-    print(authToken);
-    print("전체조회");
     if (response.statusCode == 200) {
       return (json.decode(response.body) as List)
           .map((data) => Schedule.fromJson(data))
@@ -46,32 +44,32 @@ class ScheduleApi {
   }
 
   // 일정 생성
-  Future<Schedule> createSchedule(Schedule schedule) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/save'),
-      headers: _authHeaders,
-      body: jsonEncode(schedule.toJson()),
-    );
-
+  Future<Schedule> createSchedule(Schedule schedule, String authToken) async {
+    final response = await http.post(Uri.parse('$baseUrl/save'),
+        headers: _authHeaders(authToken), body: jsonEncode(schedule.toJson()));
     if (response.statusCode == 201) {
       return Schedule.fromJson(json.decode(response.body));
     } else {
-      throw Exception(
-          'Failed to create schedule. Status: ${response.statusCode}, Body: ${utf8.decode(response.bodyBytes)}');
+      throw Exception('Failed to create schedule');
     }
   }
 
   // Update and delete do not require authorization in this setup
-  Future<Schedule> updateSchedule(int id, Schedule schedule) async {
-    final response = await http.put(
+  Future<void> updateSchedule(int id, Schedule schedule) async {
+    String jsonString = jsonEncode(schedule.toJson());
+    print('Sending JSON body: $jsonString');
+
+    final response = await http.patch(
       Uri.parse('$baseUrl/detail/$id'),
       headers: _headers,
-      body: jsonEncode(schedule.toJson()),
+      body: jsonString,
     );
 
     if (response.statusCode == 200) {
-      return Schedule.fromJson(json.decode(response.body));
+      print('Update successful. Status: ${response.statusCode}');
     } else {
+      print('Failed to update. Status: ${response.statusCode}');
+      print('Response body: ${response.body}');
       throw Exception('Failed to update schedule');
     }
   }
@@ -80,8 +78,11 @@ class ScheduleApi {
     final response =
         await http.delete(Uri.parse('$baseUrl/detail/$id'), headers: _headers);
 
-    if (response.statusCode != 204) {
-      throw Exception('Failed to delete schedule');
+    // 성공적인 응답으로 200 OK와 204 No Content를 모두 처리
+    if (response.statusCode != 200 && response.statusCode != 204) {
+      print('Failed to delete. Status: ${response.statusCode}');
+      throw Exception(
+          'Failed to delete schedule. Status: ${response.statusCode}');
     }
   }
 }

@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
 import '../../controller/schedule/schedule_controller.dart';
 import '../../models/schedule/schedule_model.dart';
 import 'schedule_list_screen.dart';
+import '../../provider/schedule/schedule_provider.dart';
 
-class ScheduleCreateScreen extends StatefulWidget {
+class ScheduleCreateScreen extends ConsumerWidget {
   const ScheduleCreateScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(scheduleControllerProvider);
+    return _ScheduleCreateScreenBody(controller: controller);
+  }
+}
+
+class _ScheduleCreateScreenBody extends StatefulWidget {
+  final ScheduleController controller;
+
+  const _ScheduleCreateScreenBody({Key? key, required this.controller})
+      : super(key: key);
 
   @override
   _ScheduleCreateScreenState createState() => _ScheduleCreateScreenState();
 }
 
-class _ScheduleCreateScreenState extends State<ScheduleCreateScreen> {
-  final ScheduleController controller = ScheduleController();
+class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   final _formKey = GlobalKey<FormState>();
 
   String title = '';
@@ -24,7 +38,6 @@ class _ScheduleCreateScreenState extends State<ScheduleCreateScreen> {
   TimeOfDay? endTime;
   bool withTime = true; // 시간 사용 여부
 
-  // 날짜 선택기
   Future<void> _selectDate(BuildContext context,
       {required bool isStart}) async {
     final DateTime? picked = await showDatePicker(
@@ -44,7 +57,6 @@ class _ScheduleCreateScreenState extends State<ScheduleCreateScreen> {
     }
   }
 
-  // 시간 선택기
   Future<void> _selectTime(BuildContext context,
       {required bool isStart}) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -114,7 +126,7 @@ class _ScheduleCreateScreenState extends State<ScheduleCreateScreen> {
                 });
               },
             ),
-            if (!withTime) // withTime이 false일 때만 시간 설정을 보여줌
+            if (!withTime)
               Column(
                 children: [
                   ListTile(
@@ -129,6 +141,16 @@ class _ScheduleCreateScreenState extends State<ScheduleCreateScreen> {
                   ),
                 ],
               ),
+            TextFormField(
+              decoration: const InputDecoration(labelText: '장소'),
+              onSaved: (value) => place = value,
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return '장소를 입력하세요';
+                }
+                return null;
+              },
+            ),
             ElevatedButton(
               onPressed: () {
                 if (_validateForm()) {
@@ -143,11 +165,9 @@ class _ScheduleCreateScreenState extends State<ScheduleCreateScreen> {
                     endTime: endTime,
                     withTime: withTime,
                   );
-                  controller.createSchedule(newSchedule).then((value) {
-                    print(value);
+                  widget.controller.createSchedule(newSchedule).then((value) {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
-                    // 생성후 바로 전체 조회 가능하게 변경
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(

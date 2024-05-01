@@ -33,7 +33,42 @@ class Schedule {
   factory Schedule.fromJson(Map<String, dynamic> json) =>
       _$ScheduleFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ScheduleToJson(this);
+  // Map<String, dynamic> toJson() => _$ScheduleToJson(this);
+  Map<String, dynamic> toJson() => {
+      'scheduleId': scheduleId,
+      'scheduleTitle': scheduleTitle,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate?.toIso8601String(),
+      'startAlarm': startAlarm,  // 이 필드가 항상 포함되도록 보장
+      'place': place,
+      'startTime': _stringFromTime(startTime),
+      'endTime': _stringFromTime(endTime),
+      'withTime': withTime,
+    };
+
+  Schedule copyWith({
+    int? scheduleId,
+    String? scheduleTitle,
+    DateTime? startDate,
+    DateTime? endDate,
+    bool? startAlarm,
+    String? place,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
+    bool? withTime,
+  }) {
+    return Schedule(
+      scheduleId: scheduleId ?? this.scheduleId,
+      scheduleTitle: scheduleTitle ?? this.scheduleTitle,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      startAlarm: startAlarm ?? this.startAlarm,
+      place: place ?? this.place,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      withTime: withTime ?? this.withTime,
+    );
+  }
 
   static TimeOfDay _timeFromString(String? timeStr) {
     if (timeStr == null) return const TimeOfDay(hour: 0, minute: 0);
