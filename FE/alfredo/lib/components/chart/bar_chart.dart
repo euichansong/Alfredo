@@ -28,7 +28,7 @@ class BarChartContent extends StatelessWidget {
                   return const Text('Fri');
                 case 6:
                   return const Text('Sat');
-                case 7:
+                case 0:
                   return const Text('Sun');
               }
               return const Text('');

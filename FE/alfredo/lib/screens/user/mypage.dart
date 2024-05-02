@@ -6,6 +6,8 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../components/chart/bar_chart.dart';
 import '../../components/chart/chart_container.dart';
 import './user_update.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../controller/user/mute_controller.dart';
 
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
@@ -15,9 +17,9 @@ class MyPage extends ConsumerWidget {
       context: context,
       isScrollControlled: true,
       builder: (_) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: const UserUpdateScreen(),
+        return const FractionallySizedBox(
+          heightFactor: 0.91, // 모달의 높이를 화면 높이의 90%로 설정
+          child: UserUpdateScreen(),
         );
       },
     );
@@ -30,6 +32,13 @@ class MyPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xfff0d2338),
+        // AppBar의 아이콘 테마를 설정합니다 (여기에는 뒤로 가기 아이콘이 포함됩니다).
+        iconTheme: const IconThemeData(color: Color(0xFFF2E9E9)),
+        titleTextStyle: const TextStyle(
+          color: Color(0xFFF2E9E9), // 여기에서 제목의 색상을 설정합니다.
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+        ),
         title: const Text(
           'MyPage',
           selectionColor: Color(0xFFF2E9E9),
@@ -119,6 +128,43 @@ class MyPage extends ConsumerWidget {
                 title: '요일별 달성',
                 color: Color(0xffD6C3C3),
                 chart: BarChartContent()),
+            const SizedBox(height: 20.0),
+            Padding(
+              padding: const EdgeInsets.all(38.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.volume_off),
+                    iconSize: 30, // 아이콘 크기 늘림
+                    onPressed: () {
+                      MuteController.toggleMute();
+                      print("Mute toggled");
+                    },
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.exit_to_app),
+                        color: Colors.red,
+                        iconSize: 30, // 아이콘 크기 늘림
+                        onPressed: () async {
+                          try {
+                            await FirebaseAuth.instance.signOut();
+                            print("Logged out");
+                            Navigator.pushReplacementNamed(context, '/');
+                          } catch (e) {
+                            print("Logout failed: $e");
+                          }
+                        },
+                      ),
+                      const Text('로그아웃', style: TextStyle(color: Colors.red)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
         loading: () => const CircularProgressIndicator(),

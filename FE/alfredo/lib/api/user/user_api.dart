@@ -4,9 +4,10 @@ import '../../models/user/user.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/user/future_provider.dart';
 import '../../models/user/user_update_dto.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UserApi {
-  static const String _baseUrl = "http://10.0.2.2:8080/api/users";
+  static final String _baseUrl = dotenv.env['USER_API_URL']!;
 
   Future<User> getUserInfo(String idToken) async {
     if (!idToken.contains('.') || idToken.split('.').length != 3) {
@@ -25,7 +26,8 @@ class UserApi {
       );
 
       if (response.statusCode == 200) {
-        return User.fromJson(jsonDecode(response.body));
+        String decodedBody = utf8.decode(response.bodyBytes);
+        return User.fromJson(jsonDecode(decodedBody));
       } else {
         print('사용자 데이터를 불러오는 데 실패했습니다: ${response.body}');
         throw Exception('사용자 데이터를 불러오는 데 실패했습니다.');

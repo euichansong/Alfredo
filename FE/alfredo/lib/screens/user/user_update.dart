@@ -13,17 +13,16 @@ class UserUpdateScreen extends ConsumerStatefulWidget {
 
 class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _nicknameController =
-      TextEditingController(); // 즉시 초기화
+  final TextEditingController _nicknameController = TextEditingController();
   DateTime? _birthDate;
 
   @override
   void initState() {
     super.initState();
-    // FutureProvider에서 데이터 로드
+
     ref.read(userProvider.future).then((user) {
       if (mounted) {
-        _nicknameController.text = user.nickname; // 초기값 설정
+        _nicknameController.text = user.nickname;
         _birthDate = user.birth;
       }
     });

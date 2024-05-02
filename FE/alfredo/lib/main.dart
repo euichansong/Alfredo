@@ -5,9 +5,11 @@ import 'config/firebase_options.dart';
 import 'screens/user/login_page.dart';
 import 'screens/mainpage/main_page.dart';
 import 'screens/user/user_routine_test.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
