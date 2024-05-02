@@ -38,11 +38,14 @@ class ScheduleApi {
     }
   }
 
+  // 상세 일정 조회
   Future<Schedule> getScheduleDetail(int id) async {
     final response =
         await http.get(Uri.parse('$baseUrl/detail/$id'), headers: _headers);
     if (response.statusCode == 200) {
-      return Schedule.fromJson(json.decode(response.body));
+      // UTF-8로 디코딩하여 한글 깨짐 문제 해결
+      final decodedBody = utf8.decode(response.bodyBytes);
+      return Schedule.fromJson(json.decode(decodedBody));
     } else {
       throw Exception(
           'Failed to load schedule detail. Status: ${response.statusCode}');
