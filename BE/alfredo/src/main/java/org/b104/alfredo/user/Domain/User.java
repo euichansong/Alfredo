@@ -2,9 +2,11 @@ package org.b104.alfredo.user.Domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.b104.alfredo.todo.domain.Todo;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -37,7 +39,7 @@ public class User {
     @Column
     private String google_calendar_url;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private LocalDateTime registeredAt;
 
     @PrePersist
