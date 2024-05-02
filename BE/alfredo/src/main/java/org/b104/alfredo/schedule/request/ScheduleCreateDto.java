@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.b104.alfredo.schedule.domain.Schedule;
+import org.b104.alfredo.user.Domain.User;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,6 +13,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ScheduleCreateDto {
 
+    private Long userId;
     private String scheduleTitle;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -20,18 +22,5 @@ public class ScheduleCreateDto {
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean withTime;
-
-   public Schedule toEntity(){
-       return Schedule.builder()
-               .scheduleTitle(scheduleTitle)
-               .startDate(startDate)
-               .endDate(endDate)
-               .startTime(startTime)
-               .endTime(endTime)
-               .startAlarm(startAlarm)
-               .place(place)
-               .withTime(withTime)
-               .build();
-   }
 
 }

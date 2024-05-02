@@ -7,11 +7,12 @@ import org.b104.alfredo.schedule.request.ScheduleCreateDto;
 import org.b104.alfredo.schedule.request.ScheduleUpdateDto;
 import org.b104.alfredo.schedule.response.ScheduleDetailDto;
 import org.b104.alfredo.schedule.response.ScheduleListDto;
+import org.b104.alfredo.user.Domain.User;
+import org.b104.alfredo.user.Repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,49 +20,60 @@ import java.util.stream.Collectors;
 public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
+    // 생성
     @Transactional
-    public Long create(ScheduleCreateDto scheduleCreateDto){
-        return scheduleRepository.save(scheduleCreateDto.toEntity()).getScheduleId();
+    public Schedule create(ScheduleCreateDto scheduleCreateDto, User user){
+        Schedule schedule = Schedule.builder()
+                .userId(user)
+                .scheduleTitle(scheduleCreateDto.getScheduleTitle())
+                .startDate(scheduleCreateDto.getStartDate())
+                .endDate(scheduleCreateDto.getEndDate())
+                .startAlarm(scheduleCreateDto.getStartAlarm())
+                .place(scheduleCreateDto.getPlace())
+                .startTime(scheduleCreateDto.getStartTime())
+                .endTime(scheduleCreateDto.getEndTime())
+                .withTime(scheduleCreateDto.getWithTime())
+                .build();
+        return scheduleRepository.save(schedule);
     }
-
+    // 조회
     @Transactional
-    public List<ScheduleListDto> findAllSchedule(){
-        List<Schedule> schedules = scheduleRepository.findAll();
+    public List<ScheduleListDto> findAllByUser(User user) {
+        List<Schedule> schedules = scheduleRepository.findByUserId(user);
         return schedules.stream()
                 .map(ScheduleListDto::new)
                 .collect(Collectors.toList());
     }
-
+    // 상세조회
     @Transactional
     public ScheduleDetailDto findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다. id=" + id));
         return new ScheduleDetailDto(schedule);
     }
-
+    // 삭제
     @Transactional
     public void deleteSchedule(Long id) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다. id=" + id));
         scheduleRepository.delete(schedule);
     }
-
+    // 수정
     @Transactional
-    public Long scheduleUpdate(Long id, ScheduleUpdateDto scheduleUpdateDto){
+    public void updateSchedule(Long id, ScheduleUpdateDto dto) {
         Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found for id=" + id));
 
-        schedule.scheduleUpdate(scheduleUpdateDto.getScheduleTitle(),
-                scheduleUpdateDto.getStartDate(),
-                scheduleUpdateDto.getEndDate(),
-                scheduleUpdateDto.getStartAlarm(),
-                scheduleUpdateDto.getPlace(),
-                scheduleUpdateDto.getStartTime(),
-                scheduleUpdateDto.getEndTime(),
-                scheduleUpdateDto.getWithTime()
-                );
-        return id;
+        if (dto.getScheduleTitle() != null) schedule.updateScheduleTitle(dto.getScheduleTitle());
+        if (dto.getStartDate() != null) schedule.updateStartDate(dto.getStartDate());
+        if (dto.getEndDate() != null) schedule.updateEndDate(dto.getEndDate());
+        if (dto.getStartAlarm() != null) schedule.updateStartAlarm(dto.getStartAlarm());
+        if (dto.getPlace() != null) schedule.updatePlace(dto.getPlace());
+        if (dto.getStartTime() != null) schedule.updateStartTime(dto.getStartTime());
+        if (dto.getEndTime() != null) schedule.updateEndTime(dto.getEndTime());
+        if (dto.getWithTime() != null) schedule.updateWithTime(dto.getWithTime());
     }
 
 
