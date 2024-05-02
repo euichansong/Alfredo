@@ -1,7 +1,9 @@
 package org.b104.alfredo.todo.request;
 
+import com.google.firebase.database.annotations.NotNull;
 import lombok.*;
 import java.time.LocalDate;
+
 
 @Getter
 @Setter
@@ -9,9 +11,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class TodoCreateDto {
-    private Long subIndex;
+    private String subIndex;
+    @NotNull
     private String todoTitle;
     private String todoContent;
+    @NotNull
     private LocalDate dueDate;
     private Integer spentTime;
     private Boolean isCompleted;

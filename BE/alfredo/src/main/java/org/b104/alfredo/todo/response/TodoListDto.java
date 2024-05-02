@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import org.b104.alfredo.todo.domain.Todo;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class TodoListDto {
     private Long id;
-    private Long subIndex; // 추가 인덱스, 필요에 따라 제외 가능
+    private String subIndex; // 추가 인덱스, 필요에 따라 제외 가능
     private String todoTitle; // 할 일 제목
     private String todoContent; // 할 일 내용
     private LocalDate dueDate; // 마감일

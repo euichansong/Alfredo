@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Todo {
+public class OldTodo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,11 +29,11 @@ public class Todo {
     private String uid; // 직접 UID 저장
 
     @Builder
-    public Todo(String subIndex, String todoTitle, String todoContent, LocalDate dueDate, Integer spentTime, Boolean isCompleted, String url, String place, String uid) {
+    public OldTodo(String subIndex, String todoTitle, String todoContent, LocalDate dueDate, Integer spentTime, Boolean isCompleted, String url, String place, String uid) {
         this.subIndex = subIndex;
         this.todoTitle = todoTitle;
         this.todoContent = todoContent;
-        this.dueDate = dueDate != null ? dueDate : LocalDate.now();
+        this.dueDate = dueDate;
         this.spentTime = spentTime;
         this.isCompleted = isCompleted;
         this.url = url;
