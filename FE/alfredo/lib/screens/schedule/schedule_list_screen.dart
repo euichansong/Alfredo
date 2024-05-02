@@ -8,7 +8,7 @@ import 'schedule_create_screen.dart';
 import '../../provider/schedule/schedule_provider.dart';
 
 class ScheduleListScreen extends ConsumerStatefulWidget {
-  const ScheduleListScreen({Key? key}) : super(key: key);
+  const ScheduleListScreen({super.key});
 
   @override
   _ScheduleListScreenState createState() => _ScheduleListScreenState();

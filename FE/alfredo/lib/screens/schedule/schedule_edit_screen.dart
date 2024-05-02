@@ -8,7 +8,7 @@ import '../../provider/schedule/schedule_provider.dart';
 class ScheduleEditScreen extends ConsumerStatefulWidget {
   final int scheduleId;
 
-  const ScheduleEditScreen({Key? key, required this.scheduleId}) : super(key: key);
+  const ScheduleEditScreen({super.key, required this.scheduleId});
 
   @override
   _ScheduleEditScreenState createState() => _ScheduleEditScreenState();
@@ -33,7 +33,9 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
 
   void _loadSchedule() async {
     try {
-      final schedule = await ref.read(scheduleControllerProvider).getScheduleDetail(widget.scheduleId);
+      final schedule = await ref
+          .read(scheduleControllerProvider)
+          .getScheduleDetail(widget.scheduleId);
       _titleController = TextEditingController(text: schedule.scheduleTitle);
       _startDate = schedule.startDate;
       _endDate = schedule.endDate;
@@ -42,9 +44,10 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       _startTime = schedule.startTime;
       _endTime = schedule.endTime;
       _place = schedule.place;
-      setState(() {});  // Trigger a rebuild after loading data
+      setState(() {}); // Trigger a rebuild after loading data
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to load schedule details: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load schedule details: $e')));
     }
   }
 
@@ -86,7 +89,8 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
         onTap: () => _selectDate(context, isStart: true),
       ),
       ListTile(
-        title: Text("종료 날짜: ${_endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : '선택되지 않음'}"),
+        title: Text(
+            "종료 날짜: ${_endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : '선택되지 않음'}"),
         onTap: () => _selectDate(context, isStart: false),
       ),
       SwitchListTile(
@@ -107,11 +111,13 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       ),
       if (!_withTime) ...[
         ListTile(
-          title: Text('시작 시간: ${_startTime != null ? _startTime!.format(context) : "선택되지 않음"}'),
+          title: Text(
+              '시작 시간: ${_startTime != null ? _startTime!.format(context) : "선택되지 않음"}'),
           onTap: () => _selectTime(context, isStart: true),
         ),
         ListTile(
-          title: Text('종료 시간: ${_endTime != null ? _endTime!.format(context) : "선택되지 않음"}'),
+          title: Text(
+              '종료 시간: ${_endTime != null ? _endTime!.format(context) : "선택되지 않음"}'),
           onTap: () => _selectTime(context, isStart: false),
         ),
       ],
@@ -142,19 +148,25 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
         withTime: _withTime,
       );
       try {
-        ref.read(scheduleControllerProvider).updateSchedule(updatedSchedule.scheduleId!, updatedSchedule).then((_) {
-        // 수정 성공 후 리스트를 새로 고침하기 위해 결과로 true를 반환
-        Navigator.pop(context, true);
+        ref
+            .read(scheduleControllerProvider)
+            .updateSchedule(updatedSchedule.scheduleId!, updatedSchedule)
+            .then((_) {
+          // 수정 성공 후 리스트를 새로 고침하기 위해 결과로 true를 반환
+          Navigator.pop(context, true);
         }).catchError((error) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Update failed: $error')));
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Update failed: $error')));
         });
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error updating schedule: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating schedule: $e')));
       }
     }
   }
 
-  Future<void> _selectDate(BuildContext context, {required bool isStart}) async {
+  Future<void> _selectDate(BuildContext context,
+      {required bool isStart}) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isStart ? _startDate : _endDate ?? DateTime.now(),
@@ -172,10 +184,12 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context, {required bool isStart}) async {
+  Future<void> _selectTime(BuildContext context,
+      {required bool isStart}) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: isStart ? _startTime ?? TimeOfDay.now() : _endTime ?? TimeOfDay.now(),
+      initialTime:
+          isStart ? _startTime ?? TimeOfDay.now() : _endTime ?? TimeOfDay.now(),
     );
     if (picked != null) {
       setState(() {

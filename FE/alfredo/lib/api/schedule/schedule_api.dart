@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:alfredo/provider/user/future_provider.dart';
 import 'package:http/http.dart' as http;
 import '../../models/schedule/schedule_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class ScheduleApi {
-  final String baseUrl = 'http://10.0.2.2:8080/api/schedule';
+  final String baseUrl = dotenv.get("SCHEDULE_API_URL");
 
   ScheduleApi();
 
