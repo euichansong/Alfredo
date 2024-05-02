@@ -9,9 +9,14 @@ import org.b104.alfredo.user.Dto.UserUpdateDto;
 import org.b104.alfredo.user.Service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+
 
 
 @RestController
@@ -52,6 +57,7 @@ public class UserController {
         }
     }
 
+
     @GetMapping
     public ResponseEntity<?> getUser(@RequestHeader(value = "Authorization") String authHeader) {
         String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
@@ -61,7 +67,9 @@ public class UserController {
 
             User user = userService.getUserByUid(uid);
             if (user != null) {
-                return ResponseEntity.ok(user);
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                return new ResponseEntity<>(user, headers, HttpStatus.OK);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }

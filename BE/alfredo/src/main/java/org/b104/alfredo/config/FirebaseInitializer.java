@@ -4,6 +4,7 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,12 +19,9 @@ public class FirebaseInitializer {
 
     @PostConstruct
     public void initialize() {
-        try {
-            // 환경변수에서 Firebase 설정 파일의 경로를 읽어옵니다.
-            FileInputStream serviceAccount =
-                    new FileInputStream(sdkKey);
-            FirebaseOptions options = new FirebaseOptions.Builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+        try (FileInputStream serviceAccount = new FileInputStream(sdkKey)) { // FileInputStream으로 파일 열기
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(GoogleCredentials.fromStream(serviceAccount)) // FileInputStream 객체 사용
                     .build();
 
             if (FirebaseApp.getApps().isEmpty()) {
