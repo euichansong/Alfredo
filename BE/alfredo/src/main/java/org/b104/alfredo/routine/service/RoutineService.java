@@ -17,4 +17,6 @@ public interface RoutineService {
     void deleteRoutine(Long routineId);
 
     Routine updateRoutine(Long routineId,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo);
+
+    void addBasicRoutines(String uid, List<Long> basicRoutineIds);
 }

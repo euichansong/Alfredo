@@ -4,7 +4,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.routine.domain.BasicRoutine;
 import org.b104.alfredo.routine.domain.Routine;
+import org.b104.alfredo.routine.repository.BasicRoutineRepository;
+import org.b104.alfredo.routine.request.RoutineIdsRequest;
 import org.b104.alfredo.routine.request.RoutineRequestDto;
 import org.b104.alfredo.routine.response.RoutineDto;
 import org.b104.alfredo.routine.service.RoutineService;
@@ -21,11 +24,12 @@ import java.util.Optional;
 
 //TODO Transactional을 해야 되나??
 @RestController
-@RequestMapping("/routine")
+@RequestMapping("/api/routine")
 @RequiredArgsConstructor
 public class RoutineController {
     private final UserRepository userRepository;
     private final RoutineService routineService;
+    private final BasicRoutineRepository basicRoutineRepository;
     private final Logger log = LoggerFactory.getLogger(RoutineController.class);
     @GetMapping("/all")
     public ResponseEntity<List<RoutineDto>> getRoutineList(@RequestHeader(value = "Authorization") String authHeader) throws FirebaseAuthException {
@@ -83,6 +87,18 @@ public class RoutineController {
                 .memo(routine.getMemo())
                 .build();
         return ResponseEntity.ok().body(routineDto);
+    }
+
+    @PostMapping("/add-basic-routines")
+    public ResponseEntity<Void> addBasicRoutines(@RequestHeader(value = "Authorization") String authHeader, @RequestBody RoutineIdsRequest request) throws FirebaseAuthException {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+        String uid = decodedToken.getUid();
+
+        List<Long> basicRoutineIds = request.getBasicRoutineIds();
+        routineService.addBasicRoutines(uid, basicRoutineIds);
+
+        return ResponseEntity.ok().build();
     }
 
     //TODO Patch로 해보기
