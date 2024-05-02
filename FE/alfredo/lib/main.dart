@@ -1,9 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/firebase_options.dart';
 import 'screens/user/login_page.dart';
-import 'screens/mainpage/main_page.dart'; // 여기에 MainPage 파일을 import 합니다.
+import 'screens/mainpage/main_page.dart';
 import 'screens/user/user_routine_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
