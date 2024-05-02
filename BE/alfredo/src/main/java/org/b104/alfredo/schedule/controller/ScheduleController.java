@@ -37,7 +37,6 @@ public class ScheduleController {
             String uid = decodedToken.getUid();
             User user = userService.getUserByUid(uid);
             Schedule createdSchedule = scheduleService.create(scheduleCreateDto, user);
-            System.out.println("save");
             return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Failed to create schedule", e);
@@ -55,7 +54,6 @@ public class ScheduleController {
 
             User user = userService.getUserByUid(uid);
             List<ScheduleListDto> schedules = scheduleService.findAllByUser(user);
-            System.out.println("all list");
             return new ResponseEntity<>(schedules, HttpStatus.OK);
         } catch (Exception e) {
             log.error("Failed to read schedule list", e);
@@ -66,14 +64,12 @@ public class ScheduleController {
     // 상세 조회
     @GetMapping("/detail/{id}")
     public ScheduleDetailDto getScheduleById(@PathVariable Long id) {
-        System.out.println("detail");
         return scheduleService.findScheduleById(id);
     }
 
     // 수정
     @PatchMapping("/detail/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ScheduleUpdateDto scheduleUpdateDto) {
-        System.out.println("update");
         scheduleService.updateSchedule(id, scheduleUpdateDto);
         return ResponseEntity.ok().build();
     }
@@ -81,7 +77,6 @@ public class ScheduleController {
     // 삭제
     @DeleteMapping("/detail/{id}")
     public Long deleteScheduleById(@PathVariable Long id) {
-        System.out.println("delete");
         scheduleService.deleteSchedule(id);
         return id;
     }
