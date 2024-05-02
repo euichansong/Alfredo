@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../routine/routine_list_screen.dart';
+import '../schedule/schedule_list_screen.dart';
+import '../user/mypage.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -36,11 +38,30 @@ class MainPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          RoutineListScreen()), // RoutineListScreen으로 이동
+                          const RoutineListScreen()), // RoutineListScreen으로 이동
                   // const RoutineCreateScreen()),
                 );
               },
               child: const Text('Routines'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyPage()),
+                );
+              },
+              child: const Text('Go to My Page'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ScheduleListScreen()),
+                );
+              },
+              child: const Text('Schedules'),
             ),
           ],
         ),
