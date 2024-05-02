@@ -19,8 +19,7 @@ class ScheduleCreateScreen extends ConsumerWidget {
 class _ScheduleCreateScreenBody extends StatefulWidget {
   final ScheduleController controller;
 
-  const _ScheduleCreateScreenBody({Key? key, required this.controller})
-      : super(key: key);
+  const _ScheduleCreateScreenBody({super.key, required this.controller});
 
   @override
   _ScheduleCreateScreenState createState() => _ScheduleCreateScreenState();
@@ -144,12 +143,6 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
             TextFormField(
               decoration: const InputDecoration(labelText: '장소'),
               onSaved: (value) => place = value,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return '장소를 입력하세요';
-                }
-                return null;
-              },
             ),
             ElevatedButton(
               onPressed: () {

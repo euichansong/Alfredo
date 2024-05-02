@@ -23,8 +23,13 @@ class ScheduleApi {
   Future<List<Schedule>> fetchSchedules(String authToken) async {
     final response = await http.get(Uri.parse('$baseUrl/list'),
         headers: _authHeaders(authToken));
+
     if (response.statusCode == 200) {
-      return (json.decode(response.body) as List)
+      // UTF-8로 디코딩하여 한글 깨짐 문제 해결
+      final decodedBody = utf8.decode(response.bodyBytes);
+
+      // 디코딩된 문자열을 JSON으로 파싱하여 Schedule 객체 리스트로 변환
+      return (json.decode(decodedBody) as List)
           .map((data) => Schedule.fromJson(data))
           .toList();
     } else {
