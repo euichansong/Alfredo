@@ -68,41 +68,99 @@ class RoutineListScreen extends StatelessWidget {
 
   void showRoutineCreateDialog(BuildContext context) {
     final TextEditingController titleController = TextEditingController();
-    final TextEditingController alarmSoundController = TextEditingController();
+    final TextEditingController memoController = TextEditingController();
+    TimeOfDay? selectedTime = const TimeOfDay(hour: 7, minute: 30); // 초기 시간 설정
+
+    List<bool> selectedDays = List.filled(7, false); // 요일 선택
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text("Create Routine"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: "Routine Title"),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text("Routine 추가"),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
               ),
-              TextField(
-                controller: alarmSoundController,
-                decoration: const InputDecoration(labelText: "Alarm Sound"),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: titleController,
+                      decoration:
+                          const InputDecoration(labelText: "Routine 제목"),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("시간"),
+                        GestureDetector(
+                          onTap: () async {
+                            final TimeOfDay? pickedTime = await showTimePicker(
+                                context: context, initialTime: selectedTime!);
+                            if (pickedTime != null) {
+                              setState(() => selectedTime = pickedTime);
+                            }
+                          },
+                          child: Text(selectedTime!.format(context)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    const Text("요일 설정"),
+                    ToggleButtons(
+                      isSelected: selectedDays,
+                      children: const [
+                        Text("일"),
+                        Text("월"),
+                        Text("화"),
+                        Text("수"),
+                        Text("목"),
+                        Text("금"),
+                        Text("토")
+                      ],
+                      onPressed: (int index) {
+                        setState(
+                            () => selectedDays[index] = !selectedDays[index]);
+                      },
+                    ),
+                    const SizedBox(height: 10),
+                    const Text("알람 설정"),
+                    DropdownButton<String>(
+                      value: "Morning Glory",
+                      items: const [
+                        DropdownMenuItem(
+                            value: "Morning Glory",
+                            child: Text("Morning Glory")),
+                        // 여기에 추가 아이템을 넣을 수 있습니다.
+                      ],
+                      onChanged: (value) => {}, // 선택된 아이템에 따른 로직 추가
+                    ),
+                    TextField(
+                      controller: memoController,
+                      decoration: const InputDecoration(labelText: "메모"),
+                    ),
+                  ],
+                ),
               ),
-              // 추가 입력 필드를 여기에 추가할 수 있습니다.
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context), // 모달 닫기
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () async {
-                // await createRoutine(
-                //     titleController.text, alarmSoundController.text);
-                Navigator.pop(context); // 모달 닫기
-              },
-              child: const Text("Create"),
-            ),
-          ],
+              actions: [
+                ElevatedButton(
+                  onPressed: () {
+                    // 데이터 처리 로직 추가
+                    Navigator.pop(context);
+                  },
+                  child: const Text("저장"),
+                ),
+              ],
+            );
+          },
         );
       },
     );
