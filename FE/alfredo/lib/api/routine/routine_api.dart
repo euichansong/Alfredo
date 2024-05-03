@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:alfredo/models/routine/routine_model.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class RoutineApi {
-  static const String baseUrl = 'http://10.0.2.2:8080/api/routine';
+  static final String baseUrl = dotenv.get("ROUTINE_API_URL");
   // static const String baseUrl = 'http://127.0.0.1:8080';
   RoutineApi();
 
@@ -21,17 +22,40 @@ class RoutineApi {
 
   //로그인한 유저의 전체 일정 조회
   Future<List<RoutineModel>> getAllRoutines(String authToken) async {
-    List<RoutineModel> routineInstances = [];
     final url = Uri.parse('$baseUrl/all');
     final response = await http.get(url, headers: _authHeaders(authToken));
+
     if (response.statusCode == 200) {
       final List<dynamic> routines = jsonDecode(response.body);
-      for (var routine in routines) {
-        routineInstances.add(RoutineModel.fromJson(routine));
-      }
-      return routineInstances;
+      return routines.map((routine) => RoutineModel.fromJson(routine)).toList();
     } else {
       throw Exception('Failed to load routines: ${response.statusCode}');
+    }
+  }
+
+  //로그인한 유저의 일정 생성
+  Future<void> createRoutine(
+      String authToken,
+      String routineTitle,
+      String startTime,
+      List<String> days,
+      String alarmSound,
+      String memo) async {
+    final url = Uri.parse(baseUrl);
+
+    final body = jsonEncode({
+      "routineTitle": routineTitle,
+      "startTime": startTime,
+      "days": days,
+      "alarmSound": alarmSound,
+      "memo": memo,
+    });
+
+    final response =
+        await http.post(url, headers: _authHeaders(authToken), body: body);
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception('Failed to create routine: ${response.statusCode}');
     }
   }
 }
