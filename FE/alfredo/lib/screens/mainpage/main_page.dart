@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../routine/routine_list_screen.dart';
 import '../schedule/schedule_list_screen.dart';
 import '../user/mypage.dart';
+import '../todo/todo_tab_view.dart'; // TodoCreateScreen import
+import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -63,6 +65,31 @@ class MainPage extends StatelessWidget {
               },
               child: const Text('Schedules'),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const TodoTabView()), // TodoTabView로 이동
+                );
+              },
+              child: const Text('Create Todo'),
+            ),
+            const Expanded(
+              child: TodoListScreen(), // TodoList를 화면 하단에 표시
+            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //           builder: (context) =>
+            //               const TodoCreateScreen()), // TodoCreateScreen으로 이동
+            //     );
+            //   },
+            //   child: const Text('Create Todo'),
+            // ),
           ],
         ),
       ),
