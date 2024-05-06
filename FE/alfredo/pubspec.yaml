@@ -57,6 +57,7 @@ dependencies:
   path: ^1.9.0
   syncfusion_localizations: ^25.1.42
   sqflite: ^2.3.3
+  flutter_local_notifications: ^17.1.2
 
 dev_dependencies:
   flutter_test:
