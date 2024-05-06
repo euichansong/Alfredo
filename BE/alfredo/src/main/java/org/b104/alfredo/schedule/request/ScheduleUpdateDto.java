@@ -14,6 +14,7 @@ public class ScheduleUpdateDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean startAlarm;
+    private LocalTime alarmTime;
     private String place;
     private LocalTime startTime;
     private LocalTime endTime;

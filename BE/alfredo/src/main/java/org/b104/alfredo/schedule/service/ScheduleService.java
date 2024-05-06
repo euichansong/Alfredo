@@ -31,6 +31,7 @@ public class ScheduleService {
                 .startDate(scheduleCreateDto.getStartDate())
                 .endDate(scheduleCreateDto.getEndDate())
                 .startAlarm(scheduleCreateDto.getStartAlarm())
+                .alarmTime(scheduleCreateDto.getAlarmTime())
                 .place(scheduleCreateDto.getPlace())
                 .startTime(scheduleCreateDto.getStartTime())
                 .endTime(scheduleCreateDto.getEndTime())
@@ -70,6 +71,7 @@ public class ScheduleService {
         if (dto.getStartDate() != null) schedule.updateStartDate(dto.getStartDate());
         if (dto.getEndDate() != null) schedule.updateEndDate(dto.getEndDate());
         if (dto.getStartAlarm() != null) schedule.updateStartAlarm(dto.getStartAlarm());
+        if (dto.getAlarmTime() != null) schedule.updaateAlarmTime(dto.getAlarmTime());
         if (dto.getPlace() != null) schedule.updatePlace(dto.getPlace());
         if (dto.getStartTime() != null) schedule.updateStartTime(dto.getStartTime());
         if (dto.getEndTime() != null) schedule.updateEndTime(dto.getEndTime());
