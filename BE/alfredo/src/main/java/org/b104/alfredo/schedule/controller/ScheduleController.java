@@ -37,6 +37,7 @@ public class ScheduleController {
             String uid = decodedToken.getUid();
             User user = userService.getUserByUid(uid);
             Schedule createdSchedule = scheduleService.create(scheduleCreateDto, user);
+            System.out.println("save");
             return new ResponseEntity<>(createdSchedule, HttpStatus.CREATED);
         } catch (Exception e) {
             log.error("Failed to create schedule", e);
@@ -64,6 +65,7 @@ public class ScheduleController {
     // 상세 조회
     @GetMapping("/detail/{id}")
     public ScheduleDetailDto getScheduleById(@PathVariable Long id) {
+        System.out.println("detail");
         return scheduleService.findScheduleById(id);
     }
 
@@ -71,6 +73,7 @@ public class ScheduleController {
     @PatchMapping("/detail/{id}")
     public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody ScheduleUpdateDto scheduleUpdateDto) {
         scheduleService.updateSchedule(id, scheduleUpdateDto);
+        System.out.println("update");
         return ResponseEntity.ok().build();
     }
 
@@ -78,6 +81,7 @@ public class ScheduleController {
     @DeleteMapping("/detail/{id}")
     public Long deleteScheduleById(@PathVariable Long id) {
         scheduleService.deleteSchedule(id);
+        System.out.println("delete");
         return id;
     }
 }
