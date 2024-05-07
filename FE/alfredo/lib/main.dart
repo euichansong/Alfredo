@@ -16,7 +16,10 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  FirebaseMessaging.instance.getInitialMessage();
+  //FCM 토큰 가져오기
+  String? token = await FirebaseMessaging.instance.getToken();
+  debugPrint("Firebase Messaging Token: $token");
+  // FirebaseMessaging.instance.getInitialMessage();
   // foreground work
   FirebaseMessaging.onMessage.listen((message) {
     if (message.notification != null) {
