@@ -153,4 +153,48 @@ class TodoApi {
           'Failed to create todos. Status code: ${response.statusCode}, Message: ${response.body}');
     }
   }
+
+  // Todo 아이템의 세부 정보를 가져오는 메서드
+  Future<Todo> fetchTodoById(int id) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/$id'), headers: _headers);
+
+    if (response.statusCode == 200) {
+      // UTF-8로 디코딩
+      final decodedData = utf8.decode(response.bodyBytes);
+      return Todo.fromJson(json.decode(decodedData));
+    } else {
+      throw Exception(
+          'Failed to load todo. Status code: ${response.statusCode}, Message: ${response.body}');
+    }
+  }
+
+  Future<void> updateTodo(int id, Todo todo, String authToken) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/$id'),
+      headers: _headers,
+      body: jsonEncode(todo.toJson()),
+    );
+
+    if (response.statusCode == 204) {
+      print('Update successful. Status: ${response.statusCode}');
+    } else {
+      print('Failed to update. Status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to update todo');
+    }
+  }
+
+  Future<void> deleteTodoById(int id) async {
+    final response =
+        await http.delete(Uri.parse('$baseUrl/$id'), headers: _headers);
+
+    if (response.statusCode == 200) {
+      print('Delete successful. Status: ${response.statusCode}');
+    } else {
+      print('Failed to delete. Status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception('Failed to delete todo');
+    }
+  }
 }

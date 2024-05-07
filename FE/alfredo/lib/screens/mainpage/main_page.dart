@@ -88,7 +88,7 @@ class MainPage extends StatelessWidget {
               child: const Text('Create Todo'),
             ),
             const Expanded(
-              child: TodoListScreen(), // TodoList를 화면 하단에 표시
+              child: TodoList(), // TodoList를 화면 하단에 표시
             ),
             // ElevatedButton(
             //   onPressed: () {

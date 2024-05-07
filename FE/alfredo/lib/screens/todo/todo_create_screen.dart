@@ -46,26 +46,6 @@ class _TodoCreateScreenState extends State<_TodoCreateScreenBody> {
     }
   }
 
-  // void _submitTodo() {
-  //   if (_validateForm()) {
-  //     _formKey.currentState!.save();
-  //     final newTodo = Todo(
-  //       todoTitle: todoTitle,
-  //       todoContent: todoContent,
-  //       dueDate: dueDate,
-  //       url: url,
-  //       place: place,
-  //     );
-  //     widget.controller.createTodos([newTodo]).then((_) {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(const SnackBar(content: Text('할 일이 성공적으로 생성되었습니다.')));
-  //       Navigator.pop(context);
-  //     }).catchError((error) {
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text('할 일 생성에 실패했습니다: $error')));
-  //     });
-  //   }
-  // }
   void _submitTodo() {
     if (_validateForm()) {
       _formKey.currentState!.save();
@@ -79,7 +59,7 @@ class _TodoCreateScreenState extends State<_TodoCreateScreenBody> {
       widget.controller.createTodos([newTodo]).then((resultMessage) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(resultMessage))); // 서버로부터 받은 메시지를 직접 출력
-        Navigator.pop(context);
+        Navigator.pushReplacementNamed(context, '/main');
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('할 일 생성에 실패했습니다: $error')));
@@ -137,6 +117,7 @@ class _TodoCreateScreenState extends State<_TodoCreateScreenBody> {
     return _formKey.currentState!.validate();
   }
 }
+
 
 
 
