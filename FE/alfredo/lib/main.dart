@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'config/firebase_options.dart';
-import 'screens/user/login_page.dart';
-import 'screens/mainpage/main_page.dart';
-import 'screens/user/user_routine_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'config/firebase_options.dart';
+import 'screens/mainpage/main_page.dart';
+import 'screens/user/login_page.dart';
+import 'screens/user/user_routine_test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +15,16 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.instance.getInitialMessage();
+  // foreground work
+  FirebaseMessaging.onMessage.listen((message) {
+    if (message.notification != null) {
+      print(message.notification!.body);
+      print(message.notification!.title);
+    }
+  });
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
@@ -31,6 +41,7 @@ class MyApp extends StatelessWidget {
         '/main': (context) => const MainPage(),
         '/user_routine_test': (context) => const UserRoutineTestPage(),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

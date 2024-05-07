@@ -38,7 +38,7 @@ class MainPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          const RoutineListScreen()), // RoutineListScreen으로 이동
+                          RoutineListScreen()), // RoutineListScreen으로 이동
                   // const RoutineCreateScreen()),
                 );
               },

@@ -15,27 +15,29 @@ class RoutineApi {
       };
 
   // 헤더에 토큰이 필요한 경우
-  Map<String, String> _authHeaders(String authToken) => {
+  Map<String, String> _authHeaders(String? authToken) => {
         ..._headers,
         'Authorization': 'Bearer $authToken',
       };
 
   //로그인한 유저의 전체 일정 조회
-  Future<List<RoutineModel>> getAllRoutines(String authToken) async {
+  Future<List<Routine>> getAllRoutines(String authToken) async {
     final url = Uri.parse('$baseUrl/all');
     final response = await http.get(url, headers: _authHeaders(authToken));
 
     if (response.statusCode == 200) {
       final List<dynamic> routines = jsonDecode(response.body);
-      return routines.map((routine) => RoutineModel.fromJson(routine)).toList();
+      print('잘 읽어왔어용');
+      return routines.map((routine) => Routine.fromJson(routine)).toList();
     } else {
+      print('못읽었어용');
       throw Exception('Failed to load routines: ${response.statusCode}');
     }
   }
 
   //로그인한 유저의 일정 생성
   Future<void> createRoutine(
-      String authToken,
+      String? authToken,
       String routineTitle,
       String startTime,
       List<String> days,
@@ -56,6 +58,45 @@ class RoutineApi {
 
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Failed to create routine: ${response.statusCode}');
+    }
+  }
+
+//일정 삭제
+  Future<void> deleteRoutine(int routineId) async {
+    print("삭제");
+    final url = Uri.parse('$baseUrl/$routineId');
+    await http.delete(url);
+  }
+
+  //일정 수정
+  Future<void> updateRoutine(int routineId, String title, String startTime,
+      List<String?> days, String alarmSound, String memo) async {
+    final url = Uri.parse('$baseUrl/$routineId'); // URL 구성
+
+    try {
+      final response = await http.patch(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'routineTitle': title,
+          'startTime': startTime,
+          'days': days,
+          'alarmSound': alarmSound,
+          'memo': memo,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        print("Routine updated successfully.");
+      } else {
+        print('Failed to update routine: ${response.body}');
+        throw Exception('Failed to update routine');
+      }
+    } catch (e) {
+      print('Error updating routine: $e');
+      throw Exception('Error updating routine');
     }
   }
 }

@@ -9,7 +9,7 @@ class RoutineController {
   final ProviderRef ref;
   RoutineController(this.ref);
 
-  Future<List<RoutineModel>> getAllRoutines(WidgetRef ref) async {
+  Future<List<Routine>> getAllRoutines(WidgetRef ref) async {
     final idToken = await ref.read(authManagerProvider.future);
 
     if (idToken == null || idToken.isEmpty) {
@@ -27,7 +27,6 @@ class RoutineController {
       String alarmSound,
       String memo) async {
     final idToken = await ref.read(authManagerProvider.future);
-
     if (idToken == null || idToken.isEmpty) {
       throw Exception("ID Token not found or empty.");
     }
