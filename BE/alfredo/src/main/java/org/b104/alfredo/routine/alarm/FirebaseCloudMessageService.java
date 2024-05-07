@@ -6,7 +6,9 @@ import com.google.auth.oauth2.GoogleCredentials;
 import com.google.common.net.HttpHeaders;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -16,6 +18,8 @@ import java.util.List;
 public class FirebaseCloudMessageService {
     private final String API_URL = "https://fcm.googleapis.com/v1/projects/alfredo104/messages:send";
     private final ObjectMapper objectMapper;
+    @Value("${firebase.sdk}")
+    private String firebaseConfigPath;
     //TargetToken은 front에서 구현
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
@@ -50,8 +54,8 @@ public class FirebaseCloudMessageService {
     }
 
     private String getAccessToken() throws IOException {
-        String firebaseConfigPath = "alfredo104-firebase-adminsdk-qhdta-be4ef2b790.json";
-        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new ClassPathResource(firebaseConfigPath).getInputStream()).createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
+//        String firebaseConfigPath = "alfredo104-firebase-adminsdk-qhdta-be4ef2b790.json";
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(new FileSystemResource(firebaseConfigPath).getInputStream()).createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
         googleCredentials.refreshIfExpired();
         return googleCredentials.getAccessToken().getTokenValue();}
 }

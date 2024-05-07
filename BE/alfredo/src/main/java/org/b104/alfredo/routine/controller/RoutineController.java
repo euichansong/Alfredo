@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.routine.alarm.FcmRequest;
+import org.b104.alfredo.routine.alarm.FirebaseCloudMessageService;
 import org.b104.alfredo.routine.domain.BasicRoutine;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.repository.BasicRoutineRepository;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,7 @@ public class RoutineController {
     private final UserRepository userRepository;
     private final RoutineService routineService;
     private final BasicRoutineRepository basicRoutineRepository;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final Logger log = LoggerFactory.getLogger(RoutineController.class);
     @GetMapping("/all")
     public ResponseEntity<List<RoutineDto>> getRoutineList(@RequestHeader(value = "Authorization") String authHeader) throws FirebaseAuthException {
@@ -131,4 +135,13 @@ public class RoutineController {
         log.info("루틴 삭제 시도");
         routineService.deleteRoutine(routineId);
     }
+
+    //알림 테스트
+    @PostMapping("/fcm")
+    public ResponseEntity<String> pushMessage(@RequestBody FcmRequest fcmRequest) throws IOException {
+        firebaseCloudMessageService.sendMessageTo(fcmRequest.getTargetToken(), fcmRequest.getTitle(), fcmRequest.getBody());
+        return ResponseEntity.ok("Message sent successfully");
+
+    }
+
 }
