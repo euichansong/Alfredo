@@ -73,6 +73,7 @@ public class RoutineController {
 //    routineTitle,startTime,days,alarmSound,memo
     @PostMapping
     public ResponseEntity<RoutineDto> createRoutine(@RequestHeader(value = "Authorization") String authHeader,@RequestBody RoutineRequestDto routineRequestDto) throws FirebaseAuthException {
+        log.info("루틴 생성 시도");
         String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
         String uid = decodedToken.getUid();
@@ -104,6 +105,7 @@ public class RoutineController {
     //TODO Patch로 해보기
     @PatchMapping("/{routineId}")
     public ResponseEntity<RoutineDto> updateRoutine(@PathVariable Long routineId,@RequestBody RoutineRequestDto routineRequestDto){
+        log.info("루틴 수정 시도");
         Routine routine = routineService.updateRoutine(
                 routineId,
                 routineRequestDto.getRoutineTitle(),
@@ -126,6 +128,7 @@ public class RoutineController {
     //TODO ruturn값 설정?
     @DeleteMapping("/{routineId}")
     public void deleteRoutine(@PathVariable Long routineId) {
+        log.info("루틴 삭제 시도");
         routineService.deleteRoutine(routineId);
     }
 }

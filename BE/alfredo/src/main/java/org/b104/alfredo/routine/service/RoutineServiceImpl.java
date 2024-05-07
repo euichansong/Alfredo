@@ -4,6 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.routine.alarm.FirebaseCloudMessageService;
 import org.b104.alfredo.routine.domain.BasicRoutine;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.repository.BasicRoutineRepository;
@@ -26,6 +27,7 @@ public class RoutineServiceImpl implements RoutineService {
     private final RoutineRepository routineRepository;
     private final BasicRoutineRepository basicRoutineRepository;
     private final UserRepository userRepository;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Override
     public List<Routine> getAllRoutines(Long userId) {
@@ -46,6 +48,10 @@ public class RoutineServiceImpl implements RoutineService {
             throw new RuntimeException("User not found");
         }
         User currentUser = user.get();
+
+        //유저에게 푸시알림 전송 테스트
+//        firebaseCloudMessageService.sendMessageTo(currentUser.getFcmToken(),"테스트","태스트");
+
         Routine routine = new Routine();
         routine.setUser(currentUser);
         routine.setRoutineTitle(routineTitle);
