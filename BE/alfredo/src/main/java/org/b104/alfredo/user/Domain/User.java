@@ -42,6 +42,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private LocalDateTime registeredAt;
 
+    @Column(nullable = true)
+    private String fcmToken; // FCM 토큰을 저장하기 위한 필드
+
     @PrePersist
     protected void onRegister() {
         this.registeredAt = LocalDateTime.now();

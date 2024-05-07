@@ -58,5 +58,10 @@ public class UserService {
         return userRepository.findByUid(uid).orElse(null);
     }
 
-
+    public User updateUserToken(String uid, String token) {
+        User user = userRepository.findByUid(uid).orElseThrow(() -> new NoSuchElementException("No user found with uid: " + uid));
+        user.setFcmToken(token);
+        System.out.println("여기 오니");
+        return userRepository.saveAndFlush(user);
+    }
 }
