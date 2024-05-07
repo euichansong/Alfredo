@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'config/firebase_options.dart';
-import 'screens/user/login_page.dart';
-import 'screens/mainpage/main_page.dart';
-import 'screens/user/user_routine_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'config/firebase_options.dart';
+import 'screens/calendar/calendar.dart';
+import 'screens/mainpage/main_page.dart';
+import 'screens/user/login_page.dart';
+import 'screens/user/user_routine_test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginPage(),
         '/main': (context) => const MainPage(),
         '/user_routine_test': (context) => const UserRoutineTestPage(),
+        '/calendar': (context) => const CalendarScreen(),
       },
     );
   }

@@ -1,11 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
+import '../calendar/calendar.dart';
 import '../routine/routine_list_screen.dart';
 import '../schedule/schedule_list_screen.dart';
-import '../user/mypage.dart';
 import '../todo/todo_tab_view.dart'; // TodoCreateScreen import
-import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
+import '../user/mypage.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -64,6 +65,16 @@ class MainPage extends StatelessWidget {
                 );
               },
               child: const Text('Schedules'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CalendarScreen()),
+                );
+              },
+              child: const Text('Calendar'),
             ),
             ElevatedButton(
               onPressed: () {

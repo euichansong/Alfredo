@@ -1,13 +1,29 @@
 import 'dart:core';
 
+import 'package:alfredo/controller/todo/todo_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../provider/todo/todo_provider.dart';
+
+class CalendarScreen extends ConsumerWidget {
+  const CalendarScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final controller = ref.read(todoControllerProvider);
+    return Calendar(controller: controller);
+  }
+}
+
 class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+  final TodoController controller;
+
+  const Calendar({super.key, required this.controller});
 
   @override
   _Calendar createState() => _Calendar();
@@ -33,8 +49,6 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
     appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
     showTrailingAndLeadingDates: false,
   );
-  late final AnimationController controller;
-  late final Animation<double> _animation;
 
   @override
   void initState() {
@@ -42,21 +56,6 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
 
     _loadCalendarData(
         'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
-
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    );
-    _animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.fastOutSlowIn,
-    );
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
   }
 
   // ignore: body_might_complete_normally_nullable
@@ -126,6 +125,11 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
   }
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
+    print('**************');
+    print(calendarTapDetails.appointments);
+    print('**************');
+    print(calendarTapDetails.targetElement);
+    print('**************');
     if (_controller.view == CalendarView.month &&
         calendarTapDetails.targetElement == CalendarElement.calendarCell &&
         !_monthViewSettings.showAgenda) {
@@ -206,38 +210,6 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
           ));
         } else {}
       }
-      // 데이터를 가져오는 코드 추가
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now(),
-      //   endTime: DateTime.now().add(const Duration(hours: 1)),
-      //   isAllDay: true,
-      //   subject: 'Meeting',
-      //   color: Colors.pink,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 4)),
-      //   endTime: DateTime.now().add(const Duration(hours: 5)),
-      //   subject: 'Release Meeting',
-      //   color: Colors.lightBlueAccent,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 6)),
-      //   endTime: DateTime.now().add(const Duration(hours: 7)),
-      //   subject: 'Performance check',
-      //   color: Colors.amber,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 8)),
-      //   endTime: DateTime.now().add(const Duration(hours: 9)),
-      //   subject: 'Support',
-      //   color: Colors.green,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 9)),
-      //   endTime: DateTime(2024, 4, 29, 17, 30),
-      //   subject: 'Retrospective',
-      //   color: Colors.purple,
-      // ));
       return _DataSource(appointments);
     } else {
       print('null널하네요 ********************************');

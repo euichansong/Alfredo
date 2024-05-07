@@ -73,10 +73,12 @@
 // }
 
 import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+
 import '../../models/todo/todo_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TodoApi {
   // // 싱글톤 패턴을 위한 내부 인스턴스와 생성자
@@ -115,6 +117,7 @@ class TodoApi {
   //         'Failed to load todos. Status code: ${response.statusCode}, Message: ${response.body}');
   //   }
   // }
+
   Future<List<Todo>> fetchTodosByDate(DateTime date, String authToken) async {
     final response = await http.post(
       Uri.parse('$baseUrl/bydate'),
