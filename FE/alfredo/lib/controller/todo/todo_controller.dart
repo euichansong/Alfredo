@@ -1,5 +1,6 @@
-import '../../api/todo/todo_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../api/todo/todo_api.dart';
 import '../../models/todo/todo_model.dart';
 import '../../provider/user/future_provider.dart';
 
@@ -13,6 +14,15 @@ class TodoController {
     final token = await ref.read(authManagerProvider.future);
     if (token != null) {
       return await api.createTodos(todos, token);
+    } else {
+      throw Exception('Authentication token not available');
+    }
+  }
+
+  Future<List<Todo>> fetchTodoList() async {
+    final token = await ref.read(authManagerProvider.future);
+    if (token != null) {
+      return await api.fetchTodosList(token);
     } else {
       throw Exception('Authentication token not available');
     }

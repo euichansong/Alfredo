@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:alfredo/controller/todo/todo_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -8,28 +7,19 @@ import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../models/todo/todo_model.dart';
 import '../../provider/todo/todo_provider.dart';
 
-class CalendarScreen extends ConsumerWidget {
-  const CalendarScreen({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.read(todoControllerProvider);
-    return Calendar(controller: controller);
-  }
-}
-
-class Calendar extends StatefulWidget {
-  final TodoController controller;
-
-  const Calendar({super.key, required this.controller});
+class Calendar extends ConsumerStatefulWidget {
+  const Calendar({super.key});
 
   @override
   _Calendar createState() => _Calendar();
 }
 
-class _Calendar extends State<Calendar> with TickerProviderStateMixin {
+class _Calendar extends ConsumerState<Calendar> {
+  List<Todo>? _todos;
+  final List<Appointment> appointments = <Appointment>[];
   // ignore: avoid_init_to_null
   ICalendar? _iCalendar;
   // ignore: prefer_final_fields
@@ -41,7 +31,6 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
   _DataSource? _calendarDataSource;
   // ignore: prefer_final_fields
   bool _showAgenda = false; // 일정 표시 여부 상태 변수
-
   // ignore: non_constant_identifier_names
   final CalendarController _controller = CalendarController();
   // ignore: prefer_const_constructors, prefer_final_fields
@@ -50,15 +39,23 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
     showTrailingAndLeadingDates: false,
   );
 
-  @override
-  void initState() {
-    super.initState();
-
-    _loadCalendarData(
-        'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
+  void _fetchTodos() async {
+    final todoController = ref.read(todoControllerProvider);
+    var fetchedTodos = await todoController.fetchTodoList();
+    setState(() {
+      _todos = fetchedTodos;
+      for (Todo _todo in _todos!) {
+        appointments.add(Appointment(
+          startTime: _todo.dueDate,
+          endTime: _todo.dueDate,
+          isAllDay: true,
+          subject: _todo.todoTitle,
+          color: const Color(0xFFD6C3C3),
+        ));
+      }
+    });
   }
 
-  // ignore: body_might_complete_normally_nullable
   Future<void> _loadCalendarData(String iCalUrl) async {
     try {
       final response = await http.get(Uri.parse(iCalUrl));
@@ -78,9 +75,18 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
       // 오류 처리를 원하는 대로 수행하세요.
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {});
+    // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadCalendarData(
+        'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
+    _fetchTodos();
   }
 
   // SharedPreferences에 iCalendar 데이터를 비교 하는 함수
@@ -200,19 +206,33 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
 
   Future<_DataSource?> getCalendarDataSource(Map? iCalendarJson) async {
     if (iCalendarJson != null) {
-      final List<Appointment> appointments = <Appointment>[];
       for (Map? datas in iCalendarJson['data']) {
         if (datas!['dtstart'] != null) {
-          appointments.add(Appointment(
-            startTime: DateTime.parse(datas['dtstart']['dt']),
-            endTime: DateTime.parse(datas['dtend']['dt']),
-            subject: datas['summary'] ?? '',
-          ));
+          DateTime startDateTime = DateTime.parse(datas['dtstart']['dt']);
+          DateTime endDateTime = DateTime.parse(datas['dtend']['dt']);
+          if (startDateTime.hour == 0 &&
+              startDateTime.minute == 0 &&
+              startDateTime.second == 0 &&
+              endDateTime.hour == 0 &&
+              endDateTime.minute == 0 &&
+              endDateTime.second == 0) {
+            appointments.add(Appointment(
+              startTime: startDateTime,
+              endTime: endDateTime.subtract(const Duration(days: 1)),
+              isAllDay: true,
+              subject: datas['summary'] ?? '(제목 없음)',
+            ));
+          } else {
+            appointments.add(Appointment(
+              startTime: startDateTime,
+              endTime: endDateTime,
+              subject: datas['summary'] ?? '(제목 없음)',
+            ));
+          }
         } else {}
       }
       return _DataSource(appointments);
     } else {
-      print('null널하네요 ********************************');
       return null;
     }
   }

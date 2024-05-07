@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'config/firebase_options.dart';
@@ -30,8 +31,19 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginPage(),
         '/main': (context) => const MainPage(),
         '/user_routine_test': (context) => const UserRoutineTestPage(),
-        '/calendar': (context) => const CalendarScreen(),
+        '/calendar': (context) => const Calendar(),
       },
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        // ... app-specific localization delegate[s] here
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko'),
+        Locale('en'),
+      ],
+      locale: const Locale('ko'),
     );
   }
 }

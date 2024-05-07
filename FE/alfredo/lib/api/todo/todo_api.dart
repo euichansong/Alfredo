@@ -117,6 +117,22 @@ class TodoApi {
   //         'Failed to load todos. Status code: ${response.statusCode}, Message: ${response.body}');
   //   }
   // }
+  Future<List<Todo>> fetchTodosList(String authToken) async {
+    final response = await http.get(
+      Uri.parse(baseUrl),
+      headers: _authHeaders(authToken),
+    );
+
+    if (response.statusCode == 200) {
+      // UTF-8로 디코딩
+      final decodedData = utf8.decode(response.bodyBytes);
+      List<dynamic> todoJson = json.decode(decodedData) as List;
+      return todoJson.map((json) => Todo.fromJson(json)).toList();
+    } else {
+      throw Exception(
+          'Failed to load todos. Status code: ${response.statusCode}, Message: ${response.body}');
+    }
+  }
 
   Future<List<Todo>> fetchTodosByDate(DateTime date, String authToken) async {
     final response = await http.post(
