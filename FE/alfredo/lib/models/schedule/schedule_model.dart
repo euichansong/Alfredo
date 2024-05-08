@@ -13,9 +13,10 @@ class Schedule {
   String? place;
   @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
   TimeOfDay? startTime;
-
   @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
   TimeOfDay? endTime;
+  @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
+  TimeOfDay? alarmTime;
   bool withTime;
 
   Schedule({
@@ -27,6 +28,7 @@ class Schedule {
     this.place,
     this.startTime,
     this.endTime,
+    this.alarmTime,
     this.withTime = true,
   });
 
@@ -43,6 +45,7 @@ class Schedule {
       'place': place,
       'startTime': _stringFromTime(startTime),
       'endTime': _stringFromTime(endTime),
+      'alarmTime': _stringFromTime(alarmTime),
       'withTime': withTime,
     };
 
@@ -55,6 +58,7 @@ class Schedule {
     String? place,
     TimeOfDay? startTime,
     TimeOfDay? endTime,
+    TimeOfDay? alarmTime,
     bool? withTime,
   }) {
     return Schedule(
@@ -67,6 +71,7 @@ class Schedule {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       withTime: withTime ?? this.withTime,
+      alarmTime: alarmTime ?? this.alarmTime
     );
   }
 

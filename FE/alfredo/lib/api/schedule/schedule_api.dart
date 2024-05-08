@@ -38,27 +38,33 @@ class ScheduleApi {
     }
   }
 
+  // 상세 일정 조회
   Future<Schedule> getScheduleDetail(int id) async {
     final response =
         await http.get(Uri.parse('$baseUrl/detail/$id'), headers: _headers);
     if (response.statusCode == 200) {
-      return Schedule.fromJson(json.decode(response.body));
+      // UTF-8로 디코딩하여 한글 깨짐 문제 해결
+      final decodedBody = utf8.decode(response.bodyBytes);
+      return Schedule.fromJson(json.decode(decodedBody));
     } else {
       throw Exception(
           'Failed to load schedule detail. Status: ${response.statusCode}');
     }
   }
 
-  // 일정 생성
-  Future<Schedule> createSchedule(Schedule schedule, String authToken) async {
-    final response = await http.post(Uri.parse('$baseUrl/save'),
-        headers: _authHeaders(authToken), body: jsonEncode(schedule.toJson()));
-    if (response.statusCode == 201) {
-      return Schedule.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to create schedule');
-    }
+ // 일정 생성
+Future<Schedule> createSchedule(Schedule schedule, String authToken) async {
+  final requestBody = jsonEncode(schedule.toJson()); // JSON 변환
+  print('Request body: $requestBody'); // 로그로 요청 데이터 출력
+
+  final response = await http.post(Uri.parse('$baseUrl/save'),
+      headers: _authHeaders(authToken), body: requestBody); // 요청 보내기
+  if (response.statusCode == 201) {
+    return Schedule.fromJson(json.decode(response.body)); // 성공적으로 생성된 일정 반환
+  } else {
+    throw Exception('Failed to create schedule');
   }
+}
 
   // Update and delete do not require authorization in this setup
   Future<void> updateSchedule(int id, Schedule schedule) async {
