@@ -4,13 +4,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../components/navbar/tabview.dart';
 import 'config/firebase_options.dart';
 import 'screens/calendar/calendar.dart';
-import 'screens/mainpage/main_page.dart';
 import 'screens/user/login_page.dart';
 import 'screens/user/user_routine_test.dart';
-import '../../components/navbar/tabview.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
