@@ -42,7 +42,7 @@ public class UserService {
 //                user.getUid(),
                 user.getBirth(),
                 user.getAnswer(),
-                user.getGoogle_calendar_url()
+                user.getGoogleCalendarUrl()
         );
     }
 
