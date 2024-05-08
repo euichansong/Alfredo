@@ -37,7 +37,7 @@ public class User {
     private String answer;
 
     @Column
-    private String google_calendar_url;
+    private String googleCalendarUrl;
 
     @Column(nullable = false, unique = true)
     private LocalDateTime registeredAt;

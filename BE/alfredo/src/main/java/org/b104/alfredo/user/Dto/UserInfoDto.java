@@ -15,7 +15,7 @@ public class UserInfoDto {
 //    private String uid;
     private Date birth;
     private String answer;
-    private String google_calendar_url;
+    private String googleCalendarUrl;
 
 
     public User toEntity() {
@@ -25,7 +25,7 @@ public class UserInfoDto {
 //                .uid(this.uid)
                 .birth(this.birth)
                 .answer(this.answer)
-                .google_calendar_url(this.google_calendar_url)
+                .googleCalendarUrl(this.googleCalendarUrl)
                 .build();
     }
 }

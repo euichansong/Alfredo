@@ -18,7 +18,7 @@ public class UserCreateDto {
     private String uid;
     private Date birth;
     private String answer;
-    private String google_calendar_url;
+    private String googleCalendarUrl;
 
     public User toEntity() {
         return User.builder()
@@ -26,7 +26,7 @@ public class UserCreateDto {
                 .nickname(this.nickname)
                 .uid(this.uid)
                 .answer(this.answer)
-                .google_calendar_url(this.google_calendar_url)
+                .googleCalendarUrl(this.googleCalendarUrl)
                 .build();
     }
 }
