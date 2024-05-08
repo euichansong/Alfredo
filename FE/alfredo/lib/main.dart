@@ -8,6 +8,7 @@ import 'screens/user/login_page.dart';
 import 'screens/mainpage/main_page.dart';
 import 'screens/user/user_routine_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'services/firebase_messaging_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +16,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseMessagingService fcmService = FirebaseMessagingService();
+  await fcmService.setupInteractions();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 

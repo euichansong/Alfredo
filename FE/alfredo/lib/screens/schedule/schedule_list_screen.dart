@@ -31,7 +31,7 @@ class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Schedule List")),
+      appBar: AppBar(title: const Text("일정 목록")),
       body: FutureBuilder<List<Schedule>>(
         future: schedules,
         builder: (context, snapshot) {
@@ -42,7 +42,7 @@ class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
             return Center(child: Text("Error: ${snapshot.error}"));
           }
           if (snapshot.hasData && snapshot.data!.isEmpty) {
-            return const Center(child: Text("No schedules available"));
+            return const Center(child: Text("일정이 없습니다"));
           }
           return ListView.builder(
             itemCount: snapshot.data?.length ?? 0,
@@ -55,7 +55,6 @@ class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          // Navigate to the create screen and refresh the list if a new item was added
           var result = await Navigator.push(
             context,
             MaterialPageRoute(
@@ -78,26 +77,13 @@ class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
     String displayText =
         _buildDisplayText(schedule, startDateText, endDateText);
 
-    return Dismissible(
-      key: Key(schedule.scheduleId.toString()),
-      direction: DismissDirection.endToStart,
-      onDismissed: (direction) async {
-        // Delete the schedule and then refresh the list
-        await ref
-            .read(scheduleControllerProvider)
-            .deleteSchedule(schedule.scheduleId!);
-        // Use setState to trigger a re-render of the widget, thus updating the list
-        setState(() {
-          _loadSchedules(); // Refresh the list after deleting an item
-        });
-      },
-      background: Container(
-        color: Colors.red,
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: const Icon(Icons.delete, color: Colors.white),
-      ),
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: ListTile(
+        leading: schedule.startAlarm
+            ? const Icon(Icons.alarm_on, color: Colors.red)
+            : null,
         title: Text(schedule.scheduleTitle),
         subtitle: Text(displayText),
         onTap: () async {

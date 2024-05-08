@@ -5,6 +5,9 @@ import '../../controller/schedule/schedule_controller.dart';
 import '../../models/schedule/schedule_model.dart';
 import 'schedule_list_screen.dart';
 import '../../provider/schedule/schedule_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import '../../services/firebase_messaging_service.dart';
+import '../../api/alarm/alarm_api.dart';
 
 class ScheduleCreateScreen extends ConsumerWidget {
   const ScheduleCreateScreen({super.key});
@@ -38,6 +41,12 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   TimeOfDay? endTime;
   bool withTime = true;
   int? selectedAlarmOption;
+
+  @override
+  void initState() {
+    super.initState();
+    endDate = startDate; // 종료 날짜의 초기값을 시작 날짜와 동일하게 설정합니다.
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +128,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           (index) => ListTile(
                 title: _buildOptionTitle(index),
                 trailing: selectedAlarmOption == index
-                    ? Icon(Icons.check, color: Colors.blue)
+                    ? const Icon(Icons.check, color: Colors.blue)
                     : null,
                 onTap: () {
                   setState(() {
@@ -190,7 +199,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           if (startTime != null) {
             baseDateTime = DateTime(startDate.year, startDate.month,
                 startDate.day, startTime!.hour, startTime!.minute);
-            baseDateTime = baseDateTime.subtract(Duration(hours: 1));
+            baseDateTime = baseDateTime.subtract(const Duration(hours: 1));
           } else {
             baseDateTime = DateTime.now();
           }
@@ -206,7 +215,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           if (startTime != null) {
             baseDateTime = DateTime(startDate.year, startDate.month,
                 startDate.day, startTime!.hour, startTime!.minute);
-            baseDateTime = baseDateTime.subtract(Duration(minutes: 30));
+            baseDateTime = baseDateTime.subtract(const Duration(minutes: 30));
           } else {
             baseDateTime = DateTime.now();
           }
@@ -216,7 +225,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
         if (startTime != null) {
           baseDateTime = DateTime(startDate.year, startDate.month,
               startDate.day, startTime!.hour, startTime!.minute);
-          baseDateTime = baseDateTime.subtract(Duration(hours: 1));
+          baseDateTime = baseDateTime.subtract(const Duration(hours: 1));
         } else {
           baseDateTime = DateTime.now();
         }
@@ -234,7 +243,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
 
   Widget _buildSaveButton() {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: () async {
         if (_validateForm()) {
           _formKey.currentState!.save();
           var newSchedule = Schedule(
@@ -242,23 +251,41 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
             startDate: startDate,
             endDate: endDate,
             startAlarm: startAlarm,
-            alarmTime: alarmTime, // 사용자가 설정한 알람 시간
+            alarmTime: alarmTime,
             place: place,
             startTime: startTime,
             endTime: endTime,
             withTime: withTime,
           );
-          widget.controller.createSchedule(newSchedule).then((value) {
-            ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+          try {
+            // 디바이스 토큰을 가져옵니다.
+            String? token = await FirebaseMessaging.instance.getToken();
+            print('Firebase Messaging Token: $token');
+
+            // 일정 생성 및 디바이스 토큰과 일정 정보를 백엔드로 전송
+            if (startAlarm && token != null) {
+              await widget.controller.createSchedule(newSchedule);
+              AlarmApi alarmApi = AlarmApi();
+              String formattedDateTime =
+                  alarmApi.formatScheduleDateTime(startDate, alarmTime);
+              await alarmApi.sendTokenAndScheduleData(
+                  token, title, formattedDateTime);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('일정이 성공적으로 생성되었으며 알림이 설정되었습니다.')));
+            } else {
+              await widget.controller.createSchedule(newSchedule);
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+            }
+            // 일정 목록 화면으로 이동
             Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const ScheduleListScreen()));
-          }).catchError((error) {
+          } catch (error) {
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text('일정 생성에 실패했습니다: $error')));
-          });
+          }
         }
       },
       child: const Text('저장'),
@@ -275,18 +302,33 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     return isValid;
   }
 
+  // 날짜 설정
   Future<void> _selectDate(BuildContext context,
       {required bool isStart}) async {
+    DateTime initialDate = isStart ? startDate : (endDate ?? startDate);
+    DateTime firstDate = DateTime(2000);
+    DateTime lastDate = DateTime(2100);
+
+    if (!isStart) {
+      // 종료일 선택기에 대해 시작일을 최소 날짜로 설정
+      firstDate = startDate;
+    }
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: isStart ? startDate : endDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
     );
+
     if (picked != null) {
       setState(() {
         if (isStart) {
           startDate = picked;
+          // 시작일이 변경되었을 때 종료일이 시작일보다 이전인 경우를 처리
+          if (endDate != null && endDate!.isBefore(startDate)) {
+            endDate = startDate; // 종료일을 시작일로 자동 설정
+          }
         } else {
           endDate = picked;
         }
@@ -294,13 +336,14 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     }
   }
 
+  // 시간 설정
   Future<void> _selectTime(BuildContext context,
       {required bool isStart}) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: isStart
-          ? (startTime ?? TimeOfDay(hour: 9, minute: 0))
-          : (endTime ?? TimeOfDay(hour: 9, minute: 0)),
+          ? (startTime ?? const TimeOfDay(hour: 9, minute: 0))
+          : (endTime ?? const TimeOfDay(hour: 9, minute: 0)),
     );
     if (picked != null) {
       setState(() {
@@ -316,7 +359,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   Future<void> _selectAlarmTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: alarmTime ?? TimeOfDay(hour: 9, minute: 0),
+      initialTime: alarmTime ?? const TimeOfDay(hour: 9, minute: 0),
     );
     if (picked != null) {
       setState(() {
