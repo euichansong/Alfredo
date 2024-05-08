@@ -1,9 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../../services/auth_service.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
+
 import '../../api/token_api.dart';
+
+import '../../services/auth_service.dart';
+
 import 'loading_screen.dart';
 import '../../components/navbar/tabview.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -101,6 +106,20 @@ class LoginPageState extends State<LoginPage> {
         if (idToken != null) {
           await TokenApi.sendTokenToServer(idToken);
         }
+
+
+        //여기서부터 표시한곳까지 추가
+        // 사용자의 Firebase Messaging 토큰을 가져옵니다.
+        String? fcmToken = await FirebaseMessaging.instance.getToken();
+        if (fcmToken != null) {
+          debugPrint("Firebase Messaging Token: $fcmToken");
+          if (idToken != null) {
+            TokenApi.sendFcmTokenToServer(idToken, fcmToken);
+          }
+        }
+        //여기까지 추가
+
+        // Firebase Auth에 사용자가 존재하는지 확인합니다.
 
         final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
         if (isNewUser) {

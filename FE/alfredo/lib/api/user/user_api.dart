@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../../models/user/user.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../provider/user/future_provider.dart';
-import '../../models/user/user_update_dto.dart';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http/http.dart' as http;
+
+import '../../models/user/user.dart';
+import '../../models/user/user_update_dto.dart';
 
 class UserApi {
   static final String _baseUrl = dotenv.env['USER_API_URL']!;
