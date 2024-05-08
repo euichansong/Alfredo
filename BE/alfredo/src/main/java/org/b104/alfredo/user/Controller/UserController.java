@@ -1,9 +1,11 @@
 package org.b104.alfredo.user.Controller;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.user.Domain.User;
+import org.b104.alfredo.user.Dto.TokenUpdateRequestDto;
 import org.b104.alfredo.user.Dto.UserCreateDto;
 import org.b104.alfredo.user.Dto.UserUpdateDto;
 import org.b104.alfredo.user.Service.UserService;
@@ -96,4 +98,19 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token or user not found");
         }
     }
+
+    @PostMapping("/token")
+    public ResponseEntity<?> updateToken(@RequestHeader(value = "Authorization") String authHeader,@RequestBody TokenUpdateRequestDto tokenUpdateRequestDto) throws FirebaseAuthException {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+        String uid = decodedToken.getUid();
+
+        try {
+            User user = userService.updateUserToken(uid, tokenUpdateRequestDto.getToken());
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating token");
+        }
+    }
+
 }
