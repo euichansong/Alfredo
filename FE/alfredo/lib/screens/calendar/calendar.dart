@@ -9,6 +9,7 @@ import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 import '../../models/todo/todo_model.dart';
 import '../../provider/todo/todo_provider.dart';
+import '../../screens/todo/todo_detail_screen.dart';
 
 class Calendar extends ConsumerStatefulWidget {
   const Calendar({super.key});
@@ -45,13 +46,17 @@ class _Calendar extends ConsumerState<Calendar> {
     setState(() {
       _todos = fetchedTodos;
       for (Todo _todo in _todos!) {
-        appointments.add(Appointment(
-          startTime: _todo.dueDate,
-          endTime: _todo.dueDate,
-          isAllDay: true,
-          subject: _todo.todoTitle,
-          color: const Color(0xFFD6C3C3),
-        ));
+        appointments.add(
+          Appointment(
+            startTime: _todo.dueDate,
+            endTime: _todo.dueDate,
+            isAllDay: true,
+            subject: _todo.todoTitle,
+            save_type: 'todo',
+            params: _todo.id.toString(),
+            color: const Color(0xFFD6C3C3),
+          ),
+        );
       }
     });
   }
@@ -130,6 +135,15 @@ class _Calendar extends ConsumerState<Calendar> {
     );
   }
 
+  @override
+  void didUpdateWidget(covariant Calendar oldWidget) {
+    print('#################################################');
+    print(oldWidget);
+    print('############################################');
+    super.didUpdateWidget(oldWidget);
+    // 여기에서 oldWidget을 사용하여 이전 위젯의 정보에 접근할 수 있습니다.
+  }
+
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
     print('**************');
     print(calendarTapDetails.appointments);
@@ -142,6 +156,17 @@ class _Calendar extends ConsumerState<Calendar> {
       setState(() {
         detailMonthCalendar();
       });
+    }
+    if (calendarTapDetails.targetElement == CalendarElement.appointment) {
+      if (calendarTapDetails.appointments![0].save_type == 'todo') {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return TodoDetailScreen(
+                todoId: int.parse(calendarTapDetails.appointments![0].params));
+          },
+        );
+      }
     }
   }
 
@@ -219,6 +244,7 @@ class _Calendar extends ConsumerState<Calendar> {
             appointments.add(Appointment(
               startTime: startDateTime,
               endTime: endDateTime.subtract(const Duration(days: 1)),
+              save_type: 'iCal',
               isAllDay: true,
               subject: datas['summary'] ?? '(제목 없음)',
             ));
@@ -226,6 +252,7 @@ class _Calendar extends ConsumerState<Calendar> {
             appointments.add(Appointment(
               startTime: startDateTime,
               endTime: endDateTime,
+              save_type: 'iCal',
               subject: datas['summary'] ?? '(제목 없음)',
             ));
           }
