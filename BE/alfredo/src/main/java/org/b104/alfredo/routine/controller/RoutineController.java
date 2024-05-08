@@ -4,6 +4,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.routine.alarm.FcmRequest;
+import org.b104.alfredo.routine.alarm.FirebaseCloudMessageService;
 import org.b104.alfredo.routine.domain.BasicRoutine;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.repository.BasicRoutineRepository;
@@ -18,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +33,7 @@ public class RoutineController {
     private final UserRepository userRepository;
     private final RoutineService routineService;
     private final BasicRoutineRepository basicRoutineRepository;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final Logger log = LoggerFactory.getLogger(RoutineController.class);
     @GetMapping("/all")
     public ResponseEntity<List<RoutineDto>> getRoutineList(@RequestHeader(value = "Authorization") String authHeader) throws FirebaseAuthException {
@@ -73,6 +77,7 @@ public class RoutineController {
 //    routineTitle,startTime,days,alarmSound,memo
     @PostMapping
     public ResponseEntity<RoutineDto> createRoutine(@RequestHeader(value = "Authorization") String authHeader,@RequestBody RoutineRequestDto routineRequestDto) throws FirebaseAuthException {
+        log.info("루틴 생성 시도");
         String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
         String uid = decodedToken.getUid();
@@ -104,6 +109,7 @@ public class RoutineController {
     //TODO Patch로 해보기
     @PatchMapping("/{routineId}")
     public ResponseEntity<RoutineDto> updateRoutine(@PathVariable Long routineId,@RequestBody RoutineRequestDto routineRequestDto){
+        log.info("루틴 수정 시도");
         Routine routine = routineService.updateRoutine(
                 routineId,
                 routineRequestDto.getRoutineTitle(),
@@ -126,6 +132,16 @@ public class RoutineController {
     //TODO ruturn값 설정?
     @DeleteMapping("/{routineId}")
     public void deleteRoutine(@PathVariable Long routineId) {
+        log.info("루틴 삭제 시도");
         routineService.deleteRoutine(routineId);
     }
+
+    //알림 테스트
+    @PostMapping("/fcmAlarm")
+    public ResponseEntity<String> pushMessage(@RequestBody FcmRequest fcmRequest) throws IOException {
+        firebaseCloudMessageService.sendMessageTo(fcmRequest.getTargetToken(), fcmRequest.getTitle(), fcmRequest.getBody());
+        return ResponseEntity.ok("Message sent successfully");
+
+    }
+
 }
