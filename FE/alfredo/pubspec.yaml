@@ -57,6 +57,8 @@ dependencies:
   path: ^1.9.0
   syncfusion_localizations: ^25.1.42
   sqflite: ^2.3.3
+  flutter_spinkit: ^5.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -73,6 +75,7 @@ dev_dependencies:
   riverpod_generator: ^2.4.0
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
+  flutter_launcher_icons: ^0.13.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -87,11 +90,11 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/web_neutral_rd_ctn@3x.png
-    - assets/android_light_rd_ctn@2x.png
-    - assets/startpage.png
-    - assets/alfredologo1.png
+    - assets/android_light_rd_ctn@2x.png       
     - assets/alfredologo2.png
     - assets/alfredoback1.png
+    - assets/loading.png
+    - assets/splashpage.png
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
