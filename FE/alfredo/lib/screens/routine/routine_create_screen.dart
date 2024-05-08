@@ -1,6 +1,5 @@
 // import 'package:flutter/material.dart';
 
-// //TODO 모달창으로 만들기
 // class RoutineCreateScreen extends StatelessWidget {
 //   const RoutineCreateScreen({super.key});
 
@@ -40,7 +39,8 @@ void showRoutineCreateModal(BuildContext context, WidgetRef ref) {
         builder: (context, setState) {
           return AlertDialog(
             title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween, //x와의 간격 유지를 위해 필요
               children: [
                 const Text("Routine 추가"),
                 IconButton(
@@ -119,7 +119,7 @@ void showRoutineCreateModal(BuildContext context, WidgetRef ref) {
                       controller: memoController,
                       decoration: const InputDecoration(labelText: "메모"),
                     ),
-                  ],
+                  ], //column의 children 끝
                 ),
               ),
             ),
