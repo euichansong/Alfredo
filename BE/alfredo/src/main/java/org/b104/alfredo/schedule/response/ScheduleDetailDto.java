@@ -15,6 +15,7 @@ public class ScheduleDetailDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private Boolean startAlarm;
+    private LocalTime alarmTime;
     private String place;
     private LocalTime startTime;
     private LocalTime endTime;
@@ -26,6 +27,7 @@ public class ScheduleDetailDto {
         this.startDate = schedule.getStartDate();
         this.endDate = schedule.getEndDate();
         this.startAlarm = schedule.getStartAlarm();
+        this.alarmTime = schedule.getAlarmTime();
         this.place = schedule.getPlace();
         this.startTime = schedule.getStartTime();
         this.endTime = schedule.getEndTime();

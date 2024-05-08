@@ -28,11 +28,13 @@ public class Schedule {
     private String scheduleTitle;   // 일정 제목
     @Column(nullable = false)
     private LocalDate startDate;    // 일정 시작일
-    @Column
+    @Column(nullable = false)
     private LocalDate endDate;      // 일정 종료일
     // false가 기본
     @ColumnDefault("false")
     private Boolean startAlarm;     // 알람 유무
+    @Column
+    private LocalTime alarmTime;  // 추가된 알람 시간 필드
     @Column
     private String place;           // 장소
     @Column
@@ -44,12 +46,13 @@ public class Schedule {
     private Boolean withTime;       // 시간 유무(하루종일)
 
     @Builder
-    public Schedule(User userId, String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
+    public Schedule(User userId, String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, LocalTime alarmTime, String place, LocalTime startTime, LocalTime endTime, Boolean withTime) {
         this.userId = userId;
         this.scheduleTitle = scheduleTitle;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startAlarm = startAlarm != null ? startAlarm : Boolean.FALSE;
+        this.alarmTime = alarmTime;
         this.place = place;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -67,6 +70,9 @@ public class Schedule {
     }
     public void updateStartAlarm(Boolean startAlarm) {
         this.startAlarm = startAlarm;
+    }
+    public void updaateAlarmTime(LocalTime alarmTime) {
+        this.alarmTime = alarmTime;
     }
     public void updatePlace(String place) {
         this.place = place;
