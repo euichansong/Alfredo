@@ -45,11 +45,11 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       _withTime = schedule.withTime;
       _startTime = schedule.startTime;
       _endTime = schedule.endTime;
-      _alarmTime = schedule.alarmTime; // 알람 시간 로드
-      setState(() {}); // Trigger a rebuild after loading data
+      _alarmTime = schedule.alarmTime;
+      setState(() {});
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to load schedule details: $e')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('일정 로딩 실패: $e')));
     }
   }
 
@@ -78,7 +78,8 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     return [
       TextFormField(
         controller: _titleController,
-        decoration: const InputDecoration(labelText: '일정 제목'),
+        decoration: const InputDecoration(
+            labelText: '일정 제목', border: OutlineInputBorder()),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return '제목을 입력해주세요';
@@ -87,10 +88,12 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
         },
       ),
       ListTile(
+        leading: const Icon(Icons.calendar_today),
         title: Text("시작 날짜: ${DateFormat('yyyy-MM-dd').format(_startDate)}"),
         onTap: () => _selectDate(context, isStart: true),
       ),
       ListTile(
+        leading: const Icon(Icons.calendar_today),
         title: Text(
             "종료 날짜: ${_endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : '선택되지 않음'}"),
         onTap: () => _selectDate(context, isStart: false),
@@ -102,31 +105,34 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           setState(() {
             _startAlarm = value;
             if (!value) {
-              _alarmTime = null; // 알람 사용 안함으로 변경 시 알람 시간 초기화
+              _alarmTime = null;
             }
           });
         },
       ),
       if (_startAlarm) _buildAlarmOptions(),
       SwitchListTile(
-          title: const Text('하루 종일'),
-          value: _withTime,
-          onChanged: (bool value) {
-            setState(() {
-              _withTime = value;
-              if (!value) {
-                _startTime = null;
-                _endTime = null;
-              }
-            });
-          }),
+        title: const Text('하루 종일'),
+        value: _withTime,
+        onChanged: (bool value) {
+          setState(() {
+            _withTime = value;
+            if (!value) {
+              _startTime = null;
+              _endTime = null;
+            }
+          });
+        },
+      ),
       if (!_withTime) ...[
         ListTile(
+          leading: const Icon(Icons.access_time),
           title: Text(
               '시작 시간: ${_startTime != null ? _startTime!.format(context) : "선택되지 않음"}'),
           onTap: () => _selectTime(context, isStart: true),
         ),
         ListTile(
+          leading: const Icon(Icons.access_time_filled),
           title: Text(
               '종료 시간: ${_endTime != null ? _endTime!.format(context) : "선택되지 않음"}'),
           onTap: () => _selectTime(context, isStart: false),
@@ -134,12 +140,18 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       ],
       TextFormField(
         initialValue: _place,
-        decoration: const InputDecoration(labelText: '장소'),
+        decoration: const InputDecoration(
+            labelText: '장소', border: OutlineInputBorder()),
         onSaved: (value) => _place = value,
       ),
+      const SizedBox(height: 20),
       ElevatedButton(
         onPressed: _updateSchedule,
-        child: const Text('수정'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).primaryColor,
+          foregroundColor: Colors.white,
+        ),
+        child: const Text('수정하기'),
       ),
     ];
   }
@@ -153,6 +165,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       children: List<Widget>.generate(
           options.length,
           (index) => ListTile(
+                leading: const Icon(Icons.alarm),
                 title: _buildOptionTitle(index),
                 trailing: _selectedAlarmOption == index
                     ? const Icon(Icons.check, color: Colors.blue)
@@ -168,20 +181,14 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   }
 
   Widget _buildOptionTitle(int index) {
-    String optionText;
-    if (index == 2) {
-      optionText = '사용자 설정';
-      if (_alarmTime != null) {
-        optionText += ' (${_alarmTime!.format(context)})'; // 설정된 알람 시간 표시
-      }
-    } else {
-      List<String> defaultOptions = _withTime
-          ? ['일정 당일 오전 9시', '일정 당일 오전 12시']
-          : [
-              '시작 1시간 전 (${_calculateStartTime(1).format(context)})',
-              '시작 30분 전 (${_calculateStartTime(0.5).format(context)})'
-            ];
-      optionText = defaultOptions[index];
+    String optionText = index == 2
+        ? '사용자 설정'
+        : (_withTime
+            ? ['일정 당일 오전 9시', '일정 당일 오전 12시'][index]
+            : ['시작 1시간 전', '시작 30분 전'][index]);
+
+    if (index == 2 && _alarmTime != null) {
+      optionText += ' (${_alarmTime!.format(context)})';
     }
     return Text(optionText);
   }
@@ -284,11 +291,11 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           Navigator.pop(context, true);
         }).catchError((error) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Update failed: $error')));
+              .showSnackBar(SnackBar(content: Text('수정 실패: $error')));
         });
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error updating schedule: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('일정 수정 중 오류 발생: $e')));
       }
     }
   }
