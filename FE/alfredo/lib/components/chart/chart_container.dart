@@ -16,7 +16,7 @@ class ChartContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.95,
+        width: MediaQuery.of(context).size.width * 0.90,
         height: MediaQuery.of(context).size.width * 0.95 * 0.65,
         padding: const EdgeInsets.fromLTRB(20, 0, 10, 10),
         decoration: BoxDecoration(
