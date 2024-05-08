@@ -1,7 +1,5 @@
 package org.b104.alfredo.config;
 
-import org.b104.alfredo.jobs.FcmJobListener;
-
 import org.quartz.SchedulerException;
 
 import org.quartz.spi.JobFactory;
