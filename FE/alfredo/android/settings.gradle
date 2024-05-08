@@ -24,7 +24,7 @@ plugins {
     id "com.google.gms.google-services" version "4.3.15" apply false
     // END: FlutterFire Configuration
     // id "org.jetbrains.kotlin.android" version "1.7.10" apply false
-    //  위에가 원래인데 Kotlin 버전 호환성 문제로 아래로 바꿈
+    //  위에가 원래인데 Kotlin 버전 호환성 문제로 1.9.0으로 바꿈
     id "org.jetbrains.kotlin.android" version "1.9.0" apply false
 }
 

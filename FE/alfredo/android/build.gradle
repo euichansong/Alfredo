@@ -1,3 +1,4 @@
+//추가한 것
 buildscript {
 
     repositories {
@@ -11,7 +12,7 @@ buildscript {
       classpath 'com.google.gms:google-services:4.3.15'
     }
 }
-
+//추가한 것 끝
 allprojects {
     repositories {
         google()

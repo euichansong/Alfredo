@@ -21,12 +21,12 @@ void main() async {
   debugPrint("Firebase Messaging Token: $token");
   // FirebaseMessaging.instance.getInitialMessage();
   // foreground work
-  FirebaseMessaging.onMessage.listen((message) {
-    if (message.notification != null) {
-      print(message.notification!.body);
-      print(message.notification!.title);
-    }
-  });
+  // FirebaseMessaging.onMessage.listen((message) {
+  //   if (message.notification != null) {
+  //     print(message.notification!.body);
+  //     print(message.notification!.title);
+  //   }
+  // });
 
   runApp(const ProviderScope(child: MyApp()));
 }

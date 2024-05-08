@@ -152,19 +152,22 @@ void showRoutineCreateModal(BuildContext context, WidgetRef ref) {
                     ),
                     const SizedBox(height: 10),
                     const Text("요일 설정"),
-                    ToggleButtons(
-                      isSelected: selectedDays,
-                      children: const [
-                        Text("일"),
-                        Text("월"),
-                        Text("화"),
-                        Text("수"),
-                        Text("목"),
-                        Text("금"),
-                        Text("토"),
-                      ],
-                      onPressed: (int index) => setState(
-                          () => selectedDays[index] = !selectedDays[index]),
+                    SizedBox(
+                      width: 200,
+                      child: ToggleButtons(
+                        isSelected: selectedDays,
+                        children: const [
+                          Text("일"),
+                          Text("월"),
+                          Text("화"),
+                          Text("수"),
+                          Text("목"),
+                          Text("금"),
+                          Text("토"),
+                        ],
+                        onPressed: (int index) => setState(
+                            () => selectedDays[index] = !selectedDays[index]),
+                      ),
                     ),
                     const SizedBox(height: 10),
                     const Text("알람 설정"),
