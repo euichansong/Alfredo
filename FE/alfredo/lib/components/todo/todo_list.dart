@@ -270,3 +270,64 @@ class _TodoListState extends ConsumerState<TodoList> {
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import '../../models/todo/todo_model.dart';
+// import '../../controller/todo/todo_controller.dart';
+// import '../../provider/todo/todo_provider.dart';
+// import '../../screens/todo/todo_detail_screen.dart';
+
+// class TodoList extends ConsumerStatefulWidget {
+//   const TodoList({super.key});
+
+//   @override
+//   ConsumerState<TodoList> createState() => _TodoListState();
+// }
+
+// class _TodoListState extends ConsumerState<TodoList> {
+//   void _toggleTodoCompletion(Todo todo, bool isCompleted, int index) async {
+//     final todoController = ref.read(todoControllerProvider.notifier);
+//     // Update the local state immediately for a responsive UI
+//     todoController.updateTodo(todo.copyWith(isCompleted: isCompleted));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final todos =
+//         ref.watch(todoControllerProvider); // Watching the todo list state
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('오늘의 To-Do 목록'),
+//         automaticallyImplyLeading: false,
+//       ),
+//       body: todos.isEmpty
+//           ? const Center(child: Text('오늘의 To-Do가 없습니다.'))
+//           : ListView.builder(
+//               itemCount: todos.length,
+//               itemBuilder: (context, index) {
+//                 final todo = todos[index];
+//                 return ListTile(
+//                   title: Text(todo.todoTitle),
+//                   onTap: () {
+//                     showDialog(
+//                       context: context,
+//                       builder: (BuildContext context) {
+//                         return TodoDetailScreen(todoId: todo.id!);
+//                       },
+//                     );
+//                   },
+//                   trailing: Checkbox(
+//                     value: todo.isCompleted,
+//                     onChanged: (bool? newValue) {
+//                       if (newValue != null) {
+//                         _toggleTodoCompletion(todo, newValue, index);
+//                       }
+//                     },
+//                   ),
+//                 );
+//               },
+//             ),
+//     );
+//   }
+// }

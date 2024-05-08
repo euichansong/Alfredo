@@ -182,6 +182,20 @@ class TodoApi {
     }
   }
 
+  Future<void> updateTodosBySubIndexAndDate(
+      String subIndex, DateTime dueDate, Todo todo, String authToken) async {
+    final response = await http.patch(
+      Uri.parse('$baseUrl/updateBySubIndex'),
+      headers: _authHeaders(authToken),
+      body: jsonEncode(todo.toJson()),
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception(
+          'Failed to update todos by subIndex and date. Status code: ${response.statusCode}, Message: ${response.body}');
+    }
+  }
+
   Future<void> deleteTodoById(int id) async {
     final response =
         await http.delete(Uri.parse('$baseUrl/$id'), headers: _headers);
@@ -192,6 +206,26 @@ class TodoApi {
       print('Failed to delete. Status: ${response.statusCode}');
       print('Response body: ${response.body}');
       throw Exception('Failed to delete todo');
+    }
+  }
+
+  Future<void> deleteTodoBySubIndexAndDate(
+      String subIndex, DateTime dueDate, String authToken) async {
+    // URL에 쿼리 파라미터를 추가하여 구성
+    final url =
+        Uri.parse('$baseUrl/deleteBySubIndex').replace(queryParameters: {
+      'subIndex': subIndex,
+      'dueDate': DateFormat('yyyy-MM-dd').format(dueDate), // DateTime을 문자열로 변환
+    });
+
+    final response = await http.delete(
+      url,
+      headers: _authHeaders(authToken), // 토큰을 포함한 헤더 사용
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception(
+          'Failed to delete todos by subIndex and date. Status code: ${response.statusCode}, Message: ${response.body}');
     }
   }
 }
