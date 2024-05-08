@@ -6,7 +6,8 @@ import 'screens/user/login_page.dart';
 import 'screens/user/user_routine_test.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'components/navbar/tabview.dart';
+import 'screens/calendar/calendar.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
