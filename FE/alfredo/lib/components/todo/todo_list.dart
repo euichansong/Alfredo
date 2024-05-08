@@ -192,8 +192,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../models/todo/todo_model.dart';
-import '../../controller/todo/todo_controller.dart';
 import '../../provider/todo/todo_provider.dart';
 import '../../screens/todo/todo_detail_screen.dart';
 
