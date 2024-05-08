@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class FCMAlarmDto {
+
     private String targetToken;
     private String title;
     private String body;
-
 
 }
 

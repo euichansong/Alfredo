@@ -31,4 +31,14 @@ public class FirebaseInitializer {
             e.printStackTrace();
         }
     }
+
+    public String getFirebaseServerToken() throws IOException {
+        // GoogleCredentials 객체를 얻어와야 합니다.
+        FileInputStream serviceAccount = new FileInputStream(sdkKey);
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(serviceAccount)
+                .createScoped("https://www.googleapis.com/auth/firebase.messaging");
+        googleCredentials.refreshIfExpired();
+        return googleCredentials.getAccessToken().getTokenValue();  // 토큰 값 반환
+    }
+
 }

@@ -28,7 +28,7 @@ public class Schedule {
     private String scheduleTitle;   // 일정 제목
     @Column(nullable = false)
     private LocalDate startDate;    // 일정 시작일
-    @Column
+    @Column(nullable = false)
     private LocalDate endDate;      // 일정 종료일
     // false가 기본
     @ColumnDefault("false")

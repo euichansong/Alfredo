@@ -3,6 +3,7 @@ package org.b104.alfredo.firebase.domain;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.b104.alfredo.firebase.request.FCMAlarmDto;
 
 @Builder
 @AllArgsConstructor
@@ -25,5 +26,6 @@ public class FcmMessage {
     public static class Notification {
         private String title;
         private String body;
+        private String image;
     }
 }
