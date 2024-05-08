@@ -27,9 +27,8 @@ public class QuartzConfig {
         return jobFactory;
     }
 
-
     @Bean
-    public SchedulerFactoryBean schedulerFactoryBean(FcmJobListener fcmJobListener) throws SchedulerException {
+    public SchedulerFactoryBean schedulerFactoryBean() throws SchedulerException {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
 
         // Ensure that the ApplicationContext is correctly placed in the Scheduler context
