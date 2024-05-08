@@ -215,7 +215,7 @@ class _Calendar extends ConsumerState<Calendar> {
     _monthViewSettings = MonthViewSettings(
       showAgenda: true,
       showTrailingAndLeadingDates: false,
-      agendaViewHeight: screenHeight / 2.5,
+      agendaViewHeight: screenHeight / 4.05,
     );
   }
 
@@ -225,7 +225,7 @@ class _Calendar extends ConsumerState<Calendar> {
       showAgenda: true,
       showTrailingAndLeadingDates: false,
       numberOfWeeksInView: 1,
-      agendaViewHeight: screenHeight / 1.34,
+      agendaViewHeight: screenHeight / 1.53,
     );
   }
 
