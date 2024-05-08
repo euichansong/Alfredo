@@ -1,9 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../user/loading_screen.dart';
-import '../routine/routine_list_screen.dart';
-import '../schedule/schedule_list_screen.dart';
-import '../user/mypage.dart';
+import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
 import '../../components/navbar/tabview.dart';
 
 class MainPage extends StatelessWidget {
@@ -12,60 +9,33 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Main Page'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              try {
-                await FirebaseAuth.instance.signOut();
-                print("Logged out"); // 정상적으로 로그아웃
-                Navigator.pushReplacementNamed(context, '/'); // 로그인 페이지로 리디렉션
-              } catch (e) {
-                print("Logout failed: $e");
-              }
-            },
+      // ignore: prefer_const_constructors
+      body: Stack(
+        children: [
+          // 배경 이미지
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/mainback1.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            top: MediaQuery.of(context).size.height * 0.6,
+            left: MediaQuery.of(context).size.height * 0.05,
+            right: MediaQuery.of(context).size.height * 0.05,
+            bottom: MediaQuery.of(context).size.height * 0.1,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: const TodoList(),
+              ),
+            ),
           ),
         ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          const RoutineListScreen()), // RoutineListScreen으로 이동
-                  // const RoutineCreateScreen()),
-                );
-              },
-              child: const Text('Routines'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyPage()),
-                );
-              },
-              child: const Text('Go to My Page'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ScheduleListScreen()),
-                );
-              },
-              child: const Text('Schedules'),
-            ),
-          ],
-        ),
       ),
     );
   }
