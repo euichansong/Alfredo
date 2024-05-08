@@ -1,9 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
+import '../user/loading_screen.dart';
 import '../routine/routine_list_screen.dart';
 import '../schedule/schedule_list_screen.dart';
 import '../user/mypage.dart';
+import '../../components/navbar/tabview.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});

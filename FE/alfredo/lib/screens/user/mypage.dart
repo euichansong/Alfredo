@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../provider/user/user_state_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:fl_chart/fl_chart.dart';
 import '../../components/chart/bar_chart.dart';
 import '../../components/chart/chart_container.dart';
 import './user_update.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controller/user/mute_controller.dart';
+import '../user/loading_screen.dart';
 
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
@@ -32,10 +32,9 @@ class MyPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xfff0d2338),
-        // AppBar의 아이콘 테마를 설정합니다 (여기에는 뒤로 가기 아이콘이 포함됩니다).
         iconTheme: const IconThemeData(color: Color(0xFFF2E9E9)),
         titleTextStyle: const TextStyle(
-          color: Color(0xFFF2E9E9), // 여기에서 제목의 색상을 설정합니다.
+          color: Color(0xFFF2E9E9),
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
@@ -53,8 +52,14 @@ class MyPage extends ConsumerWidget {
               alignment: Alignment.centerLeft,
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, bottom: 26.0),
-                child: Text(user.nickname,
-                    style: Theme.of(context).textTheme.titleLarge),
+                child: Text(
+                  user.nickname,
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
               ),
             ),
             Container(
@@ -76,7 +81,7 @@ class MyPage extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.settings),
                         onPressed: () {
-                          // 모달 창을 여는 함수를 호출
+                          // 모달 여는 함수 호출
                           openUserUpdateModal(context);
                         },
                       ),
@@ -167,7 +172,7 @@ class MyPage extends ConsumerWidget {
             ),
           ],
         ),
-        loading: () => const CircularProgressIndicator(),
+        loading: () => const MyLoadingScreen(),
         error: (error, stack) => Text('Error: $error'),
       ),
     );
