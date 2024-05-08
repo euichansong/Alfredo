@@ -3,41 +3,43 @@ package org.b104.alfredo.todo.controller;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
-import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.todo.domain.Day;
 import org.b104.alfredo.todo.domain.Todo;
-import org.b104.alfredo.todo.repository.TodoRepository;
 import org.b104.alfredo.todo.request.TodoCreateDto;
+import org.b104.alfredo.todo.request.TodoDeleteRequest;
 import org.b104.alfredo.todo.request.TodoUpdateDto;
 import org.b104.alfredo.todo.request.TodoUpdateSubDto;
 import org.b104.alfredo.todo.response.TodoDetailDto;
 import org.b104.alfredo.todo.response.TodoListDto;
+import org.b104.alfredo.todo.service.DayService;
 import org.b104.alfredo.todo.service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import java.util.*;
 
 
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 @RestController
 @RequestMapping("/api/todo")
 public class TodoController {
     private static final Logger log = LoggerFactory.getLogger(TodoController.class);
+    @Autowired
     private final TodoService todoService;
+    private final DayService dayService;
 
     @Autowired
-    public TodoController(TodoService todoService) {
+    public TodoController(TodoService todoService, DayService dayService) {
         this.todoService = todoService;
+        this.dayService = dayService;
     }
+
 
     @GetMapping
     public ResponseEntity<?> getTodosByUser(@RequestHeader(value = "Authorization") String authHeader) {
@@ -79,30 +81,6 @@ public class TodoController {
 
 
 
-    //getTodoBysubIndex 추가해야 함.
-//    @PostMapping
-//    public ResponseEntity<?> createTodo(@RequestHeader(value = "Authorization") String authHeader,
-//                                        @RequestBody TodoCreateDto todoCreateDto) {
-//        // 토큰에서 UID 추출
-//        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-//        try {
-//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-//            String uid = decodedToken.getUid();
-//            if (uid != null) {
-//                // TodoCreateDto를 Todo 객체로 변환하고 저장
-//                todoService.createTodo(todoCreateDto, uid);
-//            } else {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-//            }
-//        } catch (Exception e) {
-//            // 토큰이 유효하지 않거나 다른 오류가 발생한 경우, 예외의 상세한 원인을 로그에 포함하여 무단 상태로 반환
-//            log.error("Token verification failed: {}", e.getMessage(), e);
-//
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-//        }
-//        return null;
-//    }
-
     @PostMapping
     public ResponseEntity<?> createTodos(@RequestHeader(value = "Authorization") String authHeader,
                                          @RequestBody List<TodoCreateDto> todoCreateDtos) {
@@ -138,52 +116,95 @@ public class TodoController {
         return ResponseEntity.notFound().build();
     }
 
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<Void> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
+//        todoService.updateTodo(id, todoUpdateDto);
+//        return ResponseEntity.noContent().build();
+//    }
+
+    // Todo 업데이트 메소드
+//    @PatchMapping("/{id}")
+//    public ResponseEntity<String> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto,
+//                                             @RequestHeader(value = "Authorization") String authHeader) {
+//        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+//        try {
+//            // Firebase 토큰 검증
+//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+//            String uid = decodedToken.getUid();
+//
+//            // 해당 Todo의 소유자 확인
+//            Todo todo = todoService.findById(id);
+//            if (!todo.getUid().equals(uid)) {
+//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You do not have permission to update this todo.");
+//            }
+//
+//            // Todo 업데이트
+//            todoService.updateTodo(id, todoUpdateDto);
+//            return ResponseEntity.noContent().build();
+//        } catch (FirebaseAuthException e) {
+//            log.error("Firebase Auth error: {}", e.getMessage(), e);
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
+//        } catch (IllegalArgumentException e) {
+//            // Todo를 찾지 못한 경우
+//            log.error("Todo not found: {}", e.getMessage(), e);
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo not found");
+//        } catch (Exception e) {
+//            // 그 외의 예외 발생 시
+//            log.error("Error updating todo: {}", e.getMessage(), e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+//        }
+//    }
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
-        todoService.updateTodo(id, todoUpdateDto);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
+        try {
+            // Todo 업데이트
+            todoService.updateTodo(id, todoUpdateDto);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            // Todo를 찾지 못한 경우
+            log.error("Todo not found: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo not found");
+        } catch (Exception e) {
+            // 그 외의 예외 발생 시
+            log.error("Error updating todo: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
+        }
     }
 
-//    @PatchMapping("/sub/{subIndex}")
-//    public ResponseEntity<Void> updateTodosBySubIndex(@PathVariable String subIndex, @RequestBody TodoUpdateSubDto todoUpdateSubDto) {
-//        try {
-//            todoService.updateTodosBySubIndex(subIndex, todoUpdateSubDto);
-//            return ResponseEntity.noContent().build();
-//        } catch (Exception e) {
-//            log.error("An error occurred: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-//        }
-//    }
 
-//    @PatchMapping("/sub/{subIndex}/updateByDate")
-//    public ResponseEntity<Void> updateTodosBySubIndexAndDate(
-//            @PathVariable String subIndex,
-//            @RequestParam String date,
-//            @RequestBody TodoUpdateSubDto updateDto) {
-//        try {
-//            LocalDate parsedDate = LocalDate.parse(date); // 문자열을 LocalDate로 변환
-//            todoService.updateTodosBySubIndexAndDate(subIndex, parsedDate, updateDto);
-//            return ResponseEntity.noContent().build(); // 성공 시 No Content 응답 반환
-//        } catch (Exception e) {
-//            log.error("Error updating todos with subIndex and date: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 실패 시 오류 응답 반환
-//        }
-//    }
-//@PatchMapping("/sub/{subIndex}/updateByDate")
-//public ResponseEntity<Void> updateTodosBySubIndexAndDate(
-//        @PathVariable String subIndex,
-//        @RequestBody TodoUpdateSubDto updateDto) {
-//    try {
-//        LocalDate parsedDate = updateDto.getDate(); // `TodoUpdateSubDto`에서 `date` 가져오기
-//        todoService.updateTodosBySubIndexAndDate(updateDto); // 서비스에 `updateDto` 전달
-//
-//        return ResponseEntity.noContent().build(); // 성공 시 No Content 응답 반환
-//    } catch (Exception e) {
-//        log.error("Error updating todos with subIndex and date: {}", e.getMessage(), e);
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 실패 시 오류 응답 반환
-//    }
-//}
 
+    @GetMapping("/dayresult")
+    public ResponseEntity<Map<Integer, Integer>> getDayCounts(@RequestHeader(value = "Authorization") String authHeader) {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        try {
+            // Firebase 토큰 검증
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            // 해당 사용자의 모든 요일에 대한 값을 조회
+            Map<Integer, Integer> dayCounts = new HashMap<>();
+            for (int i = 0; i < 7; i++) {
+                Optional<Day> dayOptional = dayService.findByUidAndDayIndex(uid, i);
+                int count = dayOptional.map(Day::getCount).orElse(0);
+                dayCounts.put(i, count);
+            }
+
+            // 만약 해당 uid에 대한 요일 데이터가 전혀 없는 경우, 일괄적으로 0으로 초기화
+            if (dayCounts.isEmpty()) {
+                for (int i = 0; i < 7; i++) {
+                    dayCounts.put(i, 0);
+                }
+            }
+
+            return ResponseEntity.ok(dayCounts);
+        } catch (FirebaseAuthException e) {
+            log.error("Firebase Auth error: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } catch (Exception e) {
+            log.error("Error retrieving day counts: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
@@ -192,7 +213,7 @@ public class TodoController {
     }
 
     @PatchMapping("/updateBySubIndex")
-    public ResponseEntity<Void> updateTodosBySubIndexAndDate(@RequestBody TodoUpdateSubDto updateDto) {
+    public ResponseEntity<Void> updateTodosBySubIndexAndDueDate(@RequestBody TodoUpdateSubDto updateDto) {
         try {
             todoService.updateTodosBySubIndexAndDate(updateDto); // 서비스에 `updateDto` 전달
 
@@ -203,61 +224,17 @@ public class TodoController {
         }
     }
 
-
-
-
-
-
-
-
-
-//    @PatchMapping("/subIndex/{subIndex}")
-//    public ResponseEntity<?> updateTodos(@PathVariable Long subIndex,
-//                                         @RequestHeader(value = "Authorization") String authHeader,
-//                                         @RequestBody TodoCreateDto todoUpdateDto) {
-//        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-//        try {
-//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-//            String uid = decodedToken.getUid();
-//
-//            if (uid != null) {
-//                List<Todo> todos = todoService.findAllBySubIndexAndUid(subIndex, uid);
-//
-//                if (!todos.isEmpty()) {
-//                    for (Todo todo : todos) {
-//                        todo.setTodoTitle(todoUpdateDto.getTodoTitle());
-//                        todo.setTodoContent(todoUpdateDto.getTodoContent());
-//                        todo.setDueDate(todoUpdateDto.getDueDate());
-//                        todo.setSpentTime(todoUpdateDto.getSpentTime());
-//                        todo.setIsCompleted(todoUpdateDto.getIsCompleted());
-//                        todo.setUrl(todoUpdateDto.getUrl());
-//                        todo.setPlace(todoUpdateDto.getPlace());
-//
-//                        todoService.save(todo); // 업데이트된 Todo 저장
-//                    }
-//
-//                    return ResponseEntity.ok("Todos updated successfully");
-//                } else {
-//                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo not found");
-//                }
-//            } else {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-//            }
-//        } catch (Exception e) {
-//            log.error("Token verification failed: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
-//        }
-//    }
-
-
-
+    @DeleteMapping("/deleteBySubIndex")
+    public ResponseEntity<Void> deleteTodosBySubIndexAndDueDate(
+            @RequestParam("subIndex") String subIndex,
+            @RequestParam("dueDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dueDate) {
+        try {
+            todoService.deleteTodosBySubIndexAndDueDate(subIndex, dueDate);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error("Error deleting todos with subIndex '{}' and dueDate '{}': {}", subIndex, dueDate, e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteTodo(@PathVariable Long id) {
-//        todoService.deleteTodo(id);
-//        return ResponseEntity.ok().build();
-//    }
-//}
-

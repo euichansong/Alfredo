@@ -19,7 +19,7 @@ public class UpdateService {
 
 
     public void transferOldTodos() {
-        LocalDate twoMonthsAgo = LocalDate.now().minusMonths(2);
+        LocalDate twoMonthsAgo = LocalDate.now().minusMonths(4);
         LocalDateTime now = LocalDateTime.now();
         System.out.println("Current Local Date and Time: " + now);
         // 두 달 이상 된 Todos 가져오기
