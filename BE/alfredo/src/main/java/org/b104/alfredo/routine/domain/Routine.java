@@ -31,7 +31,7 @@ public class Routine {
     @Column(name="start_time")
     private LocalTime startTime;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "routine_days", joinColumns = @JoinColumn(name = "routine_id"))
     @Column(name="days",nullable = false)
     private Set<String> days = new HashSet<>();

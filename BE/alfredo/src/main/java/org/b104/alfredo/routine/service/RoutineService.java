@@ -19,4 +19,6 @@ public interface RoutineService {
     Routine updateRoutine(Long routineId,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo);
 
     void addBasicRoutines(String uid, List<Long> basicRoutineIds);
+
+    List<Routine> getRoutinesToNotify();
 }

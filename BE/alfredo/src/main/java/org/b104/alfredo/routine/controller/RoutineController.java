@@ -137,7 +137,7 @@ public class RoutineController {
     }
 
     //알림 테스트
-    @PostMapping("/fcm")
+    @PostMapping("/fcmAlarm")
     public ResponseEntity<String> pushMessage(@RequestBody FcmRequest fcmRequest) throws IOException {
         firebaseCloudMessageService.sendMessageTo(fcmRequest.getTargetToken(), fcmRequest.getTitle(), fcmRequest.getBody());
         return ResponseEntity.ok("Message sent successfully");
