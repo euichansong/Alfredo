@@ -14,7 +14,7 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   User? _currentUser;
-  bool _isLoading = false; // 로딩 상태 관리 변수
+  final bool _isLoading = false; // 로딩 상태 관리 변수
 
   @override
   void initState() {
@@ -89,32 +89,30 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void _signInWithGoogle() async {
-    setState(() {
-      _isLoading = true;
-    });
     try {
       AuthService authService = AuthService();
       UserCredential? userCredential = await authService.signInWithGoogle();
 
       if (userCredential != null) {
+        print("Login successful!");
+        // 사용자의 ID 토큰을 가져옵니다.
+        final idToken = await userCredential.user?.getIdToken();
+
+        if (idToken != null) {
+          await TokenApi.sendTokenToServer(idToken);
+        }
+
         final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
         if (isNewUser) {
           Navigator.pushReplacementNamed(context, '/user_routine_test');
         } else {
-          Navigator.pushReplacementNamed(
-              context, '/main'); // '/main'은 이제 TabView
+          Navigator.pushReplacementNamed(context, '/main');
         }
       } else {
         print("Login failed.");
       }
     } catch (e) {
       print("Login error: $e");
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
     }
   }
 
