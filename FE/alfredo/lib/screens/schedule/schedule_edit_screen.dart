@@ -23,6 +23,8 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   bool _withTime = true;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
+  TimeOfDay? _alarmTime; // 알람 시간 설정을 위한 변수
+  int? _selectedAlarmOption; // 선택된 알람 옵션 인덱스
   String? _place;
 
   @override
@@ -43,7 +45,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       _withTime = schedule.withTime;
       _startTime = schedule.startTime;
       _endTime = schedule.endTime;
-      _place = schedule.place;
+      _alarmTime = schedule.alarmTime; // 알람 시간 로드
       setState(() {}); // Trigger a rebuild after loading data
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +63,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("일정 상세")),
+      appBar: AppBar(title: const Text("일정 수정")),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -75,7 +77,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   List<Widget> buildFormFields() {
     return [
       TextFormField(
-        controller: _titleController!,
+        controller: _titleController,
         decoration: const InputDecoration(labelText: '일정 제목'),
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -96,19 +98,28 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       SwitchListTile(
         title: const Text('알람 사용'),
         value: _startAlarm,
-        onChanged: (bool value) => setState(() => _startAlarm = value),
+        onChanged: (bool value) {
+          setState(() {
+            _startAlarm = value;
+            if (!value) {
+              _alarmTime = null; // 알람 사용 안함으로 변경 시 알람 시간 초기화
+            }
+          });
+        },
       ),
+      if (_startAlarm) _buildAlarmOptions(),
       SwitchListTile(
-        title: const Text('하루 종일'),
-        value: _withTime,
-        onChanged: (bool value) => setState(() {
-          _withTime = value;
-          if (!value) {
-            _startTime = null;
-            _endTime = null;
-          }
-        }),
-      ),
+          title: const Text('하루 종일'),
+          value: _withTime,
+          onChanged: (bool value) {
+            setState(() {
+              _withTime = value;
+              if (!value) {
+                _startTime = null;
+                _endTime = null;
+              }
+            });
+          }),
       if (!_withTime) ...[
         ListTile(
           title: Text(
@@ -133,36 +144,81 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     ];
   }
 
-  void _updateSchedule() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      var updatedSchedule = Schedule(
-        scheduleId: widget.scheduleId,
-        scheduleTitle: _titleController!.text,
-        startDate: _startDate,
-        endDate: _endDate,
-        startAlarm: _startAlarm,
-        place: _place,
-        startTime: _startTime,
-        endTime: _endTime,
-        withTime: _withTime,
-      );
-      try {
-        ref
-            .read(scheduleControllerProvider)
-            .updateSchedule(updatedSchedule.scheduleId!, updatedSchedule)
-            .then((_) {
-          // 수정 성공 후 리스트를 새로 고침하기 위해 결과로 true를 반환
-          Navigator.pop(context, true);
-        }).catchError((error) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Update failed: $error')));
-        });
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error updating schedule: $e')));
+  Widget _buildAlarmOptions() {
+    List<String> options = _withTime
+        ? ['일정 당일 오전 9시', '일정 당일 오전 12시', '사용자 설정']
+        : ['시작 1시간 전', '시작 30분 전', '사용자 설정'];
+
+    return Column(
+      children: List<Widget>.generate(
+          options.length,
+          (index) => ListTile(
+                title: _buildOptionTitle(index),
+                trailing: _selectedAlarmOption == index
+                    ? const Icon(Icons.check, color: Colors.blue)
+                    : null,
+                onTap: () {
+                  setState(() {
+                    _selectedAlarmOption = index;
+                    _updateAlarmTime(index);
+                  });
+                },
+              )),
+    );
+  }
+
+  Widget _buildOptionTitle(int index) {
+    String optionText;
+    if (index == 2) {
+      optionText = '사용자 설정';
+      if (_alarmTime != null) {
+        optionText += ' (${_alarmTime!.format(context)})'; // 설정된 알람 시간 표시
       }
+    } else {
+      List<String> defaultOptions = _withTime
+          ? ['일정 당일 오전 9시', '일정 당일 오전 12시']
+          : [
+              '시작 1시간 전 (${_calculateStartTime(1).format(context)})',
+              '시작 30분 전 (${_calculateStartTime(0.5).format(context)})'
+            ];
+      optionText = defaultOptions[index];
     }
+    return Text(optionText);
+  }
+
+  void _updateAlarmTime(int optionIndex) {
+    DateTime baseDateTime = _calculateBaseDateTime(optionIndex);
+    _alarmTime = TimeOfDay.fromDateTime(baseDateTime);
+  }
+
+  DateTime _calculateBaseDateTime(int optionIndex) {
+    DateTime baseDateTime = DateTime.now(); // Default to now if no time is set
+    if (optionIndex < 2) {
+      // Specific times set for options 0 and 1
+      int hour =
+          optionIndex == 0 ? 9 : 12; // 9 AM for option 0, 12 PM for option 1
+      baseDateTime =
+          DateTime(_startDate.year, _startDate.month, _startDate.day, hour, 0);
+    } else if (_startTime != null && !_withTime) {
+      // User-set time for option 2
+      baseDateTime = DateTime(_startDate.year, _startDate.month, _startDate.day,
+          _startTime!.hour, _startTime!.minute);
+      int minutesSubtract = optionIndex == 0 ? 60 : 30;
+      baseDateTime = baseDateTime.subtract(Duration(minutes: minutesSubtract));
+    }
+    return baseDateTime;
+  }
+
+  TimeOfDay _calculateStartTime(double hoursBefore) {
+    DateTime baseDateTime = _startDate;
+    if (!_withTime && _startTime != null) {
+      baseDateTime = DateTime(_startDate.year, _startDate.month, _startDate.day,
+          _startTime!.hour, _startTime!.minute);
+      int minutesToSubtract = (hoursBefore * 60).round();
+      baseDateTime =
+          baseDateTime.subtract(Duration(minutes: minutesToSubtract));
+    }
+    return TimeOfDay.fromDateTime(baseDateTime);
   }
 
   Future<void> _selectDate(BuildContext context,
@@ -173,7 +229,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-    if (picked != null) {
+    if (picked != null && picked != (isStart ? _startDate : _endDate)) {
       setState(() {
         if (isStart) {
           _startDate = picked;
@@ -188,8 +244,9 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       {required bool isStart}) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime:
-          isStart ? _startTime ?? TimeOfDay.now() : _endTime ?? TimeOfDay.now(),
+      initialTime: isStart
+          ? (_startTime ?? const TimeOfDay(hour: 9, minute: 0))
+          : (_endTime ?? const TimeOfDay(hour: 9, minute: 0)),
     );
     if (picked != null) {
       setState(() {
@@ -199,6 +256,40 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           _endTime = picked;
         }
       });
+    }
+  }
+
+  void _updateSchedule() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      var updatedSchedule = Schedule(
+        scheduleId: widget.scheduleId,
+        scheduleTitle: _titleController!.text,
+        startDate: _startDate,
+        endDate: _endDate,
+        startAlarm: _startAlarm,
+        alarmTime: _alarmTime,
+        place: _place,
+        startTime: _startTime,
+        endTime: _endTime,
+        withTime: _withTime,
+      );
+      try {
+        ref
+            .read(scheduleControllerProvider)
+            .updateSchedule(updatedSchedule.scheduleId!, updatedSchedule)
+            .then((_) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('일정이 정상적으로 수정되었습니다')));
+          Navigator.pop(context, true);
+        }).catchError((error) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Update failed: $error')));
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error updating schedule: $e')));
+      }
     }
   }
 }

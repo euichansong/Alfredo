@@ -14,6 +14,8 @@ class UserUpdateScreen extends ConsumerStatefulWidget {
 class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _googleCalendarUrlController =
+      TextEditingController();
   DateTime? _birthDate;
 
   @override
@@ -24,6 +26,7 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
       if (mounted) {
         _nicknameController.text = user.nickname;
         _birthDate = user.birth;
+        _googleCalendarUrlController.text = user.googleCalendarUrl ?? '';
       }
     });
   }
@@ -31,6 +34,7 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
   @override
   void dispose() {
     _nicknameController.dispose();
+    _googleCalendarUrlController.dispose();
     super.dispose();
   }
 
@@ -66,6 +70,15 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
                 validator: (value) => value!.isEmpty ? '닉네임을 입력하세요' : null,
               ),
               const SizedBox(height: 20),
+              TextFormField(
+                controller: _googleCalendarUrlController,
+                decoration:
+                    const InputDecoration(labelText: 'Google Calendar URL'),
+                //   validator: (value) =>
+                //       value!.isEmpty ? 'Google Calendar URL을 입력하세요' : null,
+                // ),
+              ),
+              const SizedBox(height: 20),
               ListTile(
                 title: const Text("생일"),
                 subtitle: Text(
@@ -82,11 +95,18 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
                     final userUpdateDto = UserUpdateDto(
                       nickname: _nicknameController.text,
                       birth: _birthDate,
+                      googleCalendarUrl: _googleCalendarUrlController.text,
                     );
                     await ref.read(userUpdateProvider(userUpdateDto).future);
-                    Navigator.pop(context); // 유저 정보 수정 후 이전 화면으로 돌아가기
+                    Navigator.pop(context);
                   }
                 },
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all(const Color(0xFF0D2338)),
+                  foregroundColor:
+                      MaterialStateProperty.all(const Color(0xFFF2E9E9)),
+                ),
                 child: const Text('정보 업데이트'),
               ),
             ],

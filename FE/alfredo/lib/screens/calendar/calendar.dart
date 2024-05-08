@@ -1,19 +1,26 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
-class Calendar extends StatefulWidget {
+import '../../models/todo/todo_model.dart';
+import '../../provider/todo/todo_provider.dart';
+import '../../screens/todo/todo_detail_screen.dart';
+
+class Calendar extends ConsumerStatefulWidget {
   const Calendar({super.key});
 
   @override
   _Calendar createState() => _Calendar();
 }
 
-class _Calendar extends State<Calendar> with TickerProviderStateMixin {
+class _Calendar extends ConsumerState<Calendar> {
+  List<Todo>? _todos;
+  final List<Appointment> appointments = <Appointment>[];
   // ignore: avoid_init_to_null
   ICalendar? _iCalendar;
   // ignore: prefer_final_fields
@@ -25,7 +32,6 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
   _DataSource? _calendarDataSource;
   // ignore: prefer_final_fields
   bool _showAgenda = false; // 일정 표시 여부 상태 변수
-
   // ignore: non_constant_identifier_names
   final CalendarController _controller = CalendarController();
   // ignore: prefer_const_constructors, prefer_final_fields
@@ -33,33 +39,28 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
     appointmentDisplayMode: MonthAppointmentDisplayMode.appointment,
     showTrailingAndLeadingDates: false,
   );
-  late final AnimationController controller;
-  late final Animation<double> _animation;
 
-  @override
-  void initState() {
-    super.initState();
-
-    _loadCalendarData(
-        'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
-
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    );
-    _animation = CurvedAnimation(
-      parent: controller,
-      curve: Curves.fastOutSlowIn,
-    );
+  void _fetchTodos() async {
+    final todoController = ref.read(todoControllerProvider);
+    var fetchedTodos = await todoController.fetchTodoList();
+    setState(() {
+      _todos = fetchedTodos;
+      for (Todo _todo in _todos!) {
+        appointments.add(
+          Appointment(
+            startTime: _todo.dueDate,
+            endTime: _todo.dueDate,
+            isAllDay: true,
+            subject: _todo.todoTitle,
+            save_type: 'todo',
+            params: _todo.id.toString(),
+            color: const Color(0xFFD6C3C3),
+          ),
+        );
+      }
+    });
   }
 
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  // ignore: body_might_complete_normally_nullable
   Future<void> _loadCalendarData(String iCalUrl) async {
     try {
       final response = await http.get(Uri.parse(iCalUrl));
@@ -79,9 +80,18 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
       // 오류 처리를 원하는 대로 수행하세요.
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {});
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {});
+    // });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _loadCalendarData(
+        'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
+    _fetchTodos();
   }
 
   // SharedPreferences에 iCalendar 데이터를 비교 하는 함수
@@ -125,13 +135,38 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
     );
   }
 
+  @override
+  void didUpdateWidget(covariant Calendar oldWidget) {
+    print('#################################################');
+    print(oldWidget);
+    print('############################################');
+    super.didUpdateWidget(oldWidget);
+    // 여기에서 oldWidget을 사용하여 이전 위젯의 정보에 접근할 수 있습니다.
+  }
+
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
+    print('**************');
+    print(calendarTapDetails.appointments);
+    print('**************');
+    print(calendarTapDetails.targetElement);
+    print('**************');
     if (_controller.view == CalendarView.month &&
         calendarTapDetails.targetElement == CalendarElement.calendarCell &&
         !_monthViewSettings.showAgenda) {
       setState(() {
         detailMonthCalendar();
       });
+    }
+    if (calendarTapDetails.targetElement == CalendarElement.appointment) {
+      if (calendarTapDetails.appointments![0].save_type == 'todo') {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return TodoDetailScreen(
+                todoId: int.parse(calendarTapDetails.appointments![0].params));
+          },
+        );
+      }
     }
   }
 
@@ -180,7 +215,7 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
     _monthViewSettings = MonthViewSettings(
       showAgenda: true,
       showTrailingAndLeadingDates: false,
-      agendaViewHeight: screenHeight / 2.5,
+      agendaViewHeight: screenHeight / 4.05,
     );
   }
 
@@ -190,57 +225,41 @@ class _Calendar extends State<Calendar> with TickerProviderStateMixin {
       showAgenda: true,
       showTrailingAndLeadingDates: false,
       numberOfWeeksInView: 1,
-      agendaViewHeight: screenHeight / 1.34,
+      agendaViewHeight: screenHeight / 1.53,
     );
   }
 
   Future<_DataSource?> getCalendarDataSource(Map? iCalendarJson) async {
     if (iCalendarJson != null) {
-      final List<Appointment> appointments = <Appointment>[];
       for (Map? datas in iCalendarJson['data']) {
         if (datas!['dtstart'] != null) {
-          appointments.add(Appointment(
-            startTime: DateTime.parse(datas['dtstart']['dt']),
-            endTime: DateTime.parse(datas['dtend']['dt']),
-            subject: datas['summary'] ?? '',
-          ));
+          DateTime startDateTime = DateTime.parse(datas['dtstart']['dt']);
+          DateTime endDateTime = DateTime.parse(datas['dtend']['dt']);
+          if (startDateTime.hour == 0 &&
+              startDateTime.minute == 0 &&
+              startDateTime.second == 0 &&
+              endDateTime.hour == 0 &&
+              endDateTime.minute == 0 &&
+              endDateTime.second == 0) {
+            appointments.add(Appointment(
+              startTime: startDateTime,
+              endTime: endDateTime.subtract(const Duration(days: 1)),
+              save_type: 'iCal',
+              isAllDay: true,
+              subject: datas['summary'] ?? '(제목 없음)',
+            ));
+          } else {
+            appointments.add(Appointment(
+              startTime: startDateTime,
+              endTime: endDateTime,
+              save_type: 'iCal',
+              subject: datas['summary'] ?? '(제목 없음)',
+            ));
+          }
         } else {}
       }
-      // 데이터를 가져오는 코드 추가
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now(),
-      //   endTime: DateTime.now().add(const Duration(hours: 1)),
-      //   isAllDay: true,
-      //   subject: 'Meeting',
-      //   color: Colors.pink,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 4)),
-      //   endTime: DateTime.now().add(const Duration(hours: 5)),
-      //   subject: 'Release Meeting',
-      //   color: Colors.lightBlueAccent,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 6)),
-      //   endTime: DateTime.now().add(const Duration(hours: 7)),
-      //   subject: 'Performance check',
-      //   color: Colors.amber,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 8)),
-      //   endTime: DateTime.now().add(const Duration(hours: 9)),
-      //   subject: 'Support',
-      //   color: Colors.green,
-      // ));
-      // appointments.add(Appointment(
-      //   startTime: DateTime.now().add(const Duration(hours: 9)),
-      //   endTime: DateTime(2024, 4, 29, 17, 30),
-      //   subject: 'Retrospective',
-      //   color: Colors.purple,
-      // ));
       return _DataSource(appointments);
     } else {
-      print('null널하네요 ********************************');
       return null;
     }
   }

@@ -1,13 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'config/firebase_options.dart';
-import 'screens/mainpage/main_page.dart';
 import 'screens/user/login_page.dart';
 import 'screens/user/user_routine_test.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'services/firebase_messaging_service.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'components/navbar/tabview.dart';
+import 'screens/calendar/calendar.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,18 +18,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  //FCM 토큰 가져오기
-  String? token = await FirebaseMessaging.instance.getToken();
-  debugPrint("Firebase Messaging Token: $token");
-  // FirebaseMessaging.instance.getInitialMessage();
-  // foreground work
-  // FirebaseMessaging.onMessage.listen((message) {
-  //   if (message.notification != null) {
-  //     print(message.notification!.body);
-  //     print(message.notification!.title);
-  //   }
-  // });
+  FirebaseMessagingService fcmService = FirebaseMessagingService();
+  await fcmService.setupInteractions();
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -41,10 +34,21 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
-        '/main': (context) => const MainPage(),
+        '/main': (context) => const TabView(),
         '/user_routine_test': (context) => const UserRoutineTestPage(),
+        '/calendar': (context) => const Calendar(),
       },
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        // ... app-specific localization delegate[s] here
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko'),
+        Locale('en'),
+      ],
+      locale: const Locale('ko'),
     );
   }
 }
