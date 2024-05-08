@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../screens/routine/routine_create_screen.dart';
 import '../../screens/schedule/schedule_create_screen.dart';
 import '../../screens/routine/routine_list_screen.dart';
-import '../../screens/todo/todo_create_screen.dart';
+import '../../screens/todo/todo_tab_view.dart';
 
 class PlusButton {
   static void showCreateOptions(BuildContext context) {
@@ -32,7 +32,7 @@ class PlusButton {
               customListTile(Icons.schedule, '일정', const Color(0xfff0d2338),
                   context, const ScheduleCreateScreen()),
               customListTile(Icons.check_circle_outline, '할 일',
-                  const Color(0xfff0d2338), context, const TodoCreateScreen()),
+                  const Color(0xfff0d2338), context, const TodoTabView()),
             ],
           ),
         );
