@@ -29,7 +29,8 @@ import java.util.List;
 @Service
 public class FCMAlarmService {
 
-    private final String API_URL = "https://fcm.googleapis.com/v1/projects/alfredo104/messages:send";
+    @Value("${firebase.api.url}")
+    private String API_URL;
     private final ObjectMapper objectMapper;
     private Scheduler scheduler;
 
