@@ -51,9 +51,8 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
           ),
         ],
       ),
-      body: SizedBox(
-        width: 300,
-        height: 550,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -61,6 +60,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                 controller: titleController,
                 decoration: const InputDecoration(labelText: "Routine 제목"),
               ),
+              const SizedBox(height: 50),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -77,10 +77,9 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                   ),
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 50),
               const Text("요일 설정"),
               SizedBox(
-                width: 300,
                 child: ToggleButtons(
                   isSelected: selectedDays,
                   children: const [
@@ -96,7 +95,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       () => selectedDays[index] = !selectedDays[index]),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 50),
               const Text("알람 설정"),
               DropdownButton<String>(
                 value: currentAlarmSound,
@@ -113,10 +112,12 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                   );
                 }).toList(),
               ),
+              const SizedBox(height: 50),
               TextField(
                 controller: memoController,
                 decoration: const InputDecoration(labelText: "메모"),
               ),
+              const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () async {
                   final String? idToken =
