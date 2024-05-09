@@ -18,7 +18,7 @@ class _TabViewState extends ConsumerState<TabView> {
 
   static final List<Widget> _pages = [
     const MainPage(),
-    const RoutineListScreen(),
+    RoutineListScreen(),
     Container(),
     const Calendar(),
     const MyPage(),

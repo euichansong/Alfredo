@@ -13,40 +13,54 @@ class PlusButton {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.white.withOpacity(0.95),
       builder: (BuildContext context) {
-        return Container(
-          height: 180,
-          margin: const EdgeInsets.only(bottom: 58),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              customListTile(Icons.event_note, '루틴', const Color(0xfff0d2338),
-                  context, const RoutineCreateScreen()),
-              customListTile(Icons.schedule, '일정', const Color(0xfff0d2338),
-                  context, const ScheduleCreateScreen()),
-              customListTile(Icons.check_circle_outline, '할 일',
-                  const Color(0xfff0d2338), context, const TodoTabView()),
-            ],
-          ),
+        return ProviderScope(
+          // Provide a separate scope for the modal content
+          child: Consumer(// Use Consumer to get the WidgetRef
+              builder: (context, ref, child) {
+            return Container(
+              height: 180,
+              margin: const EdgeInsets.only(bottom: 58),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  customListTile(
+                      Icons.event_note,
+                      '루틴',
+                      const Color(0xfff0d2338),
+                      context,
+                      () => showRoutineCreateModal(context, ref)),
+                  customListTile(Icons.schedule, '일정', const Color(0xfff0d2338),
+                      context, const ScheduleCreateScreen()),
+                  customListTile(Icons.check_circle_outline, '할 일',
+                      const Color(0xfff0d2338), context, const TodoTabView()),
+                ],
+              ),
+            );
+          }),
         );
       },
     );
   }
 
   static Widget customListTile(IconData icon, String text, Color color,
-      BuildContext context, Widget destination) {
+      BuildContext context, dynamic destination) {
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => destination));
+        if (destination is Function) {
+          destination(); // destination이 함수일 경우 바로 호출
+        } else {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => destination));
+        }
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15),
