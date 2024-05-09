@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-
+import '../../screens/routine/routine_detail_screen.dart';
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
 
@@ -25,30 +25,21 @@ class RoutineListScreen extends ConsumerWidget {
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       ),
-      backgroundColor: const Color(0xFF0D2338),
       body: routines.when(
         data: (data) {
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const Padding(
-              //   padding: EdgeInsets.all(8.0),
-              //   child: Text(
-              //     '루틴',
-              //     style: TextStyle(
-              //         fontSize: 18,
-              //         fontWeight: FontWeight.bold,
-              //         color: Colors.white),
-              //   ),
-              // ),
-              Container(
-                margin: const EdgeInsets.only(left: 28.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
-                  '${data.length}개',
-                  style: const TextStyle(color: Colors.grey),
-                  textAlign: TextAlign.left,
-                  // 텍스트를 왼쪽 정렬
+                  '루틴',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text('${data.length}개',
+                    style: const TextStyle(color: Colors.grey)),
               ),
               Expanded(
                 child: ListView.builder(
@@ -78,7 +69,16 @@ class RoutineListScreen extends ConsumerWidget {
                         alignment: Alignment.center,
                         child: Card(
                           margin: const EdgeInsets.symmetric(vertical: 6.0),
-                          color: Colors.white,
+                          color: const Color.fromARGB(255, 53, 74, 96),
+                          child: InkWell(
+                            onTap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => RoutineDetailScreen(
+                                  routine: routine,
+                                ),
+                              ),
+                            ),
                           child: Container(
                               width: screenWidth * 0.9,
                               height: screenHeight * 0.10,

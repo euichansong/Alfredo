@@ -25,30 +25,21 @@ class RoutineListScreen extends ConsumerWidget {
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       ),
-      backgroundColor: const Color(0xFF0D2338),
       body: routines.when(
         data: (data) {
           return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const Padding(
-              //   padding: EdgeInsets.all(8.0),
-              //   child: Text(
-              //     '루틴',
-              //     style: TextStyle(
-              //         fontSize: 18,
-              //         fontWeight: FontWeight.bold,
-              //         color: Colors.white),
-              //   ),
-              // ),
-              Container(
-                margin: const EdgeInsets.only(left: 28.0),
+              const Padding(
+                padding: EdgeInsets.all(8.0),
                 child: Text(
-                  '${data.length}개',
-                  style: const TextStyle(color: Colors.grey),
-                  textAlign: TextAlign.left,
-                  // 텍스트를 왼쪽 정렬
+                  '루틴',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Text('${data.length}개',
+                    style: const TextStyle(color: Colors.grey)),
               ),
               Expanded(
                 child: ListView.builder(
@@ -78,10 +69,20 @@ class RoutineListScreen extends ConsumerWidget {
                         alignment: Alignment.center,
                         child: Card(
                           margin: const EdgeInsets.symmetric(vertical: 6.0),
-                          color: Colors.white,
+                          color: const Color.fromARGB(255, 53, 74, 96),
                           child: Container(
                               width: screenWidth * 0.9,
                               height: screenHeight * 0.10,
+                              decoration: BoxDecoration(
+                                color: Colors.white, // 카드 내부의 배경색
+                                border: Border.all(
+                                  color: const Color.fromARGB(
+                                      255, 53, 74, 96), // 테두리 색상 지정
+                                  width: 2.0, // 테두리 두께 지정
+                                ),
+                                borderRadius:
+                                    BorderRadius.circular(4.0), // 카드 모서리 둥글게
+                              ),
                               padding:
                                   const EdgeInsets.all(15.0), // 카드 내부에 패딩 추가
                               child: Row(
