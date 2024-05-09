@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
 import '../../provider/user/future_provider.dart';
+import '../../screens/routine/routine_list_screen.dart';
 
 class RoutineCreateScreen extends ConsumerWidget {
   const RoutineCreateScreen({super.key});
@@ -150,7 +151,13 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       startTime, days, currentAlarmSound, memo);
                   ref.refresh(routineProvider);
 
-                  Navigator.pop(context);
+                  // Navigator.pop(context);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RoutineListScreen(),
+                    ),
+                  );
                 },
                 child: const Text("저장"),
               ),
