@@ -112,7 +112,20 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     return SwitchListTile(
       title: Text(title),
       value: value,
-      onChanged: onChanged,
+      onChanged: (newValue) {
+        onChanged(newValue);
+        // startAlarm이 true로 설정되면 alarmTime을 오전 9시로 설정
+        if (newValue && title == '알람 사용') {
+          setState(() {
+            alarmTime = const TimeOfDay(hour: 9, minute: 0);
+          });
+        } else if (!newValue && title == '알람 사용') {
+          // 알람 사용이 false로 변경되면 alarmTime을 null로 설정
+          setState(() {
+            alarmTime = null;
+          });
+        }
+      },
     );
   }
 
