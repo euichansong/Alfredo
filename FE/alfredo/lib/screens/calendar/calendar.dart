@@ -61,7 +61,7 @@ class _Calendar extends ConsumerState<Calendar> {
     });
   }
 
-  Future<void> _loadCalendarData(String iCalUrl) async {
+  Future<void> _loadiCalendarData(String iCalUrl) async {
     try {
       final response = await http.get(Uri.parse(iCalUrl));
       if (response.statusCode == 200) {
@@ -89,7 +89,7 @@ class _Calendar extends ConsumerState<Calendar> {
   void initState() {
     super.initState();
 
-    _loadCalendarData(
+    _loadiCalendarData(
         'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
     _fetchTodos();
   }
