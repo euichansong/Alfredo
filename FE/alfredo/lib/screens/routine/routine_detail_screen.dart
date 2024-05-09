@@ -47,7 +47,7 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D2338),
         title: const Text(
-          "Routine Details",
+          "루틴 상세 보기",
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       ),
@@ -59,10 +59,10 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
             children: [
               TextFormField(
                 controller: _titleController,
-                decoration: const InputDecoration(labelText: "Routine Title"),
+                decoration: const InputDecoration(labelText: "루틴 제목"),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return '제목을 입력해주세요';
+                    return '루틴 제목을 입력해주세요';
                   }
                   return null;
                 },
@@ -76,20 +76,20 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
                     setState(() => _selectedTime = pickedTime);
                   }
                 },
-                child: Text("Time: ${_selectedTime!.format(context)}"),
+                child: Text("시간: ${_selectedTime!.format(context)}"),
               ),
               const SizedBox(height: 20),
               const Text("요일 설정"),
               ToggleButtons(
                 isSelected: _selectedDays,
                 children: const [
-                  Text("SUN"),
-                  Text("MON"),
-                  Text("TUE"),
-                  Text("WED"),
-                  Text("THU"),
-                  Text("FRI"),
-                  Text("SAT"),
+                  Text("일"),
+                  Text("월"),
+                  Text("화"),
+                  Text("수"),
+                  Text("목"),
+                  Text("금"),
+                  Text("토"),
                 ],
                 onPressed: (int index) => setState(
                     () => _selectedDays[index] = !_selectedDays[index]),
@@ -114,12 +114,12 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _memoController,
-                decoration: const InputDecoration(labelText: "Memo"),
+                decoration: const InputDecoration(labelText: "메모"),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateRoutine,
-                child: const Text("Save Changes"),
+                child: const Text("저장"),
               ),
             ],
           ),
@@ -159,11 +159,11 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text("Update Failed"),
-            content: Text("Failed to update the routine: $error"),
+            title: const Text("수정 실패"),
+            content: Text("루틴 수정에 실패했습니다.: $error"),
             actions: <Widget>[
               TextButton(
-                child: const Text('OK'),
+                child: const Text('확인'),
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ],

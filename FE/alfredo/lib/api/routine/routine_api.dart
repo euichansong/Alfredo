@@ -39,6 +39,21 @@ class RoutineApi {
     }
   }
 
+  // 로그인한 유저의 전체 일정 조회
+  Future<Routine> getRoutine(var authToken, var routineId) async {
+    final url = Uri.parse('$baseUrl/$routineId');
+    final response = await http.get(url, headers: _authHeaders(authToken));
+
+    if (response.statusCode == 200) {
+      final decodedBody = utf8.decode(response.bodyBytes);
+      print('잘 읽어왔어용');
+      return Routine.fromJson(json.decode(decodedBody));
+    } else {
+      print('못읽었어용');
+      throw Exception('Failed to load routine: ${response.statusCode}');
+    }
+  }
+
   // 로그인한 유저의 일정 생성
   Future<void> createRoutine(
       String? authToken,

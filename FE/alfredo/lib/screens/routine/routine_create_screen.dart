@@ -41,7 +41,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D2338),
         title: const Text(
-          "Routine 추가",
+          "루틴 생성",
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
         actions: [
@@ -58,7 +58,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(labelText: "Routine 제목"),
+                decoration: const InputDecoration(labelText: "루틴 제목"),
               ),
               const SizedBox(height: 50),
               Row(
