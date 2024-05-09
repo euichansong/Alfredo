@@ -21,20 +21,6 @@ class MainPage extends StatelessWidget {
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.05,
-            left: MediaQuery.of(context).size.height * 0.05,
-            right: MediaQuery.of(context).size.height * 0.05,
-            bottom: MediaQuery.of(context).size.height * 0.5,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: const SizedBox(
-                // width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height,
-                child: TodoList(),
-              ),
-            ),
-          ),
-          Positioned.fill(
             top: MediaQuery.of(context).size.height * 0.5,
             left: MediaQuery.of(context).size.height * 0.05,
             right: MediaQuery.of(context).size.height * 0.05,
