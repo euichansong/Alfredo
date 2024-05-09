@@ -48,7 +48,7 @@ public class TodoController {
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             String uid = decodedToken.getUid();
             List<TodoListDto> todos = todoService.findAllTodosByUid(uid);
-            if (todos != null && !todos.isEmpty()) {
+            if (todos != null) {
                 return ResponseEntity.ok(todos);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No todos found for this user");
