@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../screens/routine/routine_create_screen.dart';
 import '../../screens/schedule/schedule_create_screen.dart';
-import '../../screens/routine/routine_list_screen.dart';
 import '../../screens/todo/todo_tab_view.dart';
 
 class PlusButton {
@@ -62,16 +61,12 @@ class PlusButton {
   }
 
   static Widget customListTile(IconData icon, String text, Color color,
-      BuildContext context, dynamic destination) {
+      BuildContext context, Widget destination) {
     return GestureDetector(
       onTap: () {
         Navigator.pop(context);
-        if (destination is Function) {
-          destination(); // destination이 함수일 경우 바로 호출
-        } else {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => destination));
-        }
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => destination));
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15),

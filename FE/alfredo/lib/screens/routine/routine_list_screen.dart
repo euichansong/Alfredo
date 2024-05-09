@@ -19,10 +19,10 @@ class RoutineListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFF0D2338),
         title: const Text(
           "Routine List",
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24, color: Colors.white),
         ),
       ),
       body: routines.when(
@@ -84,7 +84,14 @@ class RoutineListScreen extends ConsumerWidget {
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showRoutineCreateModal(context, ref),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const RoutineCreateScreen(),
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
