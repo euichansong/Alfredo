@@ -43,6 +43,8 @@ class RoutineListScreen extends ConsumerWidget {
               ),
               Expanded(
                 child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20.0), // 리스트 전체에 수직 패딩 추가
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final routine = data[index];
@@ -65,7 +67,7 @@ class RoutineListScreen extends ConsumerWidget {
                       },
                       child: Card(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
+                            horizontal: 20, vertical: 7),
                         child: ListTile(
                           title: Text(routine.routineTitle),
                           trailing: Text(formatTimeOfDay(routine.startTime)),
