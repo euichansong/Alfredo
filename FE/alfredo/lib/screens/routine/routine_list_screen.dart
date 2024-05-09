@@ -84,7 +84,14 @@ class RoutineListScreen extends ConsumerWidget {
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => showRoutineCreateModal(context, ref),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RoutineCreateScreen(ref: ref),
+            ),
+          );
+        },
         child: const Icon(Icons.add),
       ),
     );
