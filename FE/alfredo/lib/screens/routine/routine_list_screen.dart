@@ -88,7 +88,7 @@ class RoutineListScreen extends ConsumerWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => RoutineCreateScreen(ref: ref),
+              builder: (context) => const RoutineCreateScreen(),
             ),
           );
         },

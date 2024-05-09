@@ -5,16 +5,26 @@ import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
 import '../../provider/user/future_provider.dart';
 
-class RoutineCreateScreen extends StatefulWidget {
+class RoutineCreateScreen extends ConsumerWidget {
+  const RoutineCreateScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return _RoutineCreateScreenBody(ref: ref);
+  }
+}
+
+class _RoutineCreateScreenBody extends StatefulWidget {
   final WidgetRef ref;
-  const RoutineCreateScreen({super.key, required this.ref});
+
+  const _RoutineCreateScreenBody({super.key, required this.ref});
 
   @override
   _RoutineCreateScreenState createState() =>
       _RoutineCreateScreenState(ref: ref);
 }
 
-class _RoutineCreateScreenState extends State<RoutineCreateScreen> {
+class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   final WidgetRef ref;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController memoController = TextEditingController();
@@ -22,7 +32,9 @@ class _RoutineCreateScreenState extends State<RoutineCreateScreen> {
   TimeOfDay? selectedTime = const TimeOfDay(hour: 7, minute: 30);
   List<bool> selectedDays = List.filled(7, false);
   String currentAlarmSound = "Morning Glory";
+
   _RoutineCreateScreenState({required this.ref});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
