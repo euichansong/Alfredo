@@ -14,9 +14,7 @@ class PlusButton {
       barrierColor: Colors.white.withOpacity(0.95),
       builder: (BuildContext context) {
         return ProviderScope(
-          // Provide a separate scope for the modal content
-          child: Consumer(// Use Consumer to get the WidgetRef
-              builder: (context, ref, child) {
+          child: Consumer(builder: (context, ref, child) {
             return Container(
               height: 180,
               margin: const EdgeInsets.only(bottom: 58),
@@ -38,13 +36,26 @@ class PlusButton {
                       context,
                       () => showRoutineCreateModal(context, ref)),
                   customListTile(Icons.schedule, '일정', const Color(0xfff0d2338),
-                      context, const ScheduleCreateScreen()),
+                      context, () => showScheduleCreateModal(context)),
                   customListTile(Icons.check_circle_outline, '할 일',
                       const Color(0xfff0d2338), context, const TodoTabView()),
                 ],
               ),
             );
           }),
+        );
+      },
+    );
+  }
+
+  static void showScheduleCreateModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return const FractionallySizedBox(
+          heightFactor: 0.90,
+          child: ScheduleCreateScreen(),
         );
       },
     );
