@@ -63,7 +63,15 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text("일정 수정")),
+      appBar: AppBar(
+        title: const Text("일정 수정"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete),
+            onPressed: _deleteSchedule,
+          ),
+        ],
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -78,8 +86,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     return [
       TextFormField(
         controller: _titleController,
-        decoration: const InputDecoration(
-            labelText: '일정 제목', border: OutlineInputBorder()),
+        decoration: const InputDecoration(labelText: '일정 제목'),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return '제목을 입력해주세요';
@@ -105,7 +112,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           setState(() {
             _startAlarm = value;
             if (!value) {
-              _alarmTime = null;
+              _alarmTime = null; // Turn off alarm time when alarm is disabled
             }
           });
         },
@@ -124,33 +131,27 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           });
         },
       ),
-      if (!_withTime) ...[
+      if (!_withTime)
         ListTile(
           leading: const Icon(Icons.access_time),
           title: Text(
               '시작 시간: ${_startTime != null ? _startTime!.format(context) : "선택되지 않음"}'),
           onTap: () => _selectTime(context, isStart: true),
         ),
+      if (!_withTime)
         ListTile(
           leading: const Icon(Icons.access_time_filled),
           title: Text(
               '종료 시간: ${_endTime != null ? _endTime!.format(context) : "선택되지 않음"}'),
           onTap: () => _selectTime(context, isStart: false),
         ),
-      ],
       TextFormField(
         initialValue: _place,
-        decoration: const InputDecoration(
-            labelText: '장소', border: OutlineInputBorder()),
+        decoration: const InputDecoration(labelText: '장소'),
         onSaved: (value) => _place = value,
       ),
-      const SizedBox(height: 20),
       ElevatedButton(
         onPressed: _updateSchedule,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).primaryColor,
-          foregroundColor: Colors.white,
-        ),
         child: const Text('수정하기'),
       ),
     ];
@@ -216,20 +217,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     return baseDateTime;
   }
 
-  TimeOfDay _calculateStartTime(double hoursBefore) {
-    DateTime baseDateTime = _startDate;
-    if (!_withTime && _startTime != null) {
-      baseDateTime = DateTime(_startDate.year, _startDate.month, _startDate.day,
-          _startTime!.hour, _startTime!.minute);
-      int minutesToSubtract = (hoursBefore * 60).round();
-      baseDateTime =
-          baseDateTime.subtract(Duration(minutes: minutesToSubtract));
-    }
-    return TimeOfDay.fromDateTime(baseDateTime);
-  }
-
-  Future<void> _selectDate(BuildContext context,
-      {required bool isStart}) async {
+  void _selectDate(BuildContext context, {required bool isStart}) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isStart ? _startDate : _endDate ?? DateTime.now(),
@@ -247,8 +235,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context,
-      {required bool isStart}) async {
+  void _selectTime(BuildContext context, {required bool isStart}) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: isStart
@@ -263,6 +250,21 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           _endTime = picked;
         }
       });
+    }
+  }
+
+  void _deleteSchedule() async {
+    try {
+      await ref
+          .read(scheduleControllerProvider)
+          .deleteSchedule(widget.scheduleId);
+      // 삭제 성공 후, 결과로 true를 반환합니다.
+      Navigator.pop(context, true); // 결과로 true를 넘겨줍니다.
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('일정이 삭제되었습니다.')));
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('일정 삭제 실패: $e')));
     }
   }
 
@@ -284,7 +286,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       try {
         ref
             .read(scheduleControllerProvider)
-            .updateSchedule(updatedSchedule.scheduleId!, updatedSchedule)
+            .updateSchedule(widget.scheduleId, updatedSchedule)
             .then((_) {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text('일정이 정상적으로 수정되었습니다')));
