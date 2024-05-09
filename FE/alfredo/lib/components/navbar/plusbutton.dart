@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../../screens/routine/routine_create_screen.dart';
 import '../../screens/schedule/schedule_create_screen.dart';
 import '../../screens/todo/todo_tab_view.dart';
@@ -43,9 +42,9 @@ class PlusButton {
       BuildContext context, Widget destination) {
     return GestureDetector(
       onTap: () {
-        Navigator.pop(context);
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => destination));
+        Navigator.pop(
+            context); // Close the bottom sheet before opening a new modal
+        showInModal(context, destination);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 15),
@@ -60,6 +59,19 @@ class PlusButton {
           ],
         ),
       ),
+    );
+  }
+
+  static void showInModal(BuildContext context, Widget destination) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.91, // Set the modal height to 90% of screen height
+          child: destination,
+        );
+      },
     );
   }
 }
