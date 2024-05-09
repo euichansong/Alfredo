@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
 import '../../provider/user/future_provider.dart';
-import '../../screens/routine/routine_list_screen.dart';
 
 class RoutineCreateScreen extends ConsumerWidget {
   const RoutineCreateScreen({super.key});
@@ -40,10 +39,10 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFF0D2338),
         title: const Text(
           "Routine 추가",
-          style: TextStyle(fontSize: 24),
+          style: TextStyle(fontSize: 24, color: Colors.white),
         ),
         actions: [
           IconButton(
@@ -151,13 +150,13 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       startTime, days, currentAlarmSound, memo);
                   ref.refresh(routineProvider);
 
-                  // Navigator.pop(context);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RoutineListScreen(),
-                    ),
-                  );
+                  Navigator.pop(context);
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => RoutineListScreen(),
+                  //   ),
+                  // );
                 },
                 child: const Text("저장"),
               ),
