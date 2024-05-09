@@ -63,7 +63,6 @@ dependencies:
   uuid: ^3.0.6
   flutter_spinkit: ^5.2.1
 
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -94,7 +93,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/web_neutral_rd_ctn@3x.png
-    - assets/android_light_rd_ctn@2x.png       
+    - assets/android_light_rd_ctn@2x.png
     - assets/alfredologo2.png
     - assets/alfredoback1.png
     - assets/loading.png

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// 화면 파일들의 경로를 정확히 지정합니다.
-import 'todo_create_screen.dart'; // 단일 할 일 생성 화면
-import 'recurring_todo_create_screen.dart'; // 반복 할 일 생성 화면
+import 'todo_create_screen.dart';
+import 'recurring_todo_create_screen.dart';
 
 class TodoTabView extends ConsumerWidget {
   const TodoTabView({super.key});
@@ -31,4 +30,18 @@ class TodoTabView extends ConsumerWidget {
       ),
     );
   }
+}
+
+void showTodoModalDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return const Dialog(
+        child: SizedBox(
+          width: 600, // 다이얼로그의 크기를 조정
+          child: TodoTabView(),
+        ),
+      );
+    },
+  );
 }
