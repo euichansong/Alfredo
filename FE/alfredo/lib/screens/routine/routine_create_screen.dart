@@ -80,7 +80,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
               const SizedBox(height: 10),
               const Text("요일 설정"),
               SizedBox(
-                width: 200,
+                width: 300,
                 child: ToggleButtons(
                   isSelected: selectedDays,
                   children: const [
