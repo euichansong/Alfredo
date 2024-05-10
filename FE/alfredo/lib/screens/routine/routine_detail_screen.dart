@@ -60,12 +60,7 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: "루틴 제목"),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return '루틴 제목을 입력해주세요';
-                  }
-                  return null;
-                },
+                maxLines: null,
               ),
               const SizedBox(height: 20),
               GestureDetector(
@@ -119,7 +114,7 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateRoutine,
-                child: const Text("저장"),
+                child: const Text("수정하기"),
               ),
             ],
           ),
