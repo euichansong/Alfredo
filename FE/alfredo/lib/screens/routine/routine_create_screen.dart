@@ -30,7 +30,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   final TextEditingController memoController = TextEditingController();
   final RoutineApi routineApi = RoutineApi();
   TimeOfDay? selectedTime = const TimeOfDay(hour: 7, minute: 30);
-  List<bool> selectedDays = List.filled(7, false);
+  List<bool> selectedDays = [false, true, true, true, true, true, false];
   String currentAlarmSound = "Morning Glory";
 
   _RoutineCreateScreenState({required this.ref});
