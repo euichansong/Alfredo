@@ -75,20 +75,20 @@ class RoutineListScreen extends ConsumerWidget {
                           await routineApi.deleteRoutine(routine.id);
                           // ref.refresh(routineProvider);
                         },
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Card(
-                            margin: const EdgeInsets.symmetric(vertical: 6.0),
-                            color: Colors.white,
-                            child: GestureDetector(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RoutineDetailScreen(
-                                    routine: routine,
-                                  ),
-                                ),
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RoutineDetailScreen(
+                                routine: routine,
                               ),
+                            ),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(vertical: 6.0),
+                              color: Colors.white,
                               child: Container(
                                   width: screenWidth * 0.9,
                                   height: screenHeight * 0.10,
@@ -100,11 +100,15 @@ class RoutineListScreen extends ConsumerWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
                                     children: [
-                                      Text(
-                                        routine.routineTitle,
-                                        style: const TextStyle(
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.normal,
+                                      SizedBox(
+                                        width: screenWidth * 0.6,
+                                        child: Text(
+                                          routine.routineTitle,
+                                          style: const TextStyle(
+                                            fontSize: 22,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
                                       Text(
