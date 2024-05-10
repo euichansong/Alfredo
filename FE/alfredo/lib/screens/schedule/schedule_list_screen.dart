@@ -6,6 +6,7 @@ import '../../models/schedule/schedule_model.dart';
 import 'schedule_edit_screen.dart';
 import 'schedule_create_screen.dart';
 import '../../provider/schedule/schedule_provider.dart';
+import '../../api/alarm/alarm_api.dart';
 
 class ScheduleListScreen extends ConsumerStatefulWidget {
   const ScheduleListScreen({super.key});
@@ -16,6 +17,8 @@ class ScheduleListScreen extends ConsumerStatefulWidget {
 
 class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
   Future<List<Schedule>>? schedules;
+
+  final AlarmApi alarmApi = AlarmApi();
 
   @override
   void initState() {
@@ -52,6 +55,10 @@ class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
                 key: Key(schedule.scheduleId.toString()),
                 direction: DismissDirection.endToStart,
                 onDismissed: (direction) async {
+                  if (schedule.startAlarm) {
+                    await alarmApi.deleteAlarm(schedule.scheduleId!);
+                  }
+
                   await ref
                       .read(scheduleControllerProvider)
                       .deleteSchedule(schedule.scheduleId!);

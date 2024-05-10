@@ -18,6 +18,9 @@ Schedule _$ScheduleFromJson(Map<String, dynamic> json) => Schedule(
       startTime: Schedule._timeFromString(json['startTime'] as String?),
       endTime: Schedule._timeFromString(json['endTime'] as String?),
       alarmTime: Schedule._timeFromString(json['alarmTime'] as String?),
+      alarmDate: json['alarmDate'] == null
+          ? null
+          : DateTime.parse(json['alarmDate'] as String),
       withTime: json['withTime'] as bool? ?? true,
     );
 
@@ -31,5 +34,6 @@ Map<String, dynamic> _$ScheduleToJson(Schedule instance) => <String, dynamic>{
       'startTime': Schedule._stringFromTime(instance.startTime),
       'endTime': Schedule._stringFromTime(instance.endTime),
       'alarmTime': Schedule._stringFromTime(instance.alarmTime),
+      'alarmDate': instance.alarmDate?.toIso8601String(),
       'withTime': instance.withTime,
     };

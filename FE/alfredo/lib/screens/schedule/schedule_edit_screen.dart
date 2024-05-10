@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import '../../controller/schedule/schedule_controller.dart';
 import '../../models/schedule/schedule_model.dart';
 import '../../provider/schedule/schedule_provider.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import '../../api/alarm/alarm_api.dart';
 
 class ScheduleEditScreen extends ConsumerStatefulWidget {
   final int scheduleId;
@@ -24,8 +26,11 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
   TimeOfDay? _alarmTime; // 알람 시간 설정을 위한 변수
+  DateTime? _alarmDate; // 알람 날짜 설정을 위한 변수
   int? _selectedAlarmOption; // 선택된 알람 옵션 인덱스
   String? _place;
+
+  final AlarmApi alarmApi = AlarmApi();
 
   @override
   void initState() {
@@ -46,6 +51,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       _startTime = schedule.startTime;
       _endTime = schedule.endTime;
       _alarmTime = schedule.alarmTime;
+      _alarmDate = schedule.alarmDate; // 알람 날짜 초기 설정
       setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -113,6 +119,8 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
             _startAlarm = value;
             if (!value) {
               _alarmTime = null; // Turn off alarm time when alarm is disabled
+              _alarmDate = null; // Also reset the alarm date
+              _removeAlarmIfSet(); // Additional call to remove alarm if it's set and being turned off
             }
           });
         },
@@ -174,7 +182,12 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
                 onTap: () {
                   setState(() {
                     _selectedAlarmOption = index;
-                    _updateAlarmTime(index);
+                    if (index == 2) {
+                      // '사용자 설정' 선택 시 시간 선택기 호출
+                      _selectAlarmTime();
+                    } else {
+                      _updateAlarmTime(index);
+                    }
                   });
                 },
               )),
@@ -197,6 +210,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   void _updateAlarmTime(int optionIndex) {
     DateTime baseDateTime = _calculateBaseDateTime(optionIndex);
     _alarmTime = TimeOfDay.fromDateTime(baseDateTime);
+    _alarmDate = baseDateTime; // 알람 날짜 설정 업데이트
   }
 
   DateTime _calculateBaseDateTime(int optionIndex) {
@@ -253,8 +267,30 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     }
   }
 
+  Future<void> _selectAlarmTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: _alarmTime ?? const TimeOfDay(hour: 9, minute: 0),
+    );
+    if (picked != null) {
+      setState(() {
+        _alarmTime = picked;
+        _alarmDate = DateTime(_startDate.year, _startDate.month, _startDate.day,
+            _alarmTime!.hour, _alarmTime!.minute);
+      });
+    }
+  }
+
   void _deleteSchedule() async {
     try {
+      if (_startAlarm) {
+        DateTime now = DateTime.now();
+        if (_alarmDate != null && _alarmDate!.isAfter(now)) {
+          // Only delete alarms that have not occurred yet
+          await alarmApi.deleteAlarm(widget.scheduleId);
+        }
+      }
+
       await ref
           .read(scheduleControllerProvider)
           .deleteSchedule(widget.scheduleId);
@@ -268,7 +304,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     }
   }
 
-  void _updateSchedule() {
+  void _updateSchedule() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var updatedSchedule = Schedule(
@@ -278,27 +314,52 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
         endDate: _endDate,
         startAlarm: _startAlarm,
         alarmTime: _alarmTime,
+        alarmDate: _alarmDate, // Include alarm date in the updated schedule
         place: _place,
         startTime: _startTime,
         endTime: _endTime,
         withTime: _withTime,
       );
+
       try {
-        ref
+        // 일정 정보를 업데이트합니다.
+        await ref
             .read(scheduleControllerProvider)
-            .updateSchedule(widget.scheduleId, updatedSchedule)
-            .then((_) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(const SnackBar(content: Text('일정이 정상적으로 수정되었습니다')));
-          Navigator.pop(context, true);
-        }).catchError((error) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('수정 실패: $error')));
-        });
-      } catch (e) {
+            .updateSchedule(widget.scheduleId, updatedSchedule);
+
+        // 알람 설정이 활성화되어 있고, 사용자가 토큰을 가지고 있다면 알람 정보도 업데이트합니다.
+        if (_startAlarm &&
+            _alarmDate != null &&
+            _alarmDate!.isAfter(DateTime.now())) {
+          String? token = await FirebaseMessaging.instance.getToken();
+          if (token != null) {
+            String formattedDateTime =
+                alarmApi.formatScheduleDateTime(_alarmDate, _alarmTime);
+            print(formattedDateTime);
+            await alarmApi.updateAlarm(token, _titleController!.text,
+                formattedDateTime, widget.scheduleId);
+          }
+        } else if (!_startAlarm) {
+          await alarmApi.deleteAlarm(
+              widget.scheduleId); // Ensure alarm is cancelled if turned off
+        }
+
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('일정 수정 중 오류 발생: $e')));
+            .showSnackBar(const SnackBar(content: Text('일정이 정상적으로 수정되었습니다')));
+        Navigator.pop(context, true);
+      } catch (error) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('수정 실패: $error')));
       }
+    }
+  }
+
+  void _removeAlarmIfSet() async {
+    if (_startAlarm &&
+        _alarmDate != null &&
+        _alarmDate!.isAfter(DateTime.now())) {
+      // 알람이 설정되어 있고 아직 실행되지 않았다면 삭제
+      await alarmApi.deleteAlarm(widget.scheduleId);
     }
   }
 }
