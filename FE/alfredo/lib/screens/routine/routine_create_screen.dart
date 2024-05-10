@@ -56,9 +56,16 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              TextField(
+              TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(labelText: "루틴 제목"),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '루틴 제목을 입력해주세요';
+                  }
+                  return null;
+                },
+                maxLines: null,
               ),
               const SizedBox(height: 50),
               Row(
@@ -120,44 +127,61 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () async {
-                  final String? idToken =
-                      await ref.watch(authManagerProvider.future);
-                  final routineTitle = titleController.text;
-                  final hour = selectedTime!.hour.toString().padLeft(2, '0');
-                  final minute =
-                      selectedTime!.minute.toString().padLeft(2, '0');
+                  if (titleController.text.isEmpty) {
+                    // 제목 필드가 비어 있는 경우 경고 메시지를 표시하고 작업을 중단합니다.
+                    showDialog(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text("경고"),
+                        content: const Text("루틴 제목을 입력해주세요"),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('확인'),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                    );
+                  } else {
+                    final String? idToken =
+                        await ref.watch(authManagerProvider.future);
+                    final routineTitle = titleController.text;
+                    final hour = selectedTime!.hour.toString().padLeft(2, '0');
+                    final minute =
+                        selectedTime!.minute.toString().padLeft(2, '0');
 
-                  final startTime = '$hour:$minute:00';
-                  final days = selectedDays
-                      .asMap()
-                      .entries
-                      .map((e) => e.value
-                          ? [
-                              "SUN",
-                              "MON",
-                              "TUE",
-                              "WED",
-                              "THU",
-                              "FRI",
-                              "SAT"
-                            ][e.key]
-                          : "")
-                      .where((d) => d.isNotEmpty)
-                      .toList();
+                    final startTime = '$hour:$minute:00';
+                    final days = selectedDays
+                        .asMap()
+                        .entries
+                        .map((e) => e.value
+                            ? [
+                                "SUN",
+                                "MON",
+                                "TUE",
+                                "WED",
+                                "THU",
+                                "FRI",
+                                "SAT"
+                              ][e.key]
+                            : "")
+                        .where((d) => d.isNotEmpty)
+                        .toList();
 
-                  final memo = memoController.text;
+                    final memo = memoController.text;
 
-                  await routineApi.createRoutine(idToken, routineTitle,
-                      startTime, days, currentAlarmSound, memo);
-                  ref.refresh(routineProvider);
+                    await routineApi.createRoutine(idToken, routineTitle,
+                        startTime, days, currentAlarmSound, memo);
+                    ref.refresh(routineProvider);
 
-                  Navigator.pop(context);
-                  // Navigator.pushReplacement(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => RoutineListScreen(),
-                  //   ),
-                  // );
+                    Navigator.pop(context);
+                    // Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => RoutineListScreen(),
+                    //   ),
+                    // );
+                  }
                 },
                 child: const Text("저장"),
               ),
