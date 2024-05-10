@@ -19,9 +19,11 @@ public class ScheduleCreateDto {
     private LocalDate endDate;
     private Boolean startAlarm;
     private LocalTime alarmTime;
+    private LocalDate alarmDate;
     private String place;
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean withTime;
+    private String jobUid;
 
 }

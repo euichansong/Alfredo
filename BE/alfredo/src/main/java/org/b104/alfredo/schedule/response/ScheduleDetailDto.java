@@ -16,10 +16,12 @@ public class ScheduleDetailDto {
     private LocalDate endDate;
     private Boolean startAlarm;
     private LocalTime alarmTime;
+    private LocalDate alarmDate;
     private String place;
     private LocalTime startTime;
     private LocalTime endTime;
     private Boolean withTime;
+    private String jobUid;
 
     public ScheduleDetailDto(Schedule schedule){
         this.scheduleId = schedule.getScheduleId();
@@ -28,10 +30,12 @@ public class ScheduleDetailDto {
         this.endDate = schedule.getEndDate();
         this.startAlarm = schedule.getStartAlarm();
         this.alarmTime = schedule.getAlarmTime();
+        this.alarmDate = schedule.getAlarmDate();
         this.place = schedule.getPlace();
         this.startTime = schedule.getStartTime();
         this.endTime = schedule.getEndTime();
         this.withTime = schedule.getWithTime();
+        this.jobUid = schedule.getJobUid();
 
     }
 }
