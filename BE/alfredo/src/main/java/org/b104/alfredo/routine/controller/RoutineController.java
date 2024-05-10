@@ -75,6 +75,8 @@ public class RoutineController {
 
 //    String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo
 //    routineTitle,startTime,days,alarmSound,memo
+
+    //일반 루틴 추가
     @PostMapping
     public ResponseEntity<RoutineDto> createRoutine(@RequestHeader(value = "Authorization") String authHeader,@RequestBody RoutineRequestDto routineRequestDto) throws FirebaseAuthException {
         log.info("루틴 생성 시도");
@@ -94,6 +96,7 @@ public class RoutineController {
         return ResponseEntity.ok().body(routineDto);
     }
 
+    //추천 기본 루틴 추가
     @PostMapping("/add-basic-routines")
     public ResponseEntity<Void> addBasicRoutines(@RequestHeader(value = "Authorization") String authHeader, @RequestBody RoutineIdsRequest request) throws FirebaseAuthException {
         String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
@@ -106,7 +109,6 @@ public class RoutineController {
         return ResponseEntity.ok().build();
     }
 
-    //TODO Patch로 해보기
     @PatchMapping("/{routineId}")
     public ResponseEntity<RoutineDto> updateRoutine(@PathVariable Long routineId,@RequestBody RoutineRequestDto routineRequestDto){
         log.info("루틴 수정 시도");
