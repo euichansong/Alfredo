@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
+import '../../screens/routine/routine_detail_screen.dart';
 
 class RoutineListScreen extends ConsumerWidget {
   final routineApi = RoutineApi();
@@ -58,56 +59,66 @@ class RoutineListScreen extends ConsumerWidget {
                   itemBuilder: (context, index) {
                     final routine = data[index];
                     return Dismissible(
-                      key: Key(routine.id
-                          .toString()), // Provide a unique key for each item
-                      background: Container(
-                        color: Colors.red,
-                        child: const Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 20.0),
-                            child: Icon(Icons.delete, color: Colors.white),
+                        key: Key(routine.id
+                            .toString()), // Provide a unique key for each item
+                        background: Container(
+                          color: Colors.red,
+                          child: const Align(
+                            alignment: Alignment.centerRight,
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 20.0),
+                              child: Icon(Icons.delete, color: Colors.white),
+                            ),
                           ),
                         ),
-                      ),
-                      onDismissed: (direction) async {
-                        await routineApi.deleteRoutine(routine.id);
-                        // ref.refresh(routineProvider);
-                      },
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 6.0),
-                          color: Colors.white,
-                          child: Container(
-                              width: screenWidth * 0.9,
-                              height: screenHeight * 0.10,
-                              padding:
-                                  const EdgeInsets.all(15.0), // 카드 내부에 패딩 추가
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    routine.routineTitle,
-                                    style: const TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.normal,
-                                    ),
+                        onDismissed: (direction) async {
+                          await routineApi.deleteRoutine(routine.id);
+                          // ref.refresh(routineProvider);
+                        },
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 6.0),
+                            color: Colors.white,
+                            child: GestureDetector(
+                              onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RoutineDetailScreen(
+                                    routine: routine,
                                   ),
-                                  Text(
-                                    formatTimeOfDay(routine.startTime),
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        ),
-                      ),
-                    );
+                                ),
+                              ),
+                              child: Container(
+                                  width: screenWidth * 0.9,
+                                  height: screenHeight * 0.10,
+                                  padding: const EdgeInsets.all(
+                                      15.0), // 카드 내부에 패딩 추가
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        routine.routineTitle,
+                                        style: const TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                      Text(
+                                        formatTimeOfDay(routine.startTime),
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  )),
+                            ),
+                          ),
+                        ));
                   },
                 ),
               ),

@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
-import '../../screens/routine/routine_detail_screen.dart';
+import '../../screens/schedule/schedule_list_screen.dart';
 
 class RoutineListScreen extends ConsumerWidget {
   final routineApi = RoutineApi();
@@ -66,20 +66,20 @@ class RoutineListScreen extends ConsumerWidget {
                           await routineApi.deleteRoutine(routine.id);
                           // ref.refresh(routineProvider);
                         },
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Card(
-                            margin: const EdgeInsets.symmetric(vertical: 6.0),
-                            color: const Color.fromARGB(255, 53, 74, 96),
-                            child: InkWell(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RoutineDetailScreen(
-                                    routine: routine,
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ScheduleListScreen(
+                                  // routine: routine,
                                   ),
-                                ),
-                              ),
+                            ),
+                          ),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(vertical: 6.0),
+                              color: const Color.fromARGB(255, 53, 74, 96),
                               child: Container(
                                   width: screenWidth * 0.9,
                                   height: screenHeight * 0.10,
