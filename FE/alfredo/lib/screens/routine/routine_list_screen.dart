@@ -21,9 +21,12 @@ class RoutineListScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D2338),
-        title: const Text(
-          "루틴 리스트",
-          style: TextStyle(fontSize: 24, color: Colors.white),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 16.0, left: 8),
+          child: Text(
+            "루틴 리스트",
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
         ),
       ),
       backgroundColor: const Color(0xFF0D2338),
@@ -32,29 +35,18 @@ class RoutineListScreen extends ConsumerWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // const Padding(
-              //   padding: EdgeInsets.all(8.0),
-              //   child: Text(
-              //     '루틴',
-              //     style: TextStyle(
-              //         fontSize: 18,
-              //         fontWeight: FontWeight.bold,
-              //         color: Colors.white),
-              //   ),
-              // ),
               Container(
-                margin: const EdgeInsets.only(left: 28.0),
+                margin: const EdgeInsets.only(top: 10, left: 32.0),
                 child: Text(
                   '${data.length}개',
                   style: const TextStyle(color: Colors.grey),
                   textAlign: TextAlign.left,
-                  // 텍스트를 왼쪽 정렬
                 ),
               ),
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 20.0), // 리스트 전체에 수직 패딩 추가
+                  padding: const EdgeInsets.only(
+                      top: 15.0, bottom: 20), // 리스트 위, 아래에 패딩 추가
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final routine = data[index];
@@ -73,7 +65,7 @@ class RoutineListScreen extends ConsumerWidget {
                         ),
                         onDismissed: (direction) async {
                           await routineApi.deleteRoutine(routine.id);
-                          // ref.refresh(routineProvider);
+                          ref.refresh(routineProvider);
                         },
                         child: GestureDetector(
                           onTap: () => Navigator.push(
@@ -88,7 +80,7 @@ class RoutineListScreen extends ConsumerWidget {
                             alignment: Alignment.center,
                             child: Card(
                               margin: const EdgeInsets.symmetric(vertical: 6.0),
-                              color: Colors.white,
+                              color: const Color(0xFFF2E9E9),
                               child: Container(
                                   width: screenWidth * 0.9,
                                   height: screenHeight * 0.10,

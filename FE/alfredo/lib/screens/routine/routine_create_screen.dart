@@ -128,7 +128,6 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
               ElevatedButton(
                 onPressed: () async {
                   if (titleController.text.isEmpty) {
-                    // 제목 필드가 비어 있는 경우 경고 메시지를 표시하고 작업을 중단합니다.
                     showDialog(
                       context: context,
                       builder: (context) => AlertDialog(
