@@ -29,7 +29,7 @@ public class TransferScheduleService {
         LocalDateTime now = LocalDateTime.now();
         System.out.println("Current Local Date and Time: " + now);
         // 4 달 이상 된 Schedule 이동하기
-        List<Schedule> oldSchedules = scheduleRepository.findByDueDateBefore(twoMonthsAgo);
+        List<Schedule> oldSchedules = scheduleRepository.findByEndDateBefore(twoMonthsAgo);
 
         for (Schedule schedule : oldSchedules) {
             OldSchedule oldSchedule = new OldSchedule(

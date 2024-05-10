@@ -20,6 +20,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByIdAndDate(@Param("user")User user, @Param("today") LocalDate today);
 
     Schedule findByScheduleId(Long id);
-
-    List<Schedule> findByDueDateBefore(LocalDate date);
+    List<Schedule> findByEndDateBefore(LocalDate date);
 }
