@@ -15,7 +15,6 @@ class RoutineDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
-  final _formKey = GlobalKey<FormState>();
   late TextEditingController _titleController;
   late TextEditingController _memoController;
   TimeOfDay? _selectedTime;
@@ -41,8 +40,6 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routineApi = RoutineApi();
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D2338),
@@ -53,78 +50,90 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: "루틴 제목"),
-                maxLines: null,
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () async {
-                  final TimeOfDay? pickedTime = await showTimePicker(
-                      context: context, initialTime: _selectedTime!);
-                  if (pickedTime != null) {
-                    setState(() => _selectedTime = pickedTime);
-                  }
-                },
-                child: Text("시간: ${_selectedTime!.format(context)}"),
-              ),
-              const SizedBox(height: 20),
-              const Text("요일 설정"),
-              ToggleButtons(
-                isSelected: _selectedDays,
-                children: const [
-                  Text("일"),
-                  Text("월"),
-                  Text("화"),
-                  Text("수"),
-                  Text("목"),
-                  Text("금"),
-                  Text("토"),
-                ],
-                onPressed: (int index) => setState(
-                    () => _selectedDays[index] = !_selectedDays[index]),
-              ),
-              const SizedBox(height: 20),
-              const Text("알람 설정"),
-              DropdownButton<String>(
-                value: _currentAlarmSound,
-                onChanged: (String? newValue) {
-                  if (newValue != null) {
-                    setState(() => _currentAlarmSound = newValue);
-                  }
-                },
-                items: <String>['Morning Glory', 'Beep Alarm', 'Digital Alarm']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 20),
-              TextFormField(
-                controller: _memoController,
-                decoration: const InputDecoration(labelText: "메모"),
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _updateRoutine,
-                child: const Text("수정하기"),
-              ),
-            ],
-          ),
+        child: ListView(
+          children: [
+            TextFormField(
+              controller: _titleController,
+              decoration: const InputDecoration(labelText: "루틴 제목"),
+              maxLines: null,
+            ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: () async {
+                final TimeOfDay? pickedTime = await showTimePicker(
+                    context: context, initialTime: _selectedTime!);
+                if (pickedTime != null) {
+                  setState(() => _selectedTime = pickedTime);
+                }
+              },
+              child: Text("시간: ${_selectedTime!.format(context)}"),
+            ),
+            const SizedBox(height: 20),
+            const Text("요일 설정"),
+            ToggleButtons(
+              isSelected: _selectedDays,
+              children: const [
+                Text("일"),
+                Text("월"),
+                Text("화"),
+                Text("수"),
+                Text("목"),
+                Text("금"),
+                Text("토"),
+              ],
+              onPressed: (int index) =>
+                  setState(() => _selectedDays[index] = !_selectedDays[index]),
+            ),
+            const SizedBox(height: 20),
+            const Text("알람 설정"),
+            DropdownButton<String>(
+              value: _currentAlarmSound,
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  setState(() => _currentAlarmSound = newValue);
+                }
+              },
+              items: <String>['Morning Glory', 'Beep Alarm', 'Digital Alarm']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            TextFormField(
+              controller: _memoController,
+              decoration: const InputDecoration(labelText: "메모"),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _updateRoutine,
+              child: const Text("수정하기"),
+            ),
+          ],
         ),
       ),
     );
   }
 
   void _updateRoutine() async {
-    if (_formKey.currentState!.validate()) {
+    if (_titleController.text.isEmpty) {
+      // 제목 필드가 비어 있는 경우 경고 메시지를 표시하고 작업을 중단합니다.
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("경고"),
+          content: const Text("루틴 제목을 입력해주세요"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    } else {
       final String routineTitle = _titleController.text;
       final String memo = _memoController.text;
       final String startTime =
