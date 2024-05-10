@@ -21,10 +21,10 @@ class MainPage extends StatelessWidget {
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.5,
-            left: MediaQuery.of(context).size.height * 0.05,
-            right: MediaQuery.of(context).size.height * 0.05,
-            bottom: MediaQuery.of(context).size.height * 0.05,
+            top: MediaQuery.of(context).size.height * 0.45,
+            left: MediaQuery.of(context).size.height * 0.07,
+            right: MediaQuery.of(context).size.height * 0.07,
+            bottom: MediaQuery.of(context).size.height * 0.1,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: const SizedBox(
