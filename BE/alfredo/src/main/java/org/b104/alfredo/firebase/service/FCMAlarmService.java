@@ -188,6 +188,12 @@ public class FCMAlarmService {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다. id=" + id));
 
+        // jobUid가 null이거나 빈 문자열인지 확인
+        if (schedule.getJobUid() == null || schedule.getJobUid().isEmpty()) {
+            System.out.println("No jobUid found for schedule with id: " + id);
+            return; // jobUid가 없으면 함수 종료
+        }
+
         // 일정의 JobUid로 job의 고유 식별자 찾기
         JobKey jobKey = new JobKey(schedule.getJobUid(), "FCM-Messages");
         if (scheduler.checkExists(jobKey)) {
