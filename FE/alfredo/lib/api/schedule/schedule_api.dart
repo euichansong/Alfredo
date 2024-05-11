@@ -55,8 +55,6 @@ class ScheduleApi {
   // 일정 생성
   Future<Schedule> createSchedule(Schedule schedule, String authToken) async {
     final requestBody = jsonEncode(schedule.toJson()); // JSON 변환
-    print('Request body: $requestBody'); // 로그로 요청 데이터 출력
-
     final response = await http.post(Uri.parse('$baseUrl/save'),
         headers: _authHeaders(authToken), body: requestBody); // 요청 보내기
     if (response.statusCode == 201) {
@@ -69,8 +67,6 @@ class ScheduleApi {
   // Update and delete do not require authorization in this setup
   Future<void> updateSchedule(int id, Schedule schedule) async {
     String jsonString = jsonEncode(schedule.toJson());
-    print('Sending JSON body: $jsonString');
-
     final response = await http.patch(
       Uri.parse('$baseUrl/detail/$id'),
       headers: _headers,

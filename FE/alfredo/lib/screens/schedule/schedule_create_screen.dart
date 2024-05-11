@@ -112,8 +112,17 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   Widget _buildDatePicker(String label, DateTime date,
       {required bool isStartDate}) {
     return ListTile(
+      leading: const Icon(Icons.calendar_today),
       title: Text('$label: ${DateFormat('yyyy-MM-dd').format(date)}'),
       onTap: () => _selectDate(context, isStart: isStartDate),
+    );
+  }
+
+  Widget _buildTimePicker(String label, TimeOfDay? time, bool isStartTime) {
+    return ListTile(
+      leading: const Icon(Icons.alarm),
+      title: Text('$label: ${time != null ? time.format(context) : "선택되지 않음"}'),
+      onTap: () => _selectTime(context, isStart: isStartTime),
     );
   }
 
@@ -128,13 +137,14 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
 
   Widget _buildAlarmOptions() {
     List<String> options = withTime
-        ? ['일정 당일 오전 9시', '일정 당일 오전 12시', '사용자 설정']
+        ? ['일정 당일 오전 9시', '일정 당일 오후 12시', '사용자 설정']
         : ['시작 1시간 전', '시작 30분 전', '사용자 설정'];
 
     return Column(
       children: List<Widget>.generate(
         options.length,
         (index) => ListTile(
+          leading: const Icon(Icons.alarm),
           title: Text(_buildOptionTitle(index, options)),
           trailing: selectedAlarmOption == index
               ? const Icon(Icons.check, color: Colors.blue)
@@ -155,7 +165,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     String optionText = options[index];
     if (index == 2 && alarmTime != null && alarmDate != null) {
       optionText +=
-          ' (${DateFormat('MM/dd HH:mm').format(alarmDate!)} at ${alarmTime!.format(context)})';
+          ' (${DateFormat('MM/dd').format(alarmDate!)} ${alarmTime!.format(context)})';
     }
     return optionText;
   }
@@ -200,13 +210,6 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     });
   }
 
-  Widget _buildTimePicker(String label, TimeOfDay? time, bool isStartTime) {
-    return ListTile(
-      title: Text('$label: ${time != null ? time.format(context) : "선택되지 않음"}'),
-      onTap: () => _selectTime(context, isStart: isStartTime),
-    );
-  }
-
   Widget _buildSaveButton() {
     return ElevatedButton(
       onPressed: () async {
@@ -227,7 +230,6 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           try {
             // 디바이스 토큰을 가져옵니다.
             String? token = await FirebaseMessaging.instance.getToken();
-            print('Firebase Messaging Token: $token');
 
             // 일정 생성 및 디바이스 토큰과 일정 정보를 백엔드로 전송
             if (startAlarm && token != null) {
@@ -265,6 +267,15 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('시작 시간과 종료 시간을 모두 입력해야 합니다.')));
       isValid = false;
+    }
+    if (startAlarm && alarmDate != null && alarmTime != null) {
+      DateTime combinedDateTime = DateTime(alarmDate!.year, alarmDate!.month,
+          alarmDate!.day, alarmTime!.hour, alarmTime!.minute);
+      if (combinedDateTime.isBefore(DateTime.now())) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('알람 시간은 현재 시간 이후여야 합니다. 다시 설정해 주세요.')));
+        isValid = false;
+      }
     }
     return isValid;
   }

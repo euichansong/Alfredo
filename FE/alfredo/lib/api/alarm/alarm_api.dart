@@ -36,7 +36,6 @@ class AlarmApi {
   /// 토큰과 일정 정보를 서버로 전송합니다.
   Future<void> updateAlarm(
       String token, String title, String body, int id) async {
-    print(token);
     var url = Uri.parse('$baseUrl/update/$id');
     var response = await http.post(
       url,
@@ -47,8 +46,7 @@ class AlarmApi {
         'body': body,
       }),
     );
-    print("response");
-    print(response.body);
+
     if (response.statusCode == 200) {
       print("Data successfully sent to the server");
     } else {

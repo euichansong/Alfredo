@@ -167,7 +167,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
 
   Widget _buildAlarmOptions() {
     List<String> options = _withTime
-        ? ['일정 당일 오전 9시', '일정 당일 오전 12시', '사용자 설정']
+        ? ['일정 당일 오전 9시', '일정 당일 오후 12시', '사용자 설정']
         : ['시작 1시간 전', '시작 30분 전', '사용자 설정'];
 
     return Column(
@@ -195,14 +195,17 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   }
 
   Widget _buildOptionTitle(int index) {
+    // 옵션 텍스트 기본 설정
     String optionText = index == 2
         ? '사용자 설정'
         : (_withTime
-            ? ['일정 당일 오전 9시', '일정 당일 오전 12시'][index]
+            ? ['일정 당일 오전 9시', '일정 당일 오후 12시'][index]
             : ['시작 1시간 전', '시작 30분 전'][index]);
 
-    if (index == 2 && _alarmTime != null) {
-      optionText += ' (${_alarmTime!.format(context)})';
+    // _alarmTime이 설정되어 있고, _alarmDate도 null이 아닐 때만 날짜와 시간을 표시합니다.
+    if (index == 2 && _alarmTime != null && _alarmDate != null) {
+      optionText +=
+          ' (${DateFormat('MM/dd').format(_alarmDate!)} ${_alarmTime!.format(context)})';
     }
     return Text(optionText);
   }
@@ -273,10 +276,16 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       initialTime: _alarmTime ?? const TimeOfDay(hour: 9, minute: 0),
     );
     if (picked != null) {
+      DateTime potentialAlarmDate = DateTime(_startDate.year, _startDate.month,
+          _startDate.day, picked.hour, picked.minute);
+      if (DateTime.now().isAfter(potentialAlarmDate)) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('알람 시간은 현재 시간 이후여야 합니다. 다시 설정해 주세요.')));
+        return;
+      }
       setState(() {
         _alarmTime = picked;
-        _alarmDate = DateTime(_startDate.year, _startDate.month, _startDate.day,
-            _alarmTime!.hour, _alarmTime!.minute);
+        _alarmDate = potentialAlarmDate;
       });
     }
   }
@@ -305,6 +314,22 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   }
 
   void _updateSchedule() async {
+    // 알람 시간을 DateTime 객체로 결합합니다.
+    DateTime? fullAlarmDateTime;
+    if (_alarmDate != null && _alarmTime != null) {
+      fullAlarmDateTime = DateTime(_alarmDate!.year, _alarmDate!.month,
+          _alarmDate!.day, _alarmTime!.hour, _alarmTime!.minute);
+    }
+
+    // 결합된 알람 시간이 현재 시간 이전인지 검증합니다.
+    if (_startAlarm &&
+        fullAlarmDateTime != null &&
+        fullAlarmDateTime.isBefore(DateTime.now())) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('알람 시간은 현재 시간 이후여야 합니다. 다시 설정해 주세요.')));
+      return; // 유효하지 않은 알람 시간으로 인해 업데이트를 중단합니다.
+    }
+
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       var updatedSchedule = Schedule(
@@ -314,7 +339,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
         endDate: _endDate,
         startAlarm: _startAlarm,
         alarmTime: _alarmTime,
-        alarmDate: _alarmDate, // Include alarm date in the updated schedule
+        alarmDate: _alarmDate,
         place: _place,
         startTime: _startTime,
         endTime: _endTime,
@@ -322,32 +347,34 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
       );
 
       try {
-        // 일정 정보를 업데이트합니다.
+        // 스케줄 업데이트를 요청합니다.
         await ref
             .read(scheduleControllerProvider)
             .updateSchedule(widget.scheduleId, updatedSchedule);
 
-        // 알람 설정이 활성화되어 있고, 사용자가 토큰을 가지고 있다면 알람 정보도 업데이트합니다.
-        if (_startAlarm &&
+        // startAlarm이 false일 경우 알람을 삭제합니다.
+        if (!_startAlarm) {
+          // 알람 삭제 API를 호출합니다. 백엔드에서 해당 로직을 처리한다고 가정합니다.
+          await alarmApi.deleteAlarm(widget.scheduleId);
+        } else if (_startAlarm &&
             _alarmDate != null &&
             _alarmDate!.isAfter(DateTime.now())) {
+          // 알람이 활성화되어 있고, 알람 날짜가 현재 날짜 이후인 경우 알람 정보를 업데이트합니다.
           String? token = await FirebaseMessaging.instance.getToken();
           if (token != null) {
             String formattedDateTime =
                 alarmApi.formatScheduleDateTime(_alarmDate, _alarmTime);
-            print(formattedDateTime);
             await alarmApi.updateAlarm(token, _titleController!.text,
                 formattedDateTime, widget.scheduleId);
           }
-        } else if (!_startAlarm) {
-          await alarmApi.deleteAlarm(
-              widget.scheduleId); // Ensure alarm is cancelled if turned off
         }
 
+        // 일정 수정이 성공적으로 완료되었다는 메시지를 사용자에게 알립니다.
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('일정이 정상적으로 수정되었습니다')));
         Navigator.pop(context, true);
       } catch (error) {
+        // 일정 수정 실패 시 에러 메시지를 표시합니다.
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('수정 실패: $error')));
       }
