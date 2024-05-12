@@ -52,7 +52,15 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("일정 생성")),
+      appBar: AppBar(
+        title: const Text("일정 생성",
+            style: TextStyle(
+                color: Colors.white)), // Set title text color to white
+        backgroundColor: const Color(0xfff0d2338),
+        iconTheme: const IconThemeData(
+            color: Colors.white), // Set back button and other icons to white
+      ),
+      backgroundColor: const Color(0xFFF2E9E9),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -126,12 +134,18 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     );
   }
 
+  // 알림사용, 하루종일 스와이프 아이콘
   Widget _buildSwitchTile(
       String title, bool value, ValueChanged<bool> onChanged) {
     return SwitchListTile(
       title: Text(title),
       value: value,
       onChanged: onChanged,
+      activeColor: const Color(0xfff0d2338), // 스위치 버튼이 활성화될 때의 주 색상
+      activeTrackColor: const Color(0xFFE7D8BC), // 스위치 트랙의 활성화된 부분의 색상
+      inactiveThumbColor:
+          const Color(0xFFBDBDBD), // 스위치 버튼이 비활성화될 때의 색상 (더 어둡게 설정)
+      inactiveTrackColor: const Color(0x99E7D8BC), // 스위치 트랙의 비활성화된 부분의 색상
     );
   }
 
@@ -211,53 +225,60 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   }
 
   Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        if (_validateForm()) {
-          _formKey.currentState!.save();
-          var newSchedule = Schedule(
-            scheduleTitle: title,
-            startDate: startDate,
-            endDate: endDate,
-            startAlarm: startAlarm,
-            alarmTime: alarmTime,
-            alarmDate: alarmDate,
-            place: place,
-            startTime: startTime,
-            endTime: endTime,
-            withTime: withTime,
-          );
-          try {
-            // 디바이스 토큰을 가져옵니다.
-            String? token = await FirebaseMessaging.instance.getToken();
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0), // 위쪽에 20 픽셀의 패딩 추가
+      child: ElevatedButton(
+        onPressed: () async {
+          if (_validateForm()) {
+            _formKey.currentState!.save();
+            var newSchedule = Schedule(
+              scheduleTitle: title,
+              startDate: startDate,
+              endDate: endDate,
+              startAlarm: startAlarm,
+              alarmTime: alarmTime,
+              alarmDate: alarmDate,
+              place: place,
+              startTime: startTime,
+              endTime: endTime,
+              withTime: withTime,
+            );
+            try {
+              // 디바이스 토큰을 가져옵니다.
+              String? token = await FirebaseMessaging.instance.getToken();
 
-            // 일정 생성 및 디바이스 토큰과 일정 정보를 백엔드로 전송
-            if (startAlarm && token != null) {
-              await widget.controller.createSchedule(newSchedule);
-              AlarmApi alarmApi = AlarmApi();
-              String formattedDateTime =
-                  alarmApi.formatScheduleDateTime(alarmDate, alarmTime);
-              await alarmApi.sendTokenAndScheduleData(
-                  token, title, formattedDateTime);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('일정이 성공적으로 생성되었으며 알림이 설정되었습니다.')));
-            } else {
-              await widget.controller.createSchedule(newSchedule);
+              // 일정 생성 및 디바이스 토큰과 일정 정보를 백엔드로 전송
+              if (startAlarm && token != null) {
+                await widget.controller.createSchedule(newSchedule);
+                AlarmApi alarmApi = AlarmApi();
+                String formattedDateTime =
+                    alarmApi.formatScheduleDateTime(alarmDate, alarmTime);
+                await alarmApi.sendTokenAndScheduleData(
+                    token, title, formattedDateTime);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('일정이 성공적으로 생성되었으며 알림이 설정되었습니다.')));
+              } else {
+                await widget.controller.createSchedule(newSchedule);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+              }
+              // 일정 목록 화면으로 이동
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ScheduleListScreen()));
+            } catch (error) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+                  SnackBar(content: Text('일정 생성에 실패했습니다: $error')));
             }
-            // 일정 목록 화면으로 이동
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ScheduleListScreen()));
-          } catch (error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('일정 생성에 실패했습니다: $error')));
           }
-        }
-      },
-      child: const Text('저장'),
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xfff0d2338), // 버튼 배경색 설정
+          foregroundColor: Colors.white, // 글씨색 설정
+        ),
+        child: const Text('저장'),
+      ),
     );
   }
 

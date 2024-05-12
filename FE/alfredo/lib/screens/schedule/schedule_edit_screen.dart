@@ -63,14 +63,25 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   Widget build(BuildContext context) {
     if (_titleController == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text("일정 상세")),
+        appBar: AppBar(
+          title: const Text("일정 상세"),
+          backgroundColor: const Color(0xfff0d2338), // AppBar 배경색 설정
+          iconTheme: const IconThemeData(color: Colors.white), // 아이콘 색상 설정
+        ),
+        backgroundColor: const Color(0xfff0d2338), // Scaffold 배경색 설정
         body: const Center(child: CircularProgressIndicator()),
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("일정 수정"),
+        title: const Text(
+          "일정 수정",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: const Color(0xfff0d2338), // AppBar 배경색 설정
+        iconTheme: const IconThemeData(color: Colors.white), // 아이콘 색상 설정
+
         actions: [
           IconButton(
             icon: const Icon(Icons.delete),
@@ -111,34 +122,26 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
             "종료 날짜: ${_endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : '선택되지 않음'}"),
         onTap: () => _selectDate(context, isStart: false),
       ),
-      SwitchListTile(
-        title: const Text('알람 사용'),
-        value: _startAlarm,
-        onChanged: (bool value) {
-          setState(() {
-            _startAlarm = value;
-            if (!value) {
-              _alarmTime = null; // Turn off alarm time when alarm is disabled
-              _alarmDate = null; // Also reset the alarm date
-              _removeAlarmIfSet(); // Additional call to remove alarm if it's set and being turned off
-            }
-          });
-        },
-      ),
+      _buildSwitchTile('알람 사용', _startAlarm, (bool value) {
+        setState(() {
+          _startAlarm = value;
+          if (!value) {
+            _alarmTime = null;
+            _alarmDate = null;
+            _removeAlarmIfSet();
+          }
+        });
+      }),
       if (_startAlarm) _buildAlarmOptions(),
-      SwitchListTile(
-        title: const Text('하루 종일'),
-        value: _withTime,
-        onChanged: (bool value) {
-          setState(() {
-            _withTime = value;
-            if (!value) {
-              _startTime = null;
-              _endTime = null;
-            }
-          });
-        },
-      ),
+      _buildSwitchTile('하루 종일', _withTime, (bool value) {
+        setState(() {
+          _withTime = value;
+          if (!value) {
+            _startTime = null;
+            _endTime = null;
+          }
+        });
+      }),
       if (!_withTime)
         ListTile(
           leading: const Icon(Icons.access_time),
@@ -158,9 +161,16 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
         decoration: const InputDecoration(labelText: '장소'),
         onSaved: (value) => _place = value,
       ),
-      ElevatedButton(
-        onPressed: _updateSchedule,
-        child: const Text('수정하기'),
+      Padding(
+        padding: const EdgeInsets.all(20.0), // 버튼 주변에 20 픽셀 패딩 추가
+        child: ElevatedButton(
+          onPressed: _updateSchedule,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xfff0d2338), // 버튼 배경색 설정
+            foregroundColor: Colors.white, // 글씨색 설정
+          ),
+          child: const Text('수정하기'),
+        ),
       ),
     ];
   }
@@ -208,6 +218,21 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
           ' (${DateFormat('MM/dd').format(_alarmDate!)} ${_alarmTime!.format(context)})';
     }
     return Text(optionText);
+  }
+
+  // 알림사용, 하루종일 스와이프 아이콘
+  Widget _buildSwitchTile(
+      String title, bool value, ValueChanged<bool> onChanged) {
+    return SwitchListTile(
+      title: Text(title),
+      value: value,
+      onChanged: onChanged,
+      activeColor: const Color(0xfff0d2338), // 스위치 버튼이 활성화될 때의 주 색상
+      activeTrackColor: const Color(0xFFE7D8BC), // 스위치 트랙의 활성화된 부분의 색상
+      inactiveThumbColor:
+          const Color(0xFFBDBDBD), // 스위치 버튼이 비활성화될 때의 색상 (더 어둡게 설정)
+      inactiveTrackColor: const Color(0x99E7D8BC), // 스위치 트랙의 비활성화된 부분의 색상
+    );
   }
 
   void _updateAlarmTime(int optionIndex) {
