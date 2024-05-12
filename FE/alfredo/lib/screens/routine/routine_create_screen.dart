@@ -42,16 +42,26 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
       final basicRoutine = await routineApi.fetchBasicRoutine(title);
       setState(() {
         titleController.text = basicRoutine.routineTitle;
+        selectedTime = TimeOfDay(
+          hour: basicRoutine.startTime.hour,
+          minute: basicRoutine.startTime.minute,
+        );
         // selectedTime = TimeOfDay(
         //   hour: int.parse(basicRoutine.startTime.toString().split(':')[0]),
         //   minute: int.parse(basicRoutine.startTime.toString().split(':')[1]),
+        // );
+
+        // final startTimeParts = basicRoutine.startTime.split(':');
+        // selectedTime = TimeOfDay(
+        //   hour: int.parse(startTimeParts[0]),
+        //   minute: int.parse(startTimeParts[1]),
         // );
         selectedDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
             .map((day) => basicRoutine.days.contains(day))
             .toList();
         memoController.text = basicRoutine.memo ?? ''; //null이면 빈 문자열로 설정
         print("베이직 $basicRoutine.basicRoutineId");
-        basicRoutineId = basicRoutine.id; // 기본 루틴 ID 저장
+        basicRoutineId = basicRoutine.id; // 기본 루틴 ID 저장  (주의 id임. 아직 이해 안감)
         selectedCategory = title; // 선택된 카테고리 업데이트
       });
     } catch (e) {
