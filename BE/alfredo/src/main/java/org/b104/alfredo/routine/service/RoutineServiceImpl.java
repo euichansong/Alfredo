@@ -47,7 +47,7 @@ public class RoutineServiceImpl implements RoutineService {
 
     //TODO dto사용구조가 아님(리팩토링 하기)
     @Override
-    public Routine createRoutine(String uid,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo){
+    public Routine createRoutine(String uid,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo, Long basicRoutineId){
         Optional<User> user = userRepository.findByUid(uid);
         if (user.isEmpty()) {
             throw new RuntimeException("User not found");
@@ -64,6 +64,11 @@ public class RoutineServiceImpl implements RoutineService {
         routine.setDays(days);
         routine.setAlarmSound(alarmSound);
         routine.setMemo(memo);
+        if (basicRoutineId != null) {
+            BasicRoutine basicRoutine = basicRoutineRepository.findById(basicRoutineId)
+                    .orElseThrow(() -> new RuntimeException("BasicRoutine not found"));
+            routine.setBasicRoutine(basicRoutine);
+        }
         return routineRepository.save(routine);
     }
 
@@ -144,7 +149,7 @@ public class RoutineServiceImpl implements RoutineService {
         LocalTime nowTime = now.toLocalTime().truncatedTo(ChronoUnit.MINUTES);
         LocalTime routineTime = routine.getStartTime();
         String dayOfWeekShort = now.getDayOfWeek().toString().substring(0, 3);
-//        log.info(String.valueOf(routineTime.equals(nowTime)));
+        log.info(String.valueOf(routineTime.equals(nowTime)));
         // 'now' 시간에 루틴에 대한 알림을 보내야 하는지 결정하는 예시 로직
         return routine.getDays().contains(dayOfWeekShort) &&
                 routineTime.equals(nowTime);

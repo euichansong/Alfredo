@@ -12,7 +12,7 @@ public interface RoutineService {
     List<Routine> getAllRoutines(Long userId);
     Routine getRoutine(Long id);
 
-    Routine createRoutine(String uid,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo);
+    Routine createRoutine(String uid,String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo, Long basicRoutineId);
 
     void deleteRoutine(Long routineId);
 

@@ -22,7 +22,7 @@ public class Routine {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="basic_routine_id")
+    @JoinColumn(name="basic_routine_id",nullable = true)
     private BasicRoutine basicRoutine;
 
     @Column(name="routine_title",nullable = false)

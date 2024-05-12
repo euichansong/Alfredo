@@ -14,13 +14,15 @@ public class RoutineRequestDto {
     private Set<String> days;
     private String alarmSound;
     private String memo;
+    private Long basicRoutineId;
 
     @Builder
-    public RoutineRequestDto(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo){
+    public RoutineRequestDto(String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo, Long basicRoutineId){
         this.routineTitle = routineTitle;
         this.startTime = startTime;
         this.days = days;
         this.alarmSound = alarmSound;
         this.memo = memo;
+        this.basicRoutineId = basicRoutineId;
     }
 }

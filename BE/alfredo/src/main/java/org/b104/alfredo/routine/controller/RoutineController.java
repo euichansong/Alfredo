@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 //TODO Transactional을 해야 되나??
 @RestController
@@ -34,6 +35,7 @@ public class RoutineController {
     private final RoutineService routineService;
     private final BasicRoutineRepository basicRoutineRepository;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+
     private final Logger log = LoggerFactory.getLogger(RoutineController.class);
     @GetMapping("/all")
     public ResponseEntity<List<RoutineDto>> getRoutineList(@RequestHeader(value = "Authorization") String authHeader) throws FirebaseAuthException {
@@ -76,7 +78,7 @@ public class RoutineController {
 //    String routineTitle, LocalTime startTime, Set<String> days, String alarmSound, String memo
 //    routineTitle,startTime,days,alarmSound,memo
 
-    //일반 루틴 추가
+    //일반 루틴 추가+기본루틴에서 수정한 루틴 추가
     @PostMapping
     public ResponseEntity<RoutineDto> createRoutine(@RequestHeader(value = "Authorization") String authHeader,@RequestBody RoutineRequestDto routineRequestDto) throws FirebaseAuthException {
         log.info("루틴 생성 시도");
@@ -84,7 +86,7 @@ public class RoutineController {
         FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
         String uid = decodedToken.getUid();
 
-        Routine routine = routineService.createRoutine(uid,routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo());
+        Routine routine = routineService.createRoutine(uid,routineRequestDto.getRoutineTitle(),routineRequestDto.getStartTime(),routineRequestDto.getDays(),routineRequestDto.getAlarmSound(),routineRequestDto.getMemo(), routineRequestDto.getBasicRoutineId());
         RoutineDto routineDto = RoutineDto.builder()
                 .id(routine.getId())
                 .routineTitle(routine.getRoutineTitle())
@@ -95,8 +97,22 @@ public class RoutineController {
                 .build();
         return ResponseEntity.ok().body(routineDto);
     }
+    @GetMapping("/basic-routine/{title}")
+    public ResponseEntity<RoutineDto> getBasicRoutineByTitle(@PathVariable String title) {
+        BasicRoutine basicRoutine = basicRoutineRepository.findByBasicRoutineTitle(title)
+                .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + title));
+        RoutineDto routineDto = RoutineDto.builder()
+                .id(basicRoutine.getId())
+                .routineTitle(basicRoutine.getBasicRoutineTitle())
+                .startTime(basicRoutine.getStartTime())
+                .days(basicRoutine.getDays())
+                .alarmSound(basicRoutine.getAlarmSound())
+                .memo(basicRoutine.getMemo())
+                .build();
+        return ResponseEntity.ok().body(routineDto);
+    }
 
-    //추천 기본 루틴 추가
+    //수정 안한 추천 기본 루틴 추가(리스트 형식)
     @PostMapping("/add-basic-routines")
     public ResponseEntity<Void> addBasicRoutines(@RequestHeader(value = "Authorization") String authHeader, @RequestBody RoutineIdsRequest request) throws FirebaseAuthException {
         String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
