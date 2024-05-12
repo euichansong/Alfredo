@@ -32,8 +32,31 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   TimeOfDay? selectedTime = const TimeOfDay(hour: 7, minute: 30);
   List<bool> selectedDays = [false, true, true, true, true, true, false];
   String currentAlarmSound = "Morning Glory";
+  int? basicRoutineId; // 기본 루틴 ID를 저장할 변수 추가
 
   _RoutineCreateScreenState({required this.ref});
+
+  Future<void> _fetchBasicRoutine(String title) async {
+    try {
+      final basicRoutine = await routineApi.fetchBasicRoutine(title);
+      setState(() {
+        titleController.text = basicRoutine.routineTitle;
+        // selectedTime = TimeOfDay(
+        //   hour: int.parse(basicRoutine.startTime.toString().split(':')[0]),
+        //   minute: int.parse(basicRoutine.startTime.toString().split(':')[1]),
+        // );
+        selectedDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+            .map((day) => basicRoutine.days.contains(day))
+            .toList();
+        memoController.text = basicRoutine.memo ?? ''; //null이면 빈 문자열로 설정
+        basicRoutineId = basicRoutine.basicRoutineId; // 기본 루틴 ID 저장
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to fetch routine: $e')),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +83,14 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              Row(
+                children: [
+                  _buildCategoryBadge("운동"),
+                  _buildCategoryBadge("쇼핑"),
+                  _buildCategoryBadge("공부"),
+                ],
+              ),
+              const SizedBox(height: 50),
               TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(
@@ -221,8 +252,14 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
 
                       final memo = memoController.text;
 
-                      await routineApi.createRoutine(idToken, routineTitle,
-                          startTime, days, currentAlarmSound, memo);
+                      await routineApi.createRoutine(
+                          idToken,
+                          routineTitle,
+                          startTime,
+                          days,
+                          currentAlarmSound,
+                          memo,
+                          basicRoutineId);
                       ref.refresh(routineProvider);
 
                       Navigator.pop(context);
@@ -244,6 +281,21 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryBadge(String title) {
+    return GestureDetector(
+      onTap: () => _fetchBasicRoutine(title),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        decoration: BoxDecoration(
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Text(title, style: const TextStyle(fontSize: 16)),
       ),
     );
   }

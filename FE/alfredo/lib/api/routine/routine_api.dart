@@ -39,7 +39,7 @@ class RoutineApi {
     }
   }
 
-  // 로그인한 유저의 전체 일정 조회
+  // 로그인한 유저의 한개의 일정 조회
   Future<Routine> getRoutine(var authToken, var routineId) async {
     final url = Uri.parse('$baseUrl/$routineId');
     final response = await http.get(url, headers: _authHeaders(authToken));
@@ -61,7 +61,9 @@ class RoutineApi {
       String startTime,
       List<String> days,
       String alarmSound,
-      String memo) async {
+      String memo,
+      int? basicRoutineId) async {
+    // 기본 루틴 ID 추가
     final url = Uri.parse(baseUrl);
 
     final body = jsonEncode({
@@ -70,6 +72,7 @@ class RoutineApi {
       "days": days,
       "alarmSound": alarmSound,
       "memo": memo,
+      "basicRoutineId": basicRoutineId, // 기본 루틴 ID 추가
     });
 
     final response = await http.post(url,
@@ -77,6 +80,19 @@ class RoutineApi {
 
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception('Failed to create routine: ${response.statusCode}');
+    }
+  }
+
+//기본 루틴 정보 가져오기
+  Future<Routine> fetchBasicRoutine(String title) async {
+    final url = Uri.parse('$baseUrl/basic-routine/$title');
+    final response = await http.get(url, headers: _headers);
+
+    if (response.statusCode == 200) {
+      final decodedBody = utf8.decode(response.bodyBytes);
+      return Routine.fromJson(jsonDecode(decodedBody));
+    } else {
+      throw Exception('Failed to load basic routine: ${response.statusCode}');
     }
   }
 
