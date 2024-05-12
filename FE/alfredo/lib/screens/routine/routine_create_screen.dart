@@ -33,6 +33,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   List<bool> selectedDays = [false, true, true, true, true, true, false];
   String currentAlarmSound = "Morning Glory";
   int? basicRoutineId; // 기본 루틴 ID를 저장할 변수 추가
+  String? selectedCategory; // 선택된 카테고리를 저장할 변수 추가
 
   _RoutineCreateScreenState({required this.ref});
 
@@ -49,7 +50,9 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
             .map((day) => basicRoutine.days.contains(day))
             .toList();
         memoController.text = basicRoutine.memo ?? ''; //null이면 빈 문자열로 설정
-        basicRoutineId = basicRoutine.basicRoutineId; // 기본 루틴 ID 저장
+        print("베이직 $basicRoutine.basicRoutineId");
+        basicRoutineId = basicRoutine.id; // 기본 루틴 ID 저장
+        selectedCategory = title; // 선택된 카테고리 업데이트
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -292,7 +295,9 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
         decoration: BoxDecoration(
-          color: Colors.grey[200],
+          color: selectedCategory == title
+              ? const Color.fromARGB(255, 127, 128, 129)
+              : Colors.grey[200],
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Text(title, style: const TextStyle(fontSize: 16)),
