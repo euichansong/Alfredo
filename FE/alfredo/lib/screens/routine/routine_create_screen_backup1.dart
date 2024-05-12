@@ -65,6 +65,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                 decoration: const InputDecoration(
                   labelText: "루틴 제목",
                   labelStyle: TextStyle(fontSize: 18),
+                  focusColor: Color(0xFF0D2338),
                   focusedBorder: UnderlineInputBorder(
                     borderSide:
                         BorderSide(color: Color(0xFF0D2338)), // 네이비 색 테두리
@@ -133,34 +134,35 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       () => selectedDays[index] = !selectedDays[index]),
                 ),
               ),
-              // const SizedBox(height: 50),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     const Text(
-              //       "알람 설정",
-              //       style: TextStyle(fontSize: 18),
-              //     ),
-              //     DropdownButton<String>(
-              //       value: currentAlarmSound,
-              //       onChanged: (String? newValue) {
-              //         if (newValue != null) {
-              //           setState(() => currentAlarmSound = newValue);
-              //         }
-              //       },
-              //       items: <String>[
-              //         'Morning Glory',
-              //         'Beep Alarm',
-              //         'Digital Alarm'
-              //       ].map<DropdownMenuItem<String>>((String value) {
-              //         return DropdownMenuItem<String>(
-              //           value: value,
-              //           child: Text(value),
-              //         );
-              //       }).toList(),
-              //     ),
-              //   ],
-              // ),
+              const SizedBox(height: 50),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "알람 설정",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  DropdownButton<String>(
+                    value: currentAlarmSound,
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() => currentAlarmSound = newValue);
+                      }
+                    },
+                    items: <String>[
+                      'Morning Glory',
+                      'Beep Alarm',
+                      'Digital Alarm'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
               const SizedBox(height: 50),
               TextField(
                 controller: memoController,

@@ -94,7 +94,7 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
                               width: screenWidth * 0.9,
                               height: screenHeight * 0.10,
                               padding:
-                                  const EdgeInsets.all(13.0), // 카드 내부에 패딩 추가
+                                  const EdgeInsets.all(15.0), // 카드 내부에 패딩 추가
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -118,14 +118,11 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
                                             _buildDayWidgets(routine.days),
                                       ),
                                       const SizedBox(width: 10), // 원하는 간격으로 조정
-                                      SizedBox(
-                                        width: 80,
-                                        child: Text(
-                                          formatTimeOfDay(routine.startTime),
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.grey,
-                                          ),
+                                      Text(
+                                        formatTimeOfDay(routine.startTime),
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.grey,
                                         ),
                                       ),
                                     ],

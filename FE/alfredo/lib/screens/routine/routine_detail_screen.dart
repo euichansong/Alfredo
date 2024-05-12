@@ -43,75 +43,142 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D2338),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text(
           "루틴 상세 보기",
           style: TextStyle(fontSize: 24, color: Colors.white),
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.pop(context),
+          ),
+        ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: "루틴 제목"),
-              maxLines: null,
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: () async {
-                final TimeOfDay? pickedTime = await showTimePicker(
-                    context: context, initialTime: _selectedTime!);
-                if (pickedTime != null) {
-                  setState(() => _selectedTime = pickedTime);
-                }
-              },
-              child: Text("시간: ${_selectedTime!.format(context)}"),
-            ),
-            const SizedBox(height: 20),
-            const Text("요일 설정"),
-            ToggleButtons(
-              isSelected: _selectedDays,
-              children: const [
-                Text("일"),
-                Text("월"),
-                Text("화"),
-                Text("수"),
-                Text("목"),
-                Text("금"),
-                Text("토"),
-              ],
-              onPressed: (int index) =>
-                  setState(() => _selectedDays[index] = !_selectedDays[index]),
-            ),
-            const SizedBox(height: 20),
-            const Text("알람 설정"),
-            DropdownButton<String>(
-              value: _currentAlarmSound,
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  setState(() => _currentAlarmSound = newValue);
-                }
-              },
-              items: <String>['Morning Glory', 'Beep Alarm', 'Digital Alarm']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _memoController,
-              decoration: const InputDecoration(labelText: "메모"),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _updateRoutine,
-              child: const Text("수정하기"),
-            ),
-          ],
+        padding: const EdgeInsets.all(32.0),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelText: "루틴 제목",
+                  labelStyle: TextStyle(fontSize: 18),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Color(0xFF0D2338)), // 네이비 색 테두리
+                  ),
+                ),
+                maxLines: null,
+              ),
+              const SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "시간",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(right: 16.0),
+                    child: GestureDetector(
+                      onTap: () async {
+                        final TimeOfDay? pickedTime = await showTimePicker(
+                            context: context, initialTime: _selectedTime!);
+                        if (pickedTime != null) {
+                          setState(() => _selectedTime = pickedTime);
+                        }
+                      },
+                      child: Text(
+                        _selectedTime!.format(context),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 50),
+              SizedBox(
+                child: ToggleButtons(
+                  isSelected: _selectedDays,
+                  selectedColor: Colors.white,
+                  color: Colors.black,
+                  fillColor: const Color(0xFF0D2338),
+                  selectedBorderColor: const Color(0xFF0D2338),
+                  borderColor: Colors.grey,
+                  borderWidth: 1.0,
+                  borderRadius: BorderRadius.circular(0.0),
+                  children: const [
+                    Text("일"),
+                    Text("월"),
+                    Text("화"),
+                    Text("수"),
+                    Text("목"),
+                    Text("금"),
+                    Text("토"),
+                  ],
+                  onPressed: (int index) => setState(
+                      () => _selectedDays[index] = !_selectedDays[index]),
+                ),
+              ),
+              // const SizedBox(height: 50),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     const Text(
+              //       "알람 설정",
+              //       style: TextStyle(fontSize: 18),
+              //     ),
+              //     DropdownButton<String>(
+              //       value: _currentAlarmSound,
+              //       onChanged: (String? newValue) {
+              //         if (newValue != null) {
+              //           setState(() => _currentAlarmSound = newValue);
+              //         }
+              //       },
+              //       items: <String>[
+              //         'Morning Glory',
+              //         'Beep Alarm',
+              //         'Digital Alarm'
+              //       ].map<DropdownMenuItem<String>>((String value) {
+              //         return DropdownMenuItem<String>(
+              //           value: value,
+              //           child: Text(value),
+              //         );
+              //       }).toList(),
+              //     ),
+              //   ],
+              // ),
+              const SizedBox(height: 50),
+              TextField(
+                controller: _memoController,
+                decoration: const InputDecoration(
+                  labelText: "메모",
+                  labelStyle: TextStyle(fontSize: 18),
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 16.0, horizontal: 12.0),
+                ),
+                style: const TextStyle(fontSize: 18),
+                maxLines: null,
+              ),
+              const SizedBox(height: 50),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _updateRoutine,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF0D2338),
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text("수정하기"),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -119,7 +186,6 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
 
   void _updateRoutine() async {
     if (_titleController.text.isEmpty) {
-      // 제목 필드가 비어 있는 경우 경고 메시지를 표시하고 작업을 중단합니다.
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
