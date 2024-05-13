@@ -63,6 +63,7 @@ class FirebaseMessagingService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('sj Message clicked!');
       if (message.data['type'] == 'routine') {
+        print("routine sended");
         // Navigator가 context 밖에서 사용할 수 없기 때문에 NavigationService를 이용하거나, MyApp에서 라우트 설정을 통해 처리해야 합니다.
         // 아래 코드를 MyApp의 _firebaseMessagingBackgroundHandler로 이동합니다.
       }
