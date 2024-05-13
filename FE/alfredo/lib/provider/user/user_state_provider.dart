@@ -1,8 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../api/user/user_api.dart';
 import '../../models/user/user.dart';
-import 'future_provider.dart';
 import '../../models/user/user_update_dto.dart';
+import 'future_provider.dart';
 
 final userProvider = FutureProvider.autoDispose<User>((ref) async {
   final idToken = await ref.watch(authManagerProvider.future);
