@@ -4,6 +4,7 @@ import lombok.*;
 import org.b104.alfredo.user.Domain.User;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ public class UserInfoDto {
     private String nickname;
 //    private String uid;
     private Date birth;
-    private String answer;
+    private List<Long> answer;
     private String googleCalendarUrl;
 
 
