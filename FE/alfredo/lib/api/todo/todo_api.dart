@@ -247,4 +247,20 @@ class TodoApi {
           'Failed to delete todos by subIndex and date. Status code: ${response.statusCode}, Message: ${response.body}');
     }
   }
+
+  // Future<void> updateTimeSpent(int id, int spentTime) async {
+  //   final response = await http.patch(
+  //     Uri.parse('$baseUrl/$id'),
+  //     headers: _headers,
+  //     body: jsonEncode({'spentTime': spentTime}),
+  //   );
+
+  //   if (response.statusCode == 204) {
+  //     print('Update successful. Status: ${response.statusCode}');
+  //   } else {
+  //     print('Failed to update. Status: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+  //     throw Exception('Failed to update time spent');
+  //   }
+  // }
 }

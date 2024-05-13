@@ -26,16 +26,26 @@ class _RecurringTodoCreateScreenState
   final Uuid uuid = const Uuid();
 
   Future<void> _selectDate(BuildContext context, bool isStart) async {
+    DateTime initialDate = isStart ? startDate : endDate;
+    DateTime firstDate = DateTime.now();
+    // lastDate를 현재 날짜로부터 90일 후로 설정
+    DateTime lastDate = DateTime.now().add(const Duration(days: 90));
+
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: isStart ? startDate : endDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate, // 마지막 날짜 제한 적용
     );
+
     if (picked != null) {
       setState(() {
         if (isStart) {
           startDate = picked;
+          // 시작 날짜 선택 후 종료 날짜가 시작 날짜 이전이면 종료 날짜를 시작 날짜와 같게 설정
+          if (endDate.isBefore(startDate)) {
+            endDate = startDate;
+          }
         } else {
           endDate = picked;
         }
@@ -85,7 +95,10 @@ class _RecurringTodoCreateScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("반복 할 일 생성")),
+      appBar: AppBar(
+        title: const Text("반복 할 일 생성"),
+        automaticallyImplyLeading: false,
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -116,7 +129,7 @@ class _RecurringTodoCreateScreenState
               children: <Widget>[
                 ToggleButtons(
                   constraints: const BoxConstraints(
-                      minHeight: 30.0, minWidth: 30.0), // 버튼 크기 조정
+                      minHeight: 35.0, minWidth: 35.0), // 버튼 크기 조정
                   isSelected: daysOfWeek,
                   onPressed: (int index) {
                     setState(() {
@@ -124,19 +137,25 @@ class _RecurringTodoCreateScreenState
                     });
                   },
                   children: const <Widget>[
-                    Text('월', style: TextStyle(fontSize: 12)), // 폰트 크기 조정
-                    Text('화', style: TextStyle(fontSize: 12)),
-                    Text('수', style: TextStyle(fontSize: 12)),
-                    Text('목', style: TextStyle(fontSize: 12)),
-                    Text('금', style: TextStyle(fontSize: 12)),
-                    Text('토', style: TextStyle(fontSize: 12)),
-                    Text('일', style: TextStyle(fontSize: 12)),
+                    Text('월', style: TextStyle(fontSize: 15)), // 폰트 크기 조정
+                    Text('화', style: TextStyle(fontSize: 15)),
+                    Text('수', style: TextStyle(fontSize: 15)),
+                    Text('목', style: TextStyle(fontSize: 15)),
+                    Text('금', style: TextStyle(fontSize: 15)),
+                    Text('토', style: TextStyle(fontSize: 15)),
+                    Text('일', style: TextStyle(fontSize: 15)),
                   ],
                 ),
               ],
             ),
             ElevatedButton(
               onPressed: _submitRecurringTodo,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0D2338),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+              ),
               child: const Text('할 일 추가'),
             ),
           ],
