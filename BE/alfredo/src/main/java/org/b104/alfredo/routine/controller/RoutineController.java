@@ -17,6 +17,7 @@ import org.b104.alfredo.user.Domain.User;
 import org.b104.alfredo.user.Repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -97,10 +98,10 @@ public class RoutineController {
                 .build();
         return ResponseEntity.ok().body(routineDto);
     }
-    @GetMapping("/basic-routine/{title}")
-    public ResponseEntity<RoutineDto> getBasicRoutineByTitle(@PathVariable String title) {
-        BasicRoutine basicRoutine = basicRoutineRepository.findByBasicRoutineTitle(title)
-                .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + title));
+    @GetMapping("/basic-routine/{basicRoutineId}")
+    public ResponseEntity<RoutineDto> getBasicRoutineById(@PathVariable Long basicRoutineId) {
+        BasicRoutine basicRoutine = basicRoutineRepository.findById(basicRoutineId)
+                .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + basicRoutineId));
         RoutineDto routineDto = RoutineDto.builder()
                 .id(basicRoutine.getId())
                 .routineTitle(basicRoutine.getBasicRoutineTitle())
@@ -109,7 +110,10 @@ public class RoutineController {
                 .alarmSound(basicRoutine.getAlarmSound())
                 .memo(basicRoutine.getMemo())
                 .build();
-        return ResponseEntity.ok().body(routineDto);
+//        return ResponseEntity.ok().body(routineDto);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(routineDto);
     }
 
     //수정 안한 추천 기본 루틴 추가(리스트 형식)
