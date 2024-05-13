@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/todo/todo_model.dart';
@@ -30,12 +29,12 @@ class _TodoListState extends ConsumerState<TodoList> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchTodos();
+      _fetchTodos(); // 프레임이 그려진 후 데이터를 불러옵니다.
     });
   }
 
   void _onTodoUpdated() {
-    _fetchTodos();
+    _fetchTodos(); // 할 일이 업데이트 될 때 데이터를 다시 불러옵니다.
   }
 
   @override
@@ -48,11 +47,10 @@ class _TodoListState extends ConsumerState<TodoList> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           centerTitle: true,
+          automaticallyImplyLeading: false,
           title: const Text('오늘의 할 일 목록',
               style: TextStyle(
-                  fontSize: 20.0,
-                  fontFamily: 'Georgia',
-                  color: Color.fromARGB(255, 242, 237, 237))),
+                  fontSize: 20.0, color: Color.fromARGB(255, 242, 237, 237))),
         ),
       ),
       body: _todos == null
@@ -63,45 +61,47 @@ class _TodoListState extends ConsumerState<TodoList> {
                   itemCount: _todos!.length,
                   itemBuilder: (context, index) {
                     final todo = _todos![index];
-                    return CustomPaint(
-                      foregroundPainter: WavyLinePainter(),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 30.0, vertical: 12.0),
-                          title: Text(
-                            todo.todoTitle,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Color.fromARGB(255, 8, 1, 1),
-                            ),
+                    return Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom:
+                              BorderSide(width: 1, color: Colors.grey), // 밑줄 추가
+                        ),
+                      ),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 30.0, vertical: 0.5),
+                        title: Text(
+                          todo.todoTitle,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Color.fromARGB(255, 8, 1, 1),
                           ),
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return TodoDetailScreen(todoId: todo.id!);
-                              },
-                            ).then((_) => _onTodoUpdated());
-                          },
-                          trailing: Transform.scale(
-                            scale: 2,
-                            child: Checkbox(
-                              value: todo.isCompleted,
-                              onChanged: (bool? newValue) {
-                                if (newValue != null) {
-                                  _toggleTodoCompletion(todo, newValue, index);
-                                }
-                              },
-
-                              checkColor: const Color.fromARGB(
-                                  255, 231, 20, 20), // 체크 표시 색상을 빨간색으로 변경
-                              activeColor: Colors.transparent,
-                              side: const BorderSide(
-                                color: Color.fromARGB(250, 255, 255, 255),
-                                width: 2.0,
-                              ),
+                        ),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return TodoDetailScreen(todoId: todo.id!);
+                            },
+                          ).then((_) =>
+                              _onTodoUpdated()); // 대화 상자가 닫힌 후 데이터를 갱신합니다.
+                        },
+                        trailing: Transform.scale(
+                          scale: 1.5,
+                          child: Checkbox(
+                            value: todo.isCompleted,
+                            onChanged: (bool? newValue) {
+                              if (newValue != null) {
+                                _toggleTodoCompletion(todo, newValue, index);
+                              }
+                            },
+                            checkColor: const Color.fromARGB(
+                                255, 231, 20, 20), // 체크 표시 색상을 빨간색으로 변경
+                            activeColor: Colors.transparent,
+                            side: const BorderSide(
+                              color: Color.fromARGB(250, 255, 255, 255),
+                              width: 2.0,
                             ),
                           ),
                         ),
@@ -122,27 +122,6 @@ class _TodoListState extends ConsumerState<TodoList> {
         .then((_) => _onTodoUpdated());
   }
 }
-
-class WavyLinePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.brown
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.5;
-    Path path = Path();
-    path.moveTo(0, size.height - 1);
-    for (double i = 0; i < size.width; i += 6) {
-      path.lineTo(i, size.height - 10 + 5 * math.sin(i / 60 * 2 * math.pi));
-    }
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-
 
 // import 'package:flutter/material.dart';
 // import 'dart:math' as math;
@@ -176,12 +155,12 @@ class WavyLinePainter extends CustomPainter {
 //   void initState() {
 //     super.initState();
 //     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       _fetchTodos(); // 프레임이 그려진 후 데이터를 불러옵니다.
+//       _fetchTodos();
 //     });
 //   }
 
 //   void _onTodoUpdated() {
-//     _fetchTodos(); // 할 일이 업데이트 될 때 데이터를 다시 불러옵니다.
+//     _fetchTodos();
 //   }
 
 //   @override
@@ -194,11 +173,10 @@ class WavyLinePainter extends CustomPainter {
 //           backgroundColor: Colors.transparent,
 //           elevation: 0,
 //           centerTitle: true,
+//           automaticallyImplyLeading: false,
 //           title: const Text('오늘의 할 일 목록',
 //               style: TextStyle(
-//                   fontSize: 20.0,
-//                   fontFamily: 'Georgia',
-//                   color: Color.fromARGB(255, 242, 237, 237))),
+//                   fontSize: 20.0, color: Color.fromARGB(255, 242, 237, 237))),
 //         ),
 //       ),
 //       body: _todos == null
@@ -209,17 +187,21 @@ class WavyLinePainter extends CustomPainter {
 //                   itemCount: _todos!.length,
 //                   itemBuilder: (context, index) {
 //                     final todo = _todos![index];
+//                     String displayTitle = todo.todoTitle.length > 9
+//                         ? '${todo.todoTitle.substring(0, 9)}...'
+//                         : todo.todoTitle;
 //                     return CustomPaint(
 //                       foregroundPainter: WavyLinePainter(),
 //                       child: Container(
-//                         padding: const EdgeInsets.symmetric(vertical: 8),
+//                         padding:
+//                             const EdgeInsets.symmetric(vertical: 1), // 간격 조정
 //                         child: ListTile(
 //                           contentPadding: const EdgeInsets.symmetric(
-//                               horizontal: 30.0, vertical: 12.0),
+//                               horizontal: 20.0, vertical: 1.0), // 여기도 간격 조정
 //                           title: Text(
-//                             todo.todoTitle,
+//                             displayTitle,
 //                             style: const TextStyle(
-//                               fontSize: 18,
+//                               fontSize: 16,
 //                               color: Color.fromARGB(255, 8, 1, 1),
 //                             ),
 //                           ),
@@ -232,7 +214,7 @@ class WavyLinePainter extends CustomPainter {
 //                             ).then((_) => _onTodoUpdated());
 //                           },
 //                           trailing: Transform.scale(
-//                             scale: 2,
+//                             scale: 1.5,
 //                             child: Checkbox(
 //                               value: todo.isCompleted,
 //                               onChanged: (bool? newValue) {
@@ -240,7 +222,13 @@ class WavyLinePainter extends CustomPainter {
 //                                   _toggleTodoCompletion(todo, newValue, index);
 //                                 }
 //                               },
-//                               activeColor: const Color(0xFFc5a880),
+//                               checkColor: const Color.fromARGB(
+//                                   255, 231, 20, 20), // 체크 표시 색상을 빨간색으로 변경
+//                               activeColor: Colors.transparent,
+//                               side: const BorderSide(
+//                                 color: Color.fromARGB(250, 255, 255, 255),
+//                                 width: 2.0,
+//                               ),
 //                             ),
 //                           ),
 //                         ),
@@ -266,7 +254,7 @@ class WavyLinePainter extends CustomPainter {
 //   @override
 //   void paint(Canvas canvas, Size size) {
 //     final paint = Paint()
-//       ..color = Colors.blue
+//       ..color = Colors.brown
 //       ..style = PaintingStyle.stroke
 //       ..strokeWidth = 0.5;
 //     Path path = Path();
@@ -281,9 +269,8 @@ class WavyLinePainter extends CustomPainter {
 //   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 // }
 
-
-
 // import 'package:flutter/material.dart';
+// import 'dart:math' as math;
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // import '../../models/todo/todo_model.dart';
@@ -314,12 +301,12 @@ class WavyLinePainter extends CustomPainter {
 //   void initState() {
 //     super.initState();
 //     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       _fetchTodos(); // 프레임이 그려진 후 데이터를 불러옵니다.
+//       _fetchTodos();
 //     });
 //   }
 
 //   void _onTodoUpdated() {
-//     _fetchTodos(); // 할 일이 업데이트 될 때 데이터를 다시 불러옵니다.
+//     _fetchTodos();
 //   }
 
 //   @override
@@ -347,42 +334,46 @@ class WavyLinePainter extends CustomPainter {
 //                   itemCount: _todos!.length,
 //                   itemBuilder: (context, index) {
 //                     final todo = _todos![index];
-//                     return Container(
-//                       decoration: const BoxDecoration(
-//                         border: Border(
-//                           bottom:
-//                               BorderSide(width: 1, color: Colors.grey), // 밑줄 추가
-//                         ),
-//                       ),
-//                       child: ListTile(
-//                         contentPadding: const EdgeInsets.symmetric(
-//                             horizontal: 30.0, vertical: 8.0),
-//                         title: Text(
-//                           todo.todoTitle,
-//                           style: const TextStyle(
-//                             fontSize: 18,
-//                             color: Color.fromARGB(255, 8, 1, 1),
+//                     return CustomPaint(
+//                       foregroundPainter: WavyLinePainter(),
+//                       child: Container(
+//                         padding: const EdgeInsets.symmetric(vertical: 5),
+//                         child: ListTile(
+//                           contentPadding: const EdgeInsets.symmetric(
+//                               horizontal: 16.0, vertical: 1.0),
+//                           title: Text(
+//                             todo.todoTitle,
+//                             style: const TextStyle(
+//                               fontSize: 16,
+//                               color: Color.fromARGB(255, 8, 1, 1),
+//                             ),
 //                           ),
-//                         ),
-//                         onTap: () {
-//                           showDialog(
-//                             context: context,
-//                             builder: (BuildContext context) {
-//                               return TodoDetailScreen(todoId: todo.id!);
-//                             },
-//                           ).then((_) =>
-//                               _onTodoUpdated()); // 대화 상자가 닫힌 후 데이터를 갱신합니다.
-//                         },
-//                         trailing: Transform.scale(
-//                           scale: 1.5,
-//                           child: Checkbox(
-//                             value: todo.isCompleted,
-//                             onChanged: (bool? newValue) {
-//                               if (newValue != null) {
-//                                 _toggleTodoCompletion(todo, newValue, index);
-//                               }
-//                             },
-//                             activeColor: const Color(0xFFc5a880),
+//                           onTap: () {
+//                             showDialog(
+//                               context: context,
+//                               builder: (BuildContext context) {
+//                                 return TodoDetailScreen(todoId: todo.id!);
+//                               },
+//                             ).then((_) => _onTodoUpdated());
+//                           },
+//                           trailing: Transform.scale(
+//                             scale: 1.5,
+//                             child: Checkbox(
+//                               value: todo.isCompleted,
+//                               onChanged: (bool? newValue) {
+//                                 if (newValue != null) {
+//                                   _toggleTodoCompletion(todo, newValue, index);
+//                                 }
+//                               },
+
+//                               checkColor: const Color.fromARGB(
+//                                   255, 231, 20, 20), // 체크 표시 색상을 빨간색으로 변경
+//                               activeColor: Colors.transparent,
+//                               side: const BorderSide(
+//                                 color: Color.fromARGB(250, 255, 255, 255),
+//                                 width: 2.0,
+//                               ),
+//                             ),
 //                           ),
 //                         ),
 //                       ),
@@ -402,6 +393,26 @@ class WavyLinePainter extends CustomPainter {
 //         .then((_) => _onTodoUpdated());
 //   }
 // }
+
+// class WavyLinePainter extends CustomPainter {
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final paint = Paint()
+//       ..color = Colors.brown
+//       ..style = PaintingStyle.stroke
+//       ..strokeWidth = 0.5;
+//     Path path = Path();
+//     path.moveTo(0, size.height - 1);
+//     for (double i = 0; i < size.width; i += 6) {
+//       path.lineTo(i, size.height - 10 + 5 * math.sin(i / 60 * 2 * math.pi));
+//     }
+//     canvas.drawPath(path, paint);
+//   }
+
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+// }
+
 
 
 // import 'package:flutter/material.dart';

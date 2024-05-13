@@ -38,6 +38,9 @@ class MyApp extends StatelessWidget {
         '/calendar': (context) => const Calendar(),
       },
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Kyobo', // 전역 글꼴로 Koybo를 사용
+      ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         // ... app-specific localization delegate[s] here

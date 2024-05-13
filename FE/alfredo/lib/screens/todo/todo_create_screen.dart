@@ -59,7 +59,10 @@ class _TodoCreateScreenState extends ConsumerState<TodoCreateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("할 일 생성")),
+      appBar: AppBar(
+        title: const Text("할 일 생성"),
+        automaticallyImplyLeading: false,
+      ),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -94,6 +97,12 @@ class _TodoCreateScreenState extends ConsumerState<TodoCreateScreen> {
             ),
             ElevatedButton(
               onPressed: _submitTodo,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF0D2338),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+              ),
               child: const Text('할 일 추가'),
             ),
           ],

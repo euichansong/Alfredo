@@ -94,4 +94,13 @@ class TodoController {
     }
     await api.fetchTodosList(token);
   }
+
+  // Future<void> updateTimeSpent(int id, int spentTime) async {
+  //   final token = await ref.read(authManagerProvider.future);
+  //   if (token != null) {
+  //     await api.updateTimeSpent(id, spentTime);
+  //   } else {
+  //     throw Exception('Authentication token not available');
+  //   }
+  // }
 }

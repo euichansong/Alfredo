@@ -102,6 +102,12 @@ flutter:
     - assets/mainback1.png
     - assets/mainalfredo.png
 
+  fonts:
+    - family: Kyobo
+      fonts:
+        - asset: assets/fonts/kyobo.ttf
+        - asset: assets/fonts/kyoboB.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
