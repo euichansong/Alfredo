@@ -1,15 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'components/navbar/tabview.dart';
 import 'config/firebase_options.dart';
+import 'screens/calendar/calendar.dart';
 import 'screens/user/login_page.dart';
 import 'screens/user/user_routine_test.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'services/firebase_messaging_service.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'components/navbar/tabview.dart';
 import 'screens/calendar/calendar.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
