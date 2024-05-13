@@ -49,6 +49,7 @@ class _TodoCreateScreenState extends ConsumerState<TodoCreateScreen> {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('할 일을 생성했습니다.')));
         Navigator.pushReplacementNamed(context, '/main');
+        print('a');
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('할 일 생성에 실패했습니다: $error')));
