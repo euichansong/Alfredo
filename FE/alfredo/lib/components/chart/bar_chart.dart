@@ -50,11 +50,11 @@ class BarChartContent extends ConsumerWidget {
                       if (value.toInt() == 0) return const Text('');
                       return Text(
                         value.toInt().toString(),
-                        style: const TextStyle(fontSize: 12), // 폰트 크기 조절
+                        style: const TextStyle(fontSize: 12),
                       );
                     },
                     interval: 5,
-                    reservedSize: 30, // 이 값을 조정하여 왼쪽 타이틀과 차트 사이의 거리를 조절합니다.
+                    reservedSize: 30,
                   ),
                 ),
                 topTitles: const AxisTitles(

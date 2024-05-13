@@ -11,7 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'components/navbar/tabview.dart';
 import 'screens/calendar/calendar.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
