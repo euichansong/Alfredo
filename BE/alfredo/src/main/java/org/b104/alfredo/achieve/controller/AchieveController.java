@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.b104.alfredo.achieve.domain.Achieve;
 import org.b104.alfredo.achieve.request.AchieveUpdateDto;
+import org.b104.alfredo.achieve.response.AchieveDetailDto;
 import org.b104.alfredo.achieve.service.AchieveService;
 import org.b104.alfredo.schedule.response.ScheduleListDto;
 import org.b104.alfredo.user.Domain.User;
@@ -25,19 +26,19 @@ public class AchieveController {
     private final UserService userService;
 
     // 조회
-    @GetMapping("/list")
-    public ResponseEntity<Achieve> findAchieve(@RequestHeader(value = "Authorization") String authHeader){
+    @GetMapping("/detail")
+    public ResponseEntity<AchieveDetailDto> findAchieveDetail(@RequestHeader(value = "Authorization") String authHeader) {
         try {
             String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
             FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
             String uid = decodedToken.getUid();
 
             User user = userService.getUserByUid(uid);
-            Achieve achieve = achieveService.findByUserId(user);
+            AchieveDetailDto achieveDetail = achieveService.getAchieveDetailByUser(user);
 
-            return new ResponseEntity<>(achieve, HttpStatus.OK);
+            return new ResponseEntity<>(achieveDetail, HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Failed to read schedule list", e);
+            log.error("Error fetching achieve details", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }

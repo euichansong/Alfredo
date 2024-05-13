@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.achieve.domain.Achieve;
 import org.b104.alfredo.achieve.repository.AchieveRepository;
 import org.b104.alfredo.achieve.request.AchieveUpdateDto;
+import org.b104.alfredo.achieve.response.AchieveDetailDto;
 import org.b104.alfredo.routine.repository.RoutineRepository;
 import org.b104.alfredo.schedule.repository.ScheduleRepository;
 import org.b104.alfredo.todo.repository.TodoRepository;
@@ -25,26 +26,13 @@ public class AchieveService {
 
     // 유저로 업적 찾기
     @Transactional
-    public Achieve findByUserId(User user) {
+    public AchieveDetailDto getAchieveDetailByUser(User user) {
         Achieve achieve = achieveRepository.findByUserId(user);
-        return achieve;
+        if (achieve == null) {
+            throw new IllegalArgumentException("Achieve not found for the user");
+        }
+        return new AchieveDetailDto(achieve);
     }
-
-//    // 수정(업데이트)
-//    @Transactional
-//    public void updateAchieve(Long id, AchieveUpdateDto dto) {
-//        Achieve achieve = achieveRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Achieve not found for id=" + id));
-//
-//        if (dto.getAchieveOne() != null) achieve.updateAchieveOne(dto.getAchieveOne());
-//        if (dto.getAchieveTwo() != null) achieve.updateAchieveTwo(dto.getAchieveTwo());
-//        if (dto.getAchieveThree() != null) achieve.updateAchieveThree(dto.getAchieveThree());
-//        if (dto.getAchieveFour() != null) achieve.updateAchieveFour(dto.getAchieveFour());
-//        if (dto.getAchieveFive() != null) achieve.updateAchieveFive(dto.getAchieveFive());
-//        if (dto.getAchieveSix() != null) achieve.updateAchieveSix(dto.getAchieveSix());
-//        if (dto.getAchieveSeven() != null) achieve.updateAchieveSeven(dto.getAchieveSeven());
-//        if (dto.getAchieveEight() != null) achieve.updateAchieveEight(dto.getAchieveEight());
-//        if (dto.getAchieveNine() != null) achieve.updateAchieveNine(dto.getAchieveNine());
-//    }
 
     // 6번째 업적
     @Transactional

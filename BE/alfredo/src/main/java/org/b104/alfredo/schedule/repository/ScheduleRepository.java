@@ -21,4 +21,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
 
     Schedule findByScheduleId(Long id);
     List<Schedule> findByEndDateBefore(LocalDate date);
+
+    long countByUser(User user);  // 사용자 별로 일정의 개수를 세는 메서드
 }
