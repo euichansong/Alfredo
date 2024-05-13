@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.b104.alfredo.user.Domain.User;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -14,11 +13,10 @@ import java.time.LocalTime;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Schedule {
-
+public class OldSchedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long scheduleId;
+    private Long oldScheduleId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id" )
@@ -50,7 +48,7 @@ public class Schedule {
     private String jobUid;        // 작업 고유 식별자
 
     @Builder
-    public Schedule(User userId, String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, LocalTime alarmTime, LocalDate alarmDate, String place, LocalTime startTime, LocalTime endTime, Boolean withTime, String jobUid) {
+    public OldSchedule(User userId, String scheduleTitle, LocalDate startDate, LocalDate endDate, Boolean startAlarm, LocalTime alarmTime, LocalDate alarmDate, String place, LocalTime startTime, LocalTime endTime, Boolean withTime, String jobUid) {
         this.userId = userId;
         this.scheduleTitle = scheduleTitle;
         this.startDate = startDate;
@@ -64,39 +62,4 @@ public class Schedule {
         this.withTime = withTime != null ? withTime : Boolean.TRUE;
         this.jobUid = jobUid;
     }
-
-    public void updateScheduleTitle(String scheduleTitle) {
-        this.scheduleTitle = scheduleTitle;
-    }
-    public void updateStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-    public void updateEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-    public void updateStartAlarm(Boolean startAlarm) {
-        this.startAlarm = startAlarm;
-    }
-    public void updateAlarmTime(LocalTime alarmTime) {
-        this.alarmTime = alarmTime;
-    }
-    public void updateAlarmDate(LocalDate alarmDate) {
-        this.alarmDate = alarmDate;
-    }
-    public void updatePlace(String place) {
-        this.place = place;
-    }
-    public void updateStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-    public void updateEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-    public void updateWithTime(Boolean withTime) {
-        this.withTime = withTime;
-    }
-    public void updateJobUid(String jobUid) {
-        this.jobUid = jobUid;
-    }
-
 }

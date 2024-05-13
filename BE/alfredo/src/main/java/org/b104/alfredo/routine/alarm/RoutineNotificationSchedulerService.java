@@ -23,14 +23,14 @@ public class RoutineNotificationSchedulerService {
     @Transactional
     @Scheduled(cron = "0 * * * * *") // 매 분마다 실행, 필요에 따라 조정하세요
     public void checkAndTriggerNotifications() throws IOException {
-//        log.info("1분마다 실행 확인");
+        log.info("1분마다 실행 확인");
         List<Routine> routinesToNotify = routineService.getRoutinesToNotify();
         for (Routine routine : routinesToNotify) {
 //            log.info("알림 토큰 잘받아오나 확인",routine.getUser().getFcmToken());
             firebaseCloudMessageService.sendMessageTo(
                     routine.getUser().getFcmToken(),
-                    "Routine Reminder: " + routine.getRoutineTitle(),
-                    "안녕하세요! 지금이 바로 " + routine.getRoutineTitle() + " 시간입니다"
+                    "루틴 리마인더 ",
+                    "안녕하세요! " + routine.getRoutineTitle() + " 시간입니다."
             );
         }
     }

@@ -32,6 +32,8 @@ public class ScheduleService {
                 .endDate(scheduleCreateDto.getEndDate())
                 .startAlarm(scheduleCreateDto.getStartAlarm())
                 .alarmTime(scheduleCreateDto.getAlarmTime())
+                .alarmDate(scheduleCreateDto.getAlarmDate())
+                .jobUid(scheduleCreateDto.getJobUid())
                 .place(scheduleCreateDto.getPlace())
                 .startTime(scheduleCreateDto.getStartTime())
                 .endTime(scheduleCreateDto.getEndTime())
@@ -71,11 +73,28 @@ public class ScheduleService {
         if (dto.getStartDate() != null) schedule.updateStartDate(dto.getStartDate());
         if (dto.getEndDate() != null) schedule.updateEndDate(dto.getEndDate());
         if (dto.getStartAlarm() != null) schedule.updateStartAlarm(dto.getStartAlarm());
-        if (dto.getAlarmTime() != null) schedule.updaateAlarmTime(dto.getAlarmTime());
+        if (dto.getAlarmTime() != null) schedule.updateAlarmTime(dto.getAlarmTime());
+
+        if (dto.getAlarmDate() != null) schedule.updateAlarmDate(dto.getAlarmDate());
+
+        if (dto.getJobUid() != null) schedule.updateJobUid(dto.getJobUid());
+
         if (dto.getPlace() != null) schedule.updatePlace(dto.getPlace());
         if (dto.getStartTime() != null) schedule.updateStartTime(dto.getStartTime());
         if (dto.getEndTime() != null) schedule.updateEndTime(dto.getEndTime());
         if (dto.getWithTime() != null) schedule.updateWithTime(dto.getWithTime());
+    }
+
+    @Transactional
+    public void updateJobUidForSchedule(User user, String scheduleTitle, String jobUid) {
+        List<Schedule> schedules = scheduleRepository.findByUserIdAndScheduleTitle(user, scheduleTitle);
+        if (!schedules.isEmpty()) {
+            Schedule schedule = schedules.get(0); // 여러 개 있을 경우 첫 번째 일정을 사용
+            schedule.updateJobUid(jobUid);
+            scheduleRepository.save(schedule);
+        } else {
+            throw new IllegalArgumentException("No schedule found for the given user and title.");
+        }
     }
 
 
