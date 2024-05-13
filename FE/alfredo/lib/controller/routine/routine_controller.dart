@@ -25,13 +25,14 @@ class RoutineController {
       String startTime,
       List<String> days,
       String alarmSound,
-      String memo) async {
+      String memo,
+      int basicRoutineId) async {
     final idToken = await ref.read(authManagerProvider.future);
     if (idToken == null || idToken.isEmpty) {
       throw Exception("ID Token not found or empty.");
     }
 
-    await api.createRoutine(
-        idToken, routineTitle, startTime, days, alarmSound, memo);
+    await api.createRoutine(idToken, routineTitle, startTime, days, alarmSound,
+        memo, basicRoutineId);
   }
 }

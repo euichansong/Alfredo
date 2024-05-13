@@ -32,44 +32,8 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   TimeOfDay? selectedTime = const TimeOfDay(hour: 7, minute: 30);
   List<bool> selectedDays = [false, true, true, true, true, true, false];
   String currentAlarmSound = "Morning Glory";
-  int? basicRoutineId; // 기본 루틴 ID를 저장할 변수 추가
-  String? selectedCategory; // 선택된 카테고리를 저장할 변수 추가
 
   _RoutineCreateScreenState({required this.ref});
-
-  Future<void> _fetchBasicRoutine(String title) async {
-    try {
-      final basicRoutine = await routineApi.fetchBasicRoutine(title);
-      setState(() {
-        titleController.text = basicRoutine.routineTitle;
-        selectedTime = TimeOfDay(
-          hour: basicRoutine.startTime.hour,
-          minute: basicRoutine.startTime.minute,
-        );
-        // selectedTime = TimeOfDay(
-        //   hour: int.parse(basicRoutine.startTime.toString().split(':')[0]),
-        //   minute: int.parse(basicRoutine.startTime.toString().split(':')[1]),
-        // );
-
-        // final startTimeParts = basicRoutine.startTime.split(':');
-        // selectedTime = TimeOfDay(
-        //   hour: int.parse(startTimeParts[0]),
-        //   minute: int.parse(startTimeParts[1]),
-        // );
-        selectedDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
-            .map((day) => basicRoutine.days.contains(day))
-            .toList();
-        memoController.text = basicRoutine.memo ?? ''; //null이면 빈 문자열로 설정
-        print("베이직 $basicRoutine.basicRoutineId");
-        basicRoutineId = basicRoutine.id; // 기본 루틴 ID 저장  (주의 id임. 아직 이해 안감)
-        selectedCategory = title; // 선택된 카테고리 업데이트
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch routine: $e')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,21 +60,12 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Row(
-                children: [
-                  _buildCategoryBadge("기상"),
-                  _buildCategoryBadge("명상"),
-                  _buildCategoryBadge("운동"),
-                  _buildCategoryBadge("공부"),
-                  _buildCategoryBadge("취침"),
-                ],
-              ),
-              const SizedBox(height: 50),
               TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(
                   labelText: "루틴 제목",
                   labelStyle: TextStyle(fontSize: 18),
+                  focusColor: Color(0xFF0D2338),
                   focusedBorder: UnderlineInputBorder(
                     borderSide:
                         BorderSide(color: Color(0xFF0D2338)), // 네이비 색 테두리
@@ -179,34 +134,35 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       () => selectedDays[index] = !selectedDays[index]),
                 ),
               ),
-              // const SizedBox(height: 50),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     const Text(
-              //       "알람 설정",
-              //       style: TextStyle(fontSize: 18),
-              //     ),
-              //     DropdownButton<String>(
-              //       value: currentAlarmSound,
-              //       onChanged: (String? newValue) {
-              //         if (newValue != null) {
-              //           setState(() => currentAlarmSound = newValue);
-              //         }
-              //       },
-              //       items: <String>[
-              //         'Morning Glory',
-              //         'Beep Alarm',
-              //         'Digital Alarm'
-              //       ].map<DropdownMenuItem<String>>((String value) {
-              //         return DropdownMenuItem<String>(
-              //           value: value,
-              //           child: Text(value),
-              //         );
-              //       }).toList(),
-              //     ),
-              //   ],
-              // ),
+              const SizedBox(height: 50),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "알람 설정",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  DropdownButton<String>(
+                    value: currentAlarmSound,
+                    onChanged: (String? newValue) {
+                      if (newValue != null) {
+                        setState(() => currentAlarmSound = newValue);
+                      }
+                    },
+                    items: <String>[
+                      'Morning Glory',
+                      'Beep Alarm',
+                      'Digital Alarm'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
               const SizedBox(height: 50),
               TextField(
                 controller: memoController,
@@ -267,14 +223,8 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
 
                       final memo = memoController.text;
 
-                      await routineApi.createRoutine(
-                          idToken,
-                          routineTitle,
-                          startTime,
-                          days,
-                          currentAlarmSound,
-                          memo,
-                          basicRoutineId);
+                      // await routineApi.createRoutine(idToken, routineTitle,
+                      //     startTime, days, currentAlarmSound, memo);
                       ref.refresh(routineProvider);
 
                       Navigator.pop(context);
@@ -296,23 +246,6 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildCategoryBadge(String title) {
-    return GestureDetector(
-      onTap: () => _fetchBasicRoutine(title),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        decoration: BoxDecoration(
-          color: selectedCategory == title
-              ? const Color.fromARGB(255, 127, 128, 129)
-              : Colors.grey[200],
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        child: Text(title, style: const TextStyle(fontSize: 16)),
       ),
     );
   }
