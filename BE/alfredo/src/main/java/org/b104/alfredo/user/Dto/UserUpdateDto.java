@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.b104.alfredo.user.Domain.User;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,7 +14,7 @@ import java.util.Date;
 public class UserUpdateDto {
     private String nickname;
     private Date birth;
-    private String answer;
+    private List<Long> answer;
     private String googleCalendarUrl;
 
     public static void updateEntity(User user, UserUpdateDto userUpdateDto) {

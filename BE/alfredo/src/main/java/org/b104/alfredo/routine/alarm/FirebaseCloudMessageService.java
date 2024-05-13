@@ -47,6 +47,9 @@ public class FirebaseCloudMessageService {
                                 .body(body)
                                 .image(null)
                                 .build())
+                        .data(FcmMessage.Data.builder()
+                                .type("routine")
+                                .build())
                         .build())
                 .validate_only(false)
                 .build();

@@ -4,10 +4,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.user.Domain.Survey;
 import org.b104.alfredo.user.Domain.User;
-import org.b104.alfredo.user.Dto.TokenUpdateRequestDto;
-import org.b104.alfredo.user.Dto.UserCreateDto;
-import org.b104.alfredo.user.Dto.UserUpdateDto;
+import org.b104.alfredo.user.Dto.*;
 import org.b104.alfredo.user.Service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
+import java.util.NoSuchElementException;
 
 
 @RestController
@@ -99,6 +99,48 @@ public class UserController {
         }
     }
 
+
+    @PutMapping("/survey")
+    public ResponseEntity<?> saveSurvey(
+            @RequestHeader(value = "Authorization") String authHeader,
+            @RequestBody SurveyDto surveyDto) {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+
+        try {
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            Survey savedSurvey = userService.saveSurvey(uid, surveyDto);
+            return ResponseEntity.ok(savedSurvey);
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
+    @GetMapping("/basic")
+    public ResponseEntity<?> basicRoutineUser(@RequestHeader(value = "Authorization") String authHeader) {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        try {
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            RecommendRoutineDto recommendRoutineDto = userService.getSimilarUser(uid);
+            if (recommendRoutineDto != null && !recommendRoutineDto.getBasicRoutineId().isEmpty()) {
+                HttpHeaders headers = new HttpHeaders();
+                headers.setContentType(MediaType.APPLICATION_JSON);
+                return new ResponseEntity<>(recommendRoutineDto, headers, HttpStatus.OK);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No routines found or User not found");
+            }
+        } catch (Exception e) {
+            log.error("Error verifying token: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+        }
+    }
+
     @PostMapping("/token")
     public ResponseEntity<?> updateToken(@RequestHeader(value = "Authorization") String authHeader,@RequestBody TokenUpdateRequestDto tokenUpdateRequestDto) throws FirebaseAuthException {
         String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
@@ -112,5 +154,9 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating token");
         }
     }
-
 }
+
+
+
+
+
