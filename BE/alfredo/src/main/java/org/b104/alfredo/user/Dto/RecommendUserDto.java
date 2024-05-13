@@ -13,21 +13,15 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserCreateDto {
-    private String email;
-    private String nickname;
-    private String uid;
-    private Date birth;
+public class RecommendUserDto {
     private List<Long> answer;
-    private String googleCalendarUrl;
+    private Long userId;
+
 
     public User toEntity() {
         return User.builder()
-                .email(this.email)
-                .nickname(this.nickname)
-                .uid(this.uid)
                 .answer(this.answer)
-                .googleCalendarUrl(this.googleCalendarUrl)
+                .userId(this.userId)
                 .build();
     }
 }

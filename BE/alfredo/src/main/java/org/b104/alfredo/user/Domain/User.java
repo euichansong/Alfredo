@@ -1,5 +1,6 @@
 package org.b104.alfredo.user.Domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.b104.alfredo.todo.domain.Todo;
@@ -33,8 +34,8 @@ public class User {
     @Column
     private Date birth;
 
-    @Lob
-    private String answer;
+    @Column
+    private List<Long> answer;
 
     @Column
     private String googleCalendarUrl;
@@ -43,7 +44,11 @@ public class User {
     private LocalDateTime registeredAt;
 
     @Column(nullable = true)
-    private String fcmToken; // FCM 토큰을 저장하기 위한 필드
+    private String fcmToken;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Survey survey;
 
     @PrePersist
     protected void onRegister() {
