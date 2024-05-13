@@ -102,6 +102,7 @@ class _TabViewState extends ConsumerState<TabView> {
     return WillPopScope(
       onWillPop: () async => _selectedIndex != 0, // 첫 번째 탭에서만 뒤로 가기를 막습니다.
       child: Scaffold(
+      resizeToAvoidBottomInset: false,
         body: Center(
           child: _pages.elementAt(_selectedIndex),
         ),

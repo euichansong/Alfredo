@@ -1,3 +1,4 @@
+import 'package:alfredo/provider/calendar/calendar_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/todo/todo_api.dart';
@@ -14,6 +15,7 @@ class TodoController {
     final token = await ref.read(authManagerProvider.future);
     if (token != null) {
       await api.createTodos(todos, token);
+      ref.refresh(loadTodo);
     } else {
       throw Exception('Authentication token not available');
     }
@@ -55,6 +57,7 @@ class TodoController {
     if (token == null) throw Exception('Authentication token not available');
     if (todo.id != null) {
       await api.updateTodo(todo.id!, todo, token);
+      ref.refresh(loadTodo);
       // 업데이트 후 전체 리스트를 다시 불러오는 로직 추가
       // await fetchTodosByDate(DateTime.now());
     } else {
@@ -79,6 +82,7 @@ class TodoController {
     final token = await ref.read(authManagerProvider.future);
     if (token != null) {
       await api.deleteTodoById(id);
+      ref.refresh(loadTodo);
     } else {
       throw Exception('Authentication token not available');
     }

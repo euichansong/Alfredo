@@ -5,44 +5,54 @@ import 'package:intl/intl.dart';
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
 import '../../screens/routine/routine_detail_screen.dart';
-import 'routine_create_screen.dart';
 
-class RoutineListScreen extends ConsumerWidget {
-  final routineApi = RoutineApi();
-  RoutineListScreen({super.key});
+class RoutineListScreen extends ConsumerStatefulWidget {
+  const RoutineListScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  _RoutineListScreenState createState() => _RoutineListScreenState();
+}
+
+class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
+  final routineApi = RoutineApi();
+
+  @override
+  Widget build(BuildContext context) {
     final routines = ref.watch(routineProvider);
 
     print('$routines list screens');
+    final screenWidth = MediaQuery.of(context).size.width; // 화면 크기 얻어오기
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0D2338),
-        title: const Text(
-          "Routine List",
-          style: TextStyle(fontSize: 24, color: Colors.white),
+        title: const Padding(
+          padding: EdgeInsets.only(top: 16.0, left: 8),
+          child: Text(
+            "루틴 리스트",
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
         ),
       ),
+      backgroundColor: const Color(0xFF0D2338),
       body: routines.when(
         data: (data) {
           return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+              Container(
+                margin: const EdgeInsets.only(top: 10, left: 32.0),
                 child: Text(
-                  'Routines',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  '${data.length}개',
+                  style: const TextStyle(color: Colors.grey),
+                  textAlign: TextAlign.left,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text('${data.length} Routines',
-                    style: const TextStyle(color: Colors.grey)),
               ),
               Expanded(
                 child: ListView.builder(
+                  padding: const EdgeInsets.only(
+                      top: 15.0, bottom: 20), // 리스트 위, 아래에 패딩 추가
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final routine = data[index];
@@ -61,19 +71,66 @@ class RoutineListScreen extends ConsumerWidget {
                       ),
                       onDismissed: (direction) async {
                         await routineApi.deleteRoutine(routine.id);
-                        // ref.refresh(routineProvider);
+                        setState(() {
+                          data.removeAt(index);
+                        });
+                        ref.refresh(routineProvider);
                       },
-                      child: Card(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        child: ListTile(
-                          title: Text(routine.routineTitle),
-                          trailing: Text(formatTimeOfDay(routine.startTime)),
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RoutineDetailScreen(
-                                routine: routine,
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RoutineDetailScreen(
+                              routine: routine,
+                            ),
+                          ),
+                        ),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 6.0),
+                            color: const Color(0xFFF2E9E9),
+                            child: Container(
+                              width: screenWidth * 0.9,
+                              height: screenHeight * 0.10,
+                              padding:
+                                  const EdgeInsets.all(13.0), // 카드 내부에 패딩 추가
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: screenWidth * 0.35,
+                                    child: Text(
+                                      routine.routineTitle,
+                                      style: const TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Row(
+                                        children:
+                                            _buildDayWidgets(routine.days),
+                                      ),
+                                      const SizedBox(width: 10), // 원하는 간격으로 조정
+                                      SizedBox(
+                                        width: 80,
+                                        child: Text(
+                                          formatTimeOfDay(routine.startTime),
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -89,19 +146,30 @@ class RoutineListScreen extends ConsumerWidget {
         loading: () => const CircularProgressIndicator(),
         error: (err, stack) => Center(child: Text('Error: $err')),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const RoutineCreateScreen(),
-            ),
-          );
-        },
-        child: const Icon(Icons.add),
-      ),
     );
   }
+}
+
+List<Widget> _buildDayWidgets(Set<String> days) {
+  const allDays = ["일", "월", "화", "수", "목", "금", "토"];
+  const allDaysShort = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  return List<Widget>.generate(7, (index) {
+    final day = allDays[index];
+    final dayShort = allDaysShort[index];
+    final isSelected = days.contains(dayShort);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2.0),
+      child: Text(
+        day,
+        style: TextStyle(
+          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+          color: isSelected ? Colors.black : Colors.grey,
+          fontSize: 12, // 글자 크기 설정
+        ),
+      ),
+    );
+  });
 }
 
 String formatTimeOfDay(TimeOfDay tod) {
@@ -110,158 +178,3 @@ String formatTimeOfDay(TimeOfDay tod) {
   final format = DateFormat.jm(); // Use 'jm' for AM/PM format
   return format.format(dt);
 }
-
-// void showRoutineDetailModal(BuildContext context, WidgetRef ref,
-//     Routine routine, RoutineApi routineApi) {
-//   final TextEditingController titleController =
-//       TextEditingController(text: routine.routineTitle);
-//   final TextEditingController memoController =
-//       TextEditingController(text: routine.memo);
-//   TimeOfDay? selectedTime =
-//       TimeOfDay(hour: routine.startTime.hour, minute: routine.startTime.minute);
-
-//   List<bool> selectedDays = List.filled(7, false);
-//   // 요일 설정 예: ["MON", "WED"] -> [false, true, false, true, false, false, false]
-//   for (var day in routine.days) {
-//     int dayIndex =
-//         ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].indexOf(day);
-//     if (dayIndex != -1) selectedDays[dayIndex] = true;
-//   }
-//   String currentAlarmSound1 = routine.alarmSound;
-//   showDialog(
-//     context: context,
-//     builder: (context) {
-//       return StatefulBuilder(
-//         builder: (context, setState) {
-//           return AlertDialog(
-//             title: const Text("Routine Details"),
-//             content: SizedBox(
-//               width: 300, // 너비 조절
-//               height: 550, // 높이 조절
-//               child: SingleChildScrollView(
-//                 child: Column(
-//                   children: [
-//                     TextField(
-//                       controller: titleController,
-//                       decoration:
-//                           const InputDecoration(labelText: "Routine Title"),
-//                     ),
-//                     GestureDetector(
-//                       onTap: () async {
-//                         final TimeOfDay? pickedTime = await showTimePicker(
-//                             context: context, initialTime: selectedTime!);
-//                         if (pickedTime != null) {
-//                           setState(() => selectedTime = pickedTime);
-//                         }
-//                       },
-//                       child: Text("Time: ${selectedTime!.format(context)}"),
-//                     ),
-//                     ToggleButtons(
-//                       isSelected: selectedDays,
-//                       children: const [
-//                         Text("SUN"),
-//                         Text("MON"),
-//                         Text("TUE"),
-//                         Text("WED"),
-//                         Text("THU"),
-//                         Text("FRI"),
-//                         Text("SAT")
-//                       ],
-//                       onPressed: (int index) {
-//                         setState(
-//                             () => selectedDays[index] = !selectedDays[index]);
-//                       },
-//                     ),
-//                     DropdownButton<String>(
-//                       value: currentAlarmSound1,
-//                       onChanged: (String? newValue) {
-//                         if (newValue != null) {
-//                           setState(() => currentAlarmSound1 = newValue);
-//                         }
-//                       },
-//                       items: <String>[
-//                         'Morning Glory',
-//                         'Beep Alarm',
-//                         'Digital Alarm'
-//                       ].map<DropdownMenuItem<String>>((String value) {
-//                         return DropdownMenuItem<String>(
-//                           value: value,
-//                           child: Text(value),
-//                         );
-//                       }).toList(),
-//                     ),
-//                     TextField(
-//                       controller: memoController,
-//                       decoration: const InputDecoration(labelText: "Memo"),
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//             actions: [
-//               TextButton(
-//                 child: const Text('Cancel'),
-//                 onPressed: () => Navigator.pop(context),
-//               ),
-//               ElevatedButton(
-//                   child: const Text("Save Changes"),
-//                   onPressed: () async {
-//                     final String routineTitle = titleController.text;
-//                     final String memo = memoController.text;
-//                     // TimeOfDay 객체에서 문자열 형식으로 시간 변환 (예: '07:30')
-//                     final String startTime =
-//                         "${selectedTime!.hour.toString().padLeft(2, '0')}:${selectedTime!.minute.toString().padLeft(2, '0')}";
-//                     // 선택된 요일들을 리스트로 변환
-//                     final List<String?> days = selectedDays
-//                         .asMap()
-//                         .entries
-//                         .map((entry) => entry.value
-//                             ? [
-//                                 "SUN",
-//                                 "MON",
-//                                 "TUE",
-//                                 "WED",
-//                                 "THU",
-//                                 "FRI",
-//                                 "SAT"
-//                               ][entry.key]
-//                             : null)
-//                         .where((day) => day != null)
-//                         .toList();
-
-//                     try {
-//                       // API 호출을 통해 서버에 데이터 업데이트 요청
-//                       await routineApi.updateRoutine(
-//                           routine.id, // 기존 루틴 ID
-//                           routineTitle,
-//                           startTime,
-//                           days,
-//                           currentAlarmSound1,
-//                           memo);
-//                       ref.refresh(routineProvider); // 리프레시로 변경사항 반영
-//                       Navigator.pop(context); // 성공 시 다이얼로그 닫기
-//                     } catch (error) {
-//                       // 실패 시 오류 메시지 출력
-//                       showDialog(
-//                         context: context,
-//                         builder: (context) => AlertDialog(
-//                           title: const Text("Update Failed"),
-//                           content: Text("Failed to update the routine: $error"),
-//                           actions: <Widget>[
-//                             TextButton(
-//                               child: const Text('OK'),
-//                               onPressed: () =>
-//                                   Navigator.of(context).pop(), // 오류 다이얼로그 닫기
-//                             ),
-//                           ],
-//                         ),
-//                       );
-//                     }
-//                   }),
-//             ],
-//           );
-//         },
-//       );
-//     },
-//   );
-// }

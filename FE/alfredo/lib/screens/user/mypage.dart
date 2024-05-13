@@ -29,6 +29,7 @@ class MyPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userProvider);
 
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xfff0d2338),

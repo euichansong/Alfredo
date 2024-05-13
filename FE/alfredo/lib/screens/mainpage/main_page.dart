@@ -1,14 +1,25 @@
+// ignore_for_file: unused_import
+
+import 'package:alfredo/provider/calendar/icaldata_provider.dart';
+import 'package:alfredo/provider/user/user_state_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
+import '../tts/tts_page.dart';
 
-class MainPage extends StatelessWidget {
+class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
 
   @override
+  _MainPageState createState() => _MainPageState();
+}
+
+class _MainPageState extends ConsumerState<MainPage> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // ignore: prefer_const_constructors
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // 배경 이미지
@@ -21,16 +32,31 @@ class MainPage extends StatelessWidget {
             ),
           ),
           Positioned.fill(
+            top: MediaQuery.of(context).size.height * 0.05,
+            left: MediaQuery.of(context).size.height * 0,
+            right: MediaQuery.of(context).size.height * 0,
+            bottom: MediaQuery.of(context).size.height * 0,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: SizedBox(
+                // width: MediaQuery.of(context).size.width,
+                // height: MediaQuery.of(context).size.height,
+                child: TtsPage(),
+              ),
+            ),
+          ),
+          Positioned.fill(
             top: MediaQuery.of(context).size.height * 0.45,
             left: MediaQuery.of(context).size.height * 0.087,
             right: MediaQuery.of(context).size.height * 0.087,
             bottom: MediaQuery.of(context).size.height * 0.1,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: const SizedBox(
+              // ignore: prefer_const_constructors
+              child: SizedBox(
                 // width: MediaQuery.of(context).size.width,
                 // height: MediaQuery.of(context).size.height,
-                child: TodoList(),
+                child: const TodoList(),
               ),
             ),
           ),
