@@ -6,6 +6,7 @@ import '../../models/schedule/schedule_model.dart';
 import 'schedule_edit_screen.dart';
 import 'schedule_create_screen.dart';
 import '../../provider/schedule/schedule_provider.dart';
+import '../../api/alarm/alarm_api.dart';
 
 class ScheduleListScreen extends ConsumerStatefulWidget {
   const ScheduleListScreen({super.key});
@@ -16,6 +17,8 @@ class ScheduleListScreen extends ConsumerStatefulWidget {
 
 class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
   Future<List<Schedule>>? schedules;
+
+  final AlarmApi alarmApi = AlarmApi();
 
   @override
   void initState() {
@@ -48,7 +51,27 @@ class _ScheduleListScreenState extends ConsumerState<ScheduleListScreen> {
             itemCount: snapshot.data?.length ?? 0,
             itemBuilder: (context, index) {
               var schedule = snapshot.data![index];
-              return buildScheduleItem(context, schedule);
+              return Dismissible(
+                key: Key(schedule.scheduleId.toString()),
+                direction: DismissDirection.endToStart,
+                onDismissed: (direction) async {
+                  if (schedule.startAlarm) {
+                    await alarmApi.deleteAlarm(schedule.scheduleId!);
+                  }
+
+                  await ref
+                      .read(scheduleControllerProvider)
+                      .deleteSchedule(schedule.scheduleId!);
+                  _loadSchedules(); // Refresh the list after deleting an item
+                },
+                background: Container(
+                  color: Colors.red,
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: const Icon(Icons.delete, color: Colors.white),
+                ),
+                child: buildScheduleItem(context, schedule),
+              );
             },
           );
         },
