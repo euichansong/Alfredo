@@ -100,8 +100,8 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: screenWidth * 0.35,
+                                  Expanded(
+                                    flex: 4,
                                     child: Text(
                                       routine.routineTitle,
                                       style: const TextStyle(
@@ -111,24 +111,29 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
-                                  Row(
-                                    children: [
-                                      Row(
-                                        children:
-                                            _buildDayWidgets(routine.days),
-                                      ),
-                                      const SizedBox(width: 10), // 원하는 간격으로 조정
-                                      SizedBox(
-                                        width: 80,
-                                        child: Text(
+                                  Expanded(
+                                    flex: 6,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children:
+                                              _buildDayWidgets(routine.days),
+                                        ),
+                                        const SizedBox(
+                                            width: 10), // 원하는 간격으로 조정
+                                        Text(
                                           formatTimeOfDay(routine.startTime),
                                           style: const TextStyle(
                                             fontSize: 18,
                                             color: Colors.grey,
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ],
                               ),

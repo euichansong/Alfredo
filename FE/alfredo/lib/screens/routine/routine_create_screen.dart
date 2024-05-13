@@ -297,7 +297,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
         decoration: BoxDecoration(
           color: selectedCategory == title
               ? const Color.fromARGB(255, 127, 128, 129)
-              : Colors.grey[200],
+              : const Color.fromARGB(255, 222, 217, 217),
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Text(title, style: const TextStyle(fontSize: 16)),
