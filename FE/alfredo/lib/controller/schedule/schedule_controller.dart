@@ -49,5 +49,6 @@ class ScheduleController {
   // 스케줄 삭제 메서드
   Future<void> deleteSchedule(int id) async {
     await api.deleteSchedule(id);
+    ref.refresh(loadSchedule);
   }
 }

@@ -25,7 +25,7 @@ class TtsPage extends ConsumerWidget {
       body: Stack(
         children: <Widget>[
           Positioned(
-            top: MediaQuery.of(context).size.height * 0.35,
+            bottom: MediaQuery.of(context).size.height * 0.45,
             left: MediaQuery.of(context).size.width * 0.05,
             right: MediaQuery.of(context).size.width * 0.05,
             child: AnimatedTextFrame(
