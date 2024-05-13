@@ -17,6 +17,8 @@ class Routine {
 
   String? memo;
 
+  int? basicRoutineId; // 기본 루틴 ID 추가
+
   Routine({
     required this.id,
     required this.routineTitle,
@@ -24,6 +26,7 @@ class Routine {
     required this.days,
     required this.alarmSound,
     this.memo,
+    this.basicRoutineId, // 기본 루틴 ID 추가ㄴ
   });
 
   // JSON 생성 및 해석을 위한 팩토리 메서드

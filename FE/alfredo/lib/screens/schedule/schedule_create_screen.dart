@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart'; // 날짜 포맷을 위해 추가
+import 'package:intl/intl.dart';
 import '../../controller/schedule/schedule_controller.dart';
 import '../../models/schedule/schedule_model.dart';
 import 'schedule_list_screen.dart';
@@ -36,6 +36,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   DateTime? endDate;
   bool startAlarm = false;
   TimeOfDay? alarmTime; // 사용자가 설정한 알람 시간
+  DateTime? alarmDate; // 추가된 알람 날짜 필드
   String? place;
   TimeOfDay? startTime;
   TimeOfDay? endTime;
@@ -51,7 +52,15 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("일정 생성")),
+      appBar: AppBar(
+        title: const Text("일정 생성",
+            style: TextStyle(
+                color: Colors.white)), // Set title text color to white
+        backgroundColor: const Color(0xfff0d2338),
+        iconTheme: const IconThemeData(
+            color: Colors.white), // Set back button and other icons to white
+      ),
+      backgroundColor: const Color(0xFFF2E9E9),
       body: Form(
         key: _formKey,
         child: ListView(
@@ -73,6 +82,11 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
               setState(() {
                 startAlarm = value;
                 selectedAlarmOption = null; // 알람 사용이 변경될 때 선택 옵션 초기화
+                if (!value) {
+                  alarmTime =
+                      null; // Ensure alarmTime is reset when alarm is disabled
+                  alarmDate = null; // Reset alarmDate as well
+                }
               });
             }),
             if (startAlarm) _buildAlarmOptions(),
@@ -80,6 +94,10 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
               setState(() {
                 withTime = value;
                 startTime = endTime = null; // 하루 종일 설정이 변경될 때 시간 초기화
+                // Update alarm options based on the withTime status
+                selectedAlarmOption = null;
+                alarmTime = null;
+                alarmDate = null;
               });
             }),
             if (!withTime) _buildTimePicker('시작 시간', startTime, true),
@@ -102,193 +120,159 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   Widget _buildDatePicker(String label, DateTime date,
       {required bool isStartDate}) {
     return ListTile(
+      leading: const Icon(Icons.calendar_today),
       title: Text('$label: ${DateFormat('yyyy-MM-dd').format(date)}'),
       onTap: () => _selectDate(context, isStart: isStartDate),
     );
   }
 
+  Widget _buildTimePicker(String label, TimeOfDay? time, bool isStartTime) {
+    return ListTile(
+      leading: const Icon(Icons.alarm),
+      title: Text('$label: ${time != null ? time.format(context) : "선택되지 않음"}'),
+      onTap: () => _selectTime(context, isStart: isStartTime),
+    );
+  }
+
+  // 알림사용, 하루종일 스와이프 아이콘
   Widget _buildSwitchTile(
       String title, bool value, ValueChanged<bool> onChanged) {
     return SwitchListTile(
       title: Text(title),
       value: value,
       onChanged: onChanged,
+      activeColor: const Color(0xfff0d2338), // 스위치 버튼이 활성화될 때의 주 색상
+      activeTrackColor: const Color(0xFFE7D8BC), // 스위치 트랙의 활성화된 부분의 색상
+      inactiveThumbColor:
+          const Color(0xFFBDBDBD), // 스위치 버튼이 비활성화될 때의 색상 (더 어둡게 설정)
+      inactiveTrackColor: const Color(0x99E7D8BC), // 스위치 트랙의 비활성화된 부분의 색상
     );
   }
 
-// 알람 사용시 리스트
   Widget _buildAlarmOptions() {
     List<String> options = withTime
-        ? ['일정 당일 오전 9시', '일정 당일 오전 12시', '사용자 설정']
+        ? ['일정 당일 오전 9시', '일정 당일 오후 12시', '사용자 설정']
         : ['시작 1시간 전', '시작 30분 전', '사용자 설정'];
 
     return Column(
       children: List<Widget>.generate(
-          options.length,
-          (index) => ListTile(
-                title: _buildOptionTitle(index),
-                trailing: selectedAlarmOption == index
-                    ? const Icon(Icons.check, color: Colors.blue)
-                    : null,
-                onTap: () {
-                  setState(() {
-                    selectedAlarmOption = index;
-                    _updateAlarmTime(index);
-                  });
-                },
-              )),
+        options.length,
+        (index) => ListTile(
+          leading: const Icon(Icons.alarm),
+          title: Text(_buildOptionTitle(index, options)),
+          trailing: selectedAlarmOption == index
+              ? const Icon(Icons.check, color: Colors.blue)
+              : null,
+          onTap: () {
+            setState(() {
+              selectedAlarmOption = index;
+              _updateAlarmTime(index);
+            });
+          },
+        ),
+      ),
     );
   }
 
-// 옵션 옆 시간 계산 함수
-  Widget _buildOptionTitle(int index) {
-    String optionText;
-    if (index == 2) {
-      optionText = '사용자 설정';
-      if (alarmTime != null) {
-        optionText += ' (${alarmTime!.format(context)})'; // 설정된 알람 시간 표시
-      }
-    } else {
-      List<String> defaultOptions = withTime
-          ? ['일정 당일 오전 9시', '일정 당일 오전 12시']
-          : [
-              '시작 1시간 전 (${_calculateStartTime(1).format(context)})',
-              '시작 30분 전 (${_calculateStartTime(0.5).format(context)})'
-            ];
-      optionText = defaultOptions[index];
+  String _buildOptionTitle(int index, List<String> options) {
+    // options 배열을 인자로 받음
+    String optionText = options[index];
+    if (index == 2 && alarmTime != null && alarmDate != null) {
+      optionText +=
+          ' (${DateFormat('MM/dd').format(alarmDate!)} ${alarmTime!.format(context)})';
     }
-    return Text(optionText);
-  }
-
-// 시간 계산 함수
-  TimeOfDay _calculateStartTime(double hoursBefore) {
-    DateTime baseDateTime;
-    if (withTime) {
-      // withTime이 True인 경우
-      baseDateTime =
-          DateTime(startDate.year, startDate.month, startDate.day, 9, 0);
-    } else {
-      // withTime이 False인 경우
-      if (startTime != null) {
-        baseDateTime = DateTime(startDate.year, startDate.month, startDate.day,
-            startTime!.hour, startTime!.minute);
-        baseDateTime = baseDateTime.subtract(Duration(
-            hours: hoursBefore.toInt(),
-            minutes: ((hoursBefore % 1) * 60).toInt()));
-      } else {
-        baseDateTime = DateTime.now();
-      }
-    }
-    return TimeOfDay.fromDateTime(baseDateTime);
+    return optionText;
   }
 
   void _updateAlarmTime(int optionIndex) {
-    if (optionIndex == 2) {
-      // '사용자 설정' 선택시
-      _selectAlarmTime(context);
-    } else {
-      DateTime baseDateTime;
-      if (optionIndex == 0) {
-        // '일정 당일 오전 9시' 또는 '시작 1시간 전'
-        if (withTime) {
-          // withTime이 True인 경우
-          baseDateTime =
-              DateTime(startDate.year, startDate.month, startDate.day, 9, 0);
-        } else {
-          // withTime이 False인 경우
-          if (startTime != null) {
-            baseDateTime = DateTime(startDate.year, startDate.month,
-                startDate.day, startTime!.hour, startTime!.minute);
-            baseDateTime = baseDateTime.subtract(const Duration(hours: 1));
-          } else {
-            baseDateTime = DateTime.now();
-          }
-        }
-      } else if (optionIndex == 1) {
-        // '일정 당일 오전 12시' 또는 '시작 30분 전'
-        if (withTime) {
-          // withTime이 True인 경우
-          baseDateTime =
-              DateTime(startDate.year, startDate.month, startDate.day, 12, 0);
-        } else {
-          // withTime이 False인 경우
-          if (startTime != null) {
-            baseDateTime = DateTime(startDate.year, startDate.month,
-                startDate.day, startTime!.hour, startTime!.minute);
-            baseDateTime = baseDateTime.subtract(const Duration(minutes: 30));
-          } else {
-            baseDateTime = DateTime.now();
-          }
-        }
-      } else {
-        // '사용자 설정'을 선택했을 때
-        if (startTime != null) {
-          baseDateTime = DateTime(startDate.year, startDate.month,
-              startDate.day, startTime!.hour, startTime!.minute);
-          baseDateTime = baseDateTime.subtract(const Duration(hours: 1));
-        } else {
-          baseDateTime = DateTime.now();
-        }
-      }
-      alarmTime = TimeOfDay.fromDateTime(baseDateTime);
-    }
-  }
+    DateTime baseDateTime =
+        DateTime(startDate.year, startDate.month, startDate.day);
 
-  Widget _buildTimePicker(String label, TimeOfDay? time, bool isStartTime) {
-    return ListTile(
-      title: Text('$label: ${time != null ? time.format(context) : "선택되지 않음"}'),
-      onTap: () => _selectTime(context, isStart: isStartTime),
-    );
+    if (!withTime && startTime != null) {
+      // withTime이 false이고 startTime이 설정된 경우, startTime을 기반으로 날짜와 시간을 설정
+      baseDateTime = DateTime(startDate.year, startDate.month, startDate.day,
+          startTime!.hour, startTime!.minute);
+    }
+
+    if (optionIndex == 0) {
+      // 이 부분이 withTime 설정에 따라 올바르게 일정 시간을 설정하도록 수정되었습니다.
+      baseDateTime = withTime
+          ? DateTime(startDate.year, startDate.month, startDate.day, 9, 0)
+          : (startTime != null
+              ? DateTime(startDate.year, startDate.month, startDate.day,
+                      startTime!.hour, startTime!.minute)
+                  .subtract(const Duration(hours: 1))
+              : DateTime.now());
+    } else if (optionIndex == 1) {
+      baseDateTime = withTime
+          ? DateTime(startDate.year, startDate.month, startDate.day, 12, 0)
+          : (startTime != null
+              ? DateTime(startDate.year, startDate.month, startDate.day,
+                      startTime!.hour, startTime!.minute)
+                  .subtract(const Duration(minutes: 30))
+              : DateTime.now());
+    } else if (optionIndex == 2) {
+      // 사용자 정의 시간을 선택하는 경우 별도의 처리가 필요합니다.
+      _selectAlarmTime(context);
+      return;
+    }
+
+    setState(() {
+      alarmDate = baseDateTime; // 알람 날짜 설정
+      alarmTime = TimeOfDay(
+          hour: baseDateTime.hour, minute: baseDateTime.minute); // 알람 시간 설정
+    });
   }
 
   Widget _buildSaveButton() {
-    return ElevatedButton(
-      onPressed: () async {
-        if (_validateForm()) {
-          _formKey.currentState!.save();
-          var newSchedule = Schedule(
-            scheduleTitle: title,
-            startDate: startDate,
-            endDate: endDate,
-            startAlarm: startAlarm,
-            alarmTime: alarmTime,
-            place: place,
-            startTime: startTime,
-            endTime: endTime,
-            withTime: withTime,
-          );
-          try {
-            // 디바이스 토큰을 가져옵니다.
-            String? token = await FirebaseMessaging.instance.getToken();
-            print('Firebase Messaging Token: $token');
-
-            // 일정 생성 및 디바이스 토큰과 일정 정보를 백엔드로 전송
-            if (startAlarm && token != null) {
-              await widget.controller.createSchedule(newSchedule);
-              AlarmApi alarmApi = AlarmApi();
-              String formattedDateTime =
-                  alarmApi.formatScheduleDateTime(startDate, alarmTime);
-              await alarmApi.sendTokenAndScheduleData(
-                  token, title, formattedDateTime);
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text('일정이 성공적으로 생성되었으며 알림이 설정되었습니다.')));
-            } else {
-              await widget.controller.createSchedule(newSchedule);
+    return Padding(
+      padding: const EdgeInsets.only(top: 20.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          if (_validateForm()) {
+            _formKey.currentState!.save();
+            var newSchedule = Schedule(
+              scheduleTitle: title,
+              startDate: startDate,
+              endDate: endDate,
+              startAlarm: startAlarm,
+              alarmTime: alarmTime,
+              alarmDate: alarmDate,
+              place: place,
+              startTime: startTime,
+              endTime: endTime,
+              withTime: withTime,
+            );
+            try {
+              String? token = await FirebaseMessaging.instance.getToken();
+              if (startAlarm && token != null) {
+                await widget.controller.createSchedule(newSchedule);
+                AlarmApi alarmApi = AlarmApi();
+                String formattedDateTime =
+                    alarmApi.formatScheduleDateTime(alarmDate, alarmTime);
+                await alarmApi.sendTokenAndScheduleData(
+                    token, title, formattedDateTime);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('일정이 성공적으로 생성되었으며 알람이 설정되었습니다.')));
+              } else {
+                await widget.controller.createSchedule(newSchedule);
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+              }
+              // 일정 생성 후 이전 화면으로 이동
+              Navigator.pop(context);
+            } catch (error) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+                  SnackBar(content: Text('일정 생성에 실패했습니다: $error')));
             }
-            // 일정 목록 화면으로 이동
-            Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ScheduleListScreen()));
-          } catch (error) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text('일정 생성에 실패했습니다: $error')));
           }
-        }
-      },
-      child: const Text('저장'),
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xfff0d2338),
+          foregroundColor: Colors.white,
+        ),
+        child: const Text('저장'),
+      ),
     );
   }
 
@@ -298,6 +282,15 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('시작 시간과 종료 시간을 모두 입력해야 합니다.')));
       isValid = false;
+    }
+    if (startAlarm && alarmDate != null && alarmTime != null) {
+      DateTime combinedDateTime = DateTime(alarmDate!.year, alarmDate!.month,
+          alarmDate!.day, alarmTime!.hour, alarmTime!.minute);
+      if (combinedDateTime.isBefore(DateTime.now())) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('알람 시간은 현재 시간 이후여야 합니다. 다시 설정해 주세요.')));
+        isValid = false;
+      }
     }
     return isValid;
   }
@@ -359,11 +352,16 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   Future<void> _selectAlarmTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: alarmTime ?? const TimeOfDay(hour: 9, minute: 0),
+      initialTime:
+          alarmTime ?? const TimeOfDay(hour: 9, minute: 0), // 기본값으로 오전 9시 설정
     );
     if (picked != null) {
       setState(() {
         alarmTime = picked;
+        // 사용자가 시간을 선택하면 alarmDate를 startDate로 설정합니다.
+        // 여기서 startDate는 사용자가 이전에 선택한 시작 날짜를 의미합니다.
+        alarmDate = DateTime(startDate.year, startDate.month, startDate.day,
+            alarmTime!.hour, alarmTime!.minute);
       });
     }
   }

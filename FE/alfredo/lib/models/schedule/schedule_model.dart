@@ -17,6 +17,7 @@ class Schedule {
   TimeOfDay? endTime;
   @JsonKey(fromJson: _timeFromString, toJson: _stringFromTime)
   TimeOfDay? alarmTime;
+  DateTime? alarmDate;
   bool withTime;
 
   Schedule({
@@ -29,6 +30,7 @@ class Schedule {
     this.startTime,
     this.endTime,
     this.alarmTime,
+    this.alarmDate,
     this.withTime = true,
   });
 
@@ -37,17 +39,18 @@ class Schedule {
 
   // Map<String, dynamic> toJson() => _$ScheduleToJson(this);
   Map<String, dynamic> toJson() => {
-      'scheduleId': scheduleId,
-      'scheduleTitle': scheduleTitle,
-      'startDate': startDate.toIso8601String(),
-      'endDate': endDate?.toIso8601String(),
-      'startAlarm': startAlarm,  // 이 필드가 항상 포함되도록 보장
-      'place': place,
-      'startTime': _stringFromTime(startTime),
-      'endTime': _stringFromTime(endTime),
-      'alarmTime': _stringFromTime(alarmTime),
-      'withTime': withTime,
-    };
+        'scheduleId': scheduleId,
+        'scheduleTitle': scheduleTitle,
+        'startDate': startDate.toIso8601String(),
+        'endDate': endDate?.toIso8601String(),
+        'startAlarm': startAlarm, // 이 필드가 항상 포함되도록 보장
+        'place': place,
+        'startTime': _stringFromTime(startTime),
+        'endTime': _stringFromTime(endTime),
+        'alarmTime': _stringFromTime(alarmTime),
+        'alarmDate': alarmDate?.toIso8601String(),
+        'withTime': withTime,
+      };
 
   Schedule copyWith({
     int? scheduleId,
@@ -59,6 +62,7 @@ class Schedule {
     TimeOfDay? startTime,
     TimeOfDay? endTime,
     TimeOfDay? alarmTime,
+    DateTime? alarmDate,
     bool? withTime,
   }) {
     return Schedule(
@@ -71,7 +75,8 @@ class Schedule {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       withTime: withTime ?? this.withTime,
-      alarmTime: alarmTime ?? this.alarmTime
+      alarmTime: alarmTime ?? this.alarmTime,
+      alarmDate: alarmDate ?? this.alarmDate,
     );
   }
 

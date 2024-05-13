@@ -62,6 +62,7 @@ dependencies:
   sqflite: ^2.3.3
   uuid: ^3.0.6
   flutter_spinkit: ^5.2.1
+  just_audio: ^0.9.37
 
 dev_dependencies:
   flutter_test:
