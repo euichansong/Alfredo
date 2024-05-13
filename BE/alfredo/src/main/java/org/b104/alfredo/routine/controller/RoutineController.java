@@ -112,7 +112,7 @@ public class RoutineController {
                 .build();
 //        return ResponseEntity.ok().body(routineDto);
         return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .body(routineDto);
     }
 
