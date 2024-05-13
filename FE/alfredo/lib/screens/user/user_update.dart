@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
 import '../../models/user/user_update_dto.dart';
 import '../../provider/user/user_state_provider.dart';
-import 'package:intl/intl.dart';
 
 class UserUpdateScreen extends ConsumerStatefulWidget {
   const UserUpdateScreen({super.key});

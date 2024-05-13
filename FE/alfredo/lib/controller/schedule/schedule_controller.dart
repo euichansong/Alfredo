@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:alfredo/provider/calendar/calendar_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../api/schedule/schedule_api.dart'; // API 호출을 위한 경로 수정
 import '../../models/schedule/schedule_model.dart'; // 모델 클래스 경로 수정
 import '../../provider/user/future_provider.dart';
@@ -25,7 +26,9 @@ class ScheduleController {
   Future<Schedule> createSchedule(Schedule schedule) async {
     final token = await ref.read(authManagerProvider.future);
     if (token != null) {
-      return api.createSchedule(schedule, token);
+      var returndata = await api.createSchedule(schedule, token);
+      ref.refresh(loadSchedule);
+      return returndata;
     } else {
       throw Exception('Authentication token not available');
     }
@@ -40,6 +43,7 @@ class ScheduleController {
   // 스케줄 수정 메서드
   Future<void> updateSchedule(int id, Schedule schedule) async {
     await api.updateSchedule(id, schedule);
+    ref.refresh(loadSchedule);
   }
 
   // 스케줄 삭제 메서드

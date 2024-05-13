@@ -2,6 +2,7 @@ import 'package:alfredo/controller/todo/todo_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+
 import '../../models/todo/todo_model.dart';
 import '../../provider/todo/todo_provider.dart';
 
@@ -48,7 +49,7 @@ class _TodoCreateScreenState extends ConsumerState<TodoCreateScreen> {
       controller.createTodos([newTodo]).then((resultMessage) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('할 일을 생성했습니다.')));
-        Navigator.pushReplacementNamed(context, '/main');
+        Navigator.pop(context, true);
       }).catchError((error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('할 일 생성에 실패했습니다: $error')));

@@ -38,6 +38,7 @@ class _TabViewState extends ConsumerState<TabView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Center(
         child: _pages.elementAt(_selectedIndex),
       ),
