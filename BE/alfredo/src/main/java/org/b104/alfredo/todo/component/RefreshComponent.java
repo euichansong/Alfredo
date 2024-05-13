@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class component {
+public class RefreshComponent {
     private final UpdateService updateService;
 
     @Scheduled(cron = "0 0 5 1 * *")
@@ -15,3 +15,5 @@ public class component {
         updateService.transferOldTodos();
     }
 }
+
+
