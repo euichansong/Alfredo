@@ -97,10 +97,10 @@ public class RoutineController {
                 .build();
         return ResponseEntity.ok().body(routineDto);
     }
-    @GetMapping("/basic-routine/{title}")
-    public ResponseEntity<RoutineDto> getBasicRoutineByTitle(@PathVariable String title) {
-        BasicRoutine basicRoutine = basicRoutineRepository.findByBasicRoutineTitle(title)
-                .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + title));
+    @GetMapping("/basic-routine/{basicRoutineId}")
+    public ResponseEntity<RoutineDto> getBasicRoutineById(@PathVariable Long basicRoutineId) {
+        BasicRoutine basicRoutine = basicRoutineRepository.findById(basicRoutineId)
+                .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + basicRoutineId));
         RoutineDto routineDto = RoutineDto.builder()
                 .id(basicRoutine.getId())
                 .routineTitle(basicRoutine.getBasicRoutineTitle())
