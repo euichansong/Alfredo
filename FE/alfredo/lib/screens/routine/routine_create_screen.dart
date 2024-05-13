@@ -98,9 +98,11 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
             children: [
               Row(
                 children: [
+                  _buildCategoryBadge("기상"),
+                  _buildCategoryBadge("명상"),
                   _buildCategoryBadge("운동"),
-                  _buildCategoryBadge("쇼핑"),
                   _buildCategoryBadge("공부"),
+                  _buildCategoryBadge("취침"),
                 ],
               ),
               const SizedBox(height: 50),

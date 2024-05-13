@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
 import '../api/alarm/alarm_api.dart';
 
 class FirebaseMessagingService {
@@ -57,6 +58,15 @@ class FirebaseMessagingService {
 
     // 백그라운드 상태에서 메시지 처리 핸들러 설정
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+    // 알림 클릭 시 루틴 화면으로 이동
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('sj Message clicked!');
+      if (message.data['type'] == 'routine') {
+        // Navigator가 context 밖에서 사용할 수 없기 때문에 NavigationService를 이용하거나, MyApp에서 라우트 설정을 통해 처리해야 합니다.
+        // 아래 코드를 MyApp의 _firebaseMessagingBackgroundHandler로 이동합니다.
+      }
+    });
   }
 
   /// 포그라운드에서 알림을 표시합니다.
