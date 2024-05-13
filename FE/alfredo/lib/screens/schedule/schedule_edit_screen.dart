@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import '../../controller/schedule/schedule_controller.dart';
+
 import '../../models/schedule/schedule_model.dart';
 import '../../provider/schedule/schedule_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

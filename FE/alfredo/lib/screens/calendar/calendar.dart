@@ -7,9 +7,12 @@ import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
+import '../../models/schedule/schedule_model.dart';
 import '../../models/todo/todo_model.dart';
+import '../../provider/schedule/schedule_provider.dart';
 import '../../provider/todo/todo_provider.dart';
 import '../../screens/todo/todo_detail_screen.dart';
+import '../schedule/schedule_edit_screen.dart';
 
 class Calendar extends ConsumerStatefulWidget {
   const Calendar({super.key});
@@ -19,7 +22,6 @@ class Calendar extends ConsumerStatefulWidget {
 }
 
 class _Calendar extends ConsumerState<Calendar> {
-  List<Todo>? _todos;
   final List<Appointment> appointments = <Appointment>[];
   // ignore: avoid_init_to_null
   ICalendar? _iCalendar;
@@ -31,8 +33,6 @@ class _Calendar extends ConsumerState<Calendar> {
   Map? _iCalendarJson;
   _DataSource? _calendarDataSource;
   // ignore: prefer_final_fields
-  bool _showAgenda = false; // 일정 표시 여부 상태 변수
-  // ignore: non_constant_identifier_names
   final CalendarController _controller = CalendarController();
   // ignore: prefer_const_constructors, prefer_final_fields
   MonthViewSettings _monthViewSettings = MonthViewSettings(
@@ -40,38 +40,50 @@ class _Calendar extends ConsumerState<Calendar> {
     showTrailingAndLeadingDates: false,
   );
 
-  void _fetchTodos() async {
-    final todoController = ref.read(todoControllerProvider);
-    var fetchedTodos = await todoController.fetchTodoList();
-    setState(() {
-      _todos = fetchedTodos;
-      for (Todo _todo in _todos!) {
-        appointments.add(
-          Appointment(
-            startTime: _todo.dueDate,
-            endTime: _todo.dueDate,
-            isAllDay: true,
-            subject: _todo.todoTitle,
-            save_type: 'todo',
-            params: _todo.id.toString(),
-            color: const Color(0xFFD6C3C3),
-          ),
-        );
-      }
-    });
+  Future<void> _fetchSchedule() async {
+    final scheduleController = ref.read(scheduleControllerProvider);
+    var fetchedSchedule = await scheduleController.getSchedules();
+    for (Schedule _schedule in fetchedSchedule) {
+      appointments.add(
+        Appointment(
+          startTime: _schedule.startDate,
+          endTime: _schedule.endDate ?? _schedule.startDate,
+          isAllDay: true,
+          subject: _schedule.scheduleTitle,
+          save_type: 'schedule',
+          params: _schedule.scheduleId.toString(),
+          color: const Color(0xFFe7d8bc),
+        ),
+      );
+    }
   }
 
-  Future<void> _loadCalendarData(String iCalUrl) async {
+  Future<void> _fetchTodos() async {
+    final todoController = ref.read(todoControllerProvider);
+    var fetchedTodos = await todoController.fetchTodoList();
+    for (Todo _todo in fetchedTodos) {
+      appointments.add(
+        Appointment(
+          startTime: _todo.dueDate,
+          endTime: _todo.dueDate,
+          isAllDay: true,
+          subject: _todo.todoTitle,
+          save_type: 'todo',
+          params: _todo.id.toString(),
+          color: const Color(0xFFD6C3C3),
+        ),
+      );
+    }
+  }
+
+  Future<void> _loadiCalendarData(String iCalUrl) async {
     try {
       final response = await http.get(Uri.parse(iCalUrl));
       if (response.statusCode == 200) {
         final icsString = response.body;
         _iCalendar = ICalendar.fromString(icsString);
         _iCalendarJson = _iCalendar!.toJson();
-        final dataSource = await getCalendarDataSource(_iCalendarJson);
-        setState(() {
-          _calendarDataSource = dataSource;
-        });
+        await getCalendarDataSource(_iCalendarJson);
       } else {
         throw Exception('Failed to load iCal data');
       }
@@ -85,13 +97,21 @@ class _Calendar extends ConsumerState<Calendar> {
     // });
   }
 
+  Future<void> _removeSchedule(String saveType) async {
+    setState(() {
+      appointments
+          .removeWhere((appointment) => appointment.save_type == saveType);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
 
-    _loadCalendarData(
-        'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics');
-    _fetchTodos();
+    _fetchSchedule().then((value) => _fetchTodos().then((value) =>
+        _loadiCalendarData(
+                'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics')
+            .then((value) => loadCalendarDataSource())));
   }
 
   // SharedPreferences에 iCalendar 데이터를 비교 하는 함수
@@ -106,11 +126,20 @@ class _Calendar extends ConsumerState<Calendar> {
     }
   }
 
+  Future<void> loadCalendarDataSource() async {
+    setState(() {
+      _calendarDataSource = _DataSource(appointments);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(0), // AppBar의 높이 설정
+        child: AppBar(),
+      ),
       body: GestureDetector(
         onVerticalDragUpdate: calendarDarged,
         onVerticalDragEnd: calendarDragEnd,
@@ -145,11 +174,6 @@ class _Calendar extends ConsumerState<Calendar> {
   }
 
   void calendarTapped(CalendarTapDetails calendarTapDetails) async {
-    print('**************');
-    print(calendarTapDetails.appointments);
-    print('**************');
-    print(calendarTapDetails.targetElement);
-    print('**************');
     if (_controller.view == CalendarView.month &&
         calendarTapDetails.targetElement == CalendarElement.calendarCell &&
         !_monthViewSettings.showAgenda) {
@@ -166,15 +190,27 @@ class _Calendar extends ConsumerState<Calendar> {
                 todoId: int.parse(calendarTapDetails.appointments![0].params));
           },
         );
+      } else if (calendarTapDetails.appointments![0].save_type == 'schedule') {
+        var result = await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ScheduleEditScreen(
+                  scheduleId:
+                      int.parse(calendarTapDetails.appointments![0].params))),
+        );
+        if (result != null && result == true) {
+          appointments.clear();
+          _fetchSchedule().then((value) => _fetchTodos().then((value) =>
+              _loadiCalendarData(
+                      'https://calendar.google.com/calendar/ical/rlaxodhks770%40gmail.com/private-2b11b7a9fb0eea814024ec761591d8fb/basic.ics')
+                  .then((value) => loadCalendarDataSource())));
+        }
       }
     }
   }
 
   void calendarDarged(DragUpdateDetails details) {
     if (!_isDragging) {
-      setState(() {
-        _showAgenda = !_showAgenda;
-      });
       _isDragging = true;
       if (details.delta.dy > screenHeight / 100) {
         if (_monthViewSettings.numberOfWeeksInView == 6) {
@@ -225,11 +261,11 @@ class _Calendar extends ConsumerState<Calendar> {
       showAgenda: true,
       showTrailingAndLeadingDates: false,
       numberOfWeeksInView: 1,
-      agendaViewHeight: screenHeight / 1.53,
+      agendaViewHeight: screenHeight / 1.4,
     );
   }
 
-  Future<_DataSource?> getCalendarDataSource(Map? iCalendarJson) async {
+  Future<void> getCalendarDataSource(Map? iCalendarJson) async {
     if (iCalendarJson != null) {
       for (Map? datas in iCalendarJson['data']) {
         if (datas!['dtstart'] != null) {
@@ -256,11 +292,8 @@ class _Calendar extends ConsumerState<Calendar> {
               subject: datas['summary'] ?? '(제목 없음)',
             ));
           }
-        } else {}
+        }
       }
-      return _DataSource(appointments);
-    } else {
-      return null;
     }
   }
 }

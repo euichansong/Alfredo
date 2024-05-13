@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../user/loading_screen.dart';
+
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
-import '../../components/navbar/tabview.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -16,22 +15,22 @@ class MainPage extends StatelessWidget {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/mainback1.png'),
+                image: AssetImage('assets/mainalfredo.png'),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.6,
+            top: MediaQuery.of(context).size.height * 0.5,
             left: MediaQuery.of(context).size.height * 0.05,
             right: MediaQuery.of(context).size.height * 0.05,
-            bottom: MediaQuery.of(context).size.height * 0.1,
+            bottom: MediaQuery.of(context).size.height * 0.05,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: const TodoList(),
+              child: const SizedBox(
+                // width: MediaQuery.of(context).size.width,
+                // height: MediaQuery.of(context).size.height,
+                child: TodoList(),
               ),
             ),
           ),
