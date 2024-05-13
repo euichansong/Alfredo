@@ -90,8 +90,10 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
           ),
         ],
       ),
+      backgroundColor: const Color(0xFFF2E9E9),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding:
+            const EdgeInsets.only(top: 32, bottom: 32, left: 16, right: 16),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -104,7 +106,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                   }).toList(),
                 ),
               ),
-              const SizedBox(height: 50),
+              const SizedBox(height: 20),
               TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(
@@ -152,29 +154,51 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                 ],
               ),
               const SizedBox(height: 50),
-              SizedBox(
-                child: ToggleButtons(
-                  isSelected: selectedDays,
-                  selectedColor: Colors.white, // 선택된 항목의 텍스트 색상
-                  color: Colors.black, // 선택되지 않은 항목의 텍스트 색상
-                  fillColor: const Color(0xFF0D2338), // 선택된 항목의 배경색
-                  selectedBorderColor:
-                      const Color(0xFF0D2338), // 선택된 항목의 테두리 색상
-                  borderColor: Colors.grey, // 선택되지 않은 항목의 테두리 색상
-                  borderWidth: 1.0,
-                  borderRadius: BorderRadius.circular(0.0), // 테두리 모서리 둥글기
-                  children: const [
-                    Text("일"),
-                    Text("월"),
-                    Text("화"),
-                    Text("수"),
-                    Text("목"),
-                    Text("금"),
-                    Text("토"),
-                  ],
-                  onPressed: (int index) => setState(
-                      () => selectedDays[index] = !selectedDays[index]),
-                ),
+              ToggleButtons(
+                isSelected: selectedDays,
+                selectedColor: Colors.white, // 선택된 항목의 텍스트 색상
+                color: Colors.black, // 선택되지 않은 항목의 텍스트 색상
+                fillColor: const Color(0xFF0D2338), // 선택된 항목의 배경색
+                selectedBorderColor: const Color(0xFF0D2338), // 선택된 항목의 테두리 색상
+                borderColor: Colors.grey, // 선택되지 않은 항목의 테두리 색상
+                borderWidth: 1.0,
+                borderRadius: BorderRadius.circular(0.0),
+                onPressed: (int index) =>
+                    setState(() => selectedDays[index] = !selectedDays[index]),
+                constraints: BoxConstraints(
+                  minWidth: (MediaQuery.of(context).size.width - 64) /
+                      7, // 64는 양쪽 패딩 합계
+                ), // 테두리 모서리 둥글기
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("일"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("월"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("화"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("수"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("목"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("금"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("토"),
+                  ),
+                ],
               ),
               const SizedBox(height: 50),
               TextField(

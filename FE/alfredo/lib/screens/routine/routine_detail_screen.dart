@@ -58,6 +58,7 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
           ),
         ],
       ),
+      backgroundColor: const Color(0xFFF2E9E9),
       body: Padding(
         padding: const EdgeInsets.all(32.0),
         child: SingleChildScrollView(
