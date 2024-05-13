@@ -17,7 +17,7 @@ public class Achieve {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id" )
-    private User userId;    // 유저 아이디
+    private User user;    // 유저 아이디
     // false가 기본
     @ColumnDefault("false")
     private Boolean achieveOne;
@@ -48,8 +48,8 @@ public class Achieve {
 
 
     @Builder
-    public Achieve(User userId, Boolean achieveOne, Boolean achieveTwo, Boolean achieveThree, Boolean achieveFour, Boolean achieveFive, Boolean achieveSix, Boolean achieveSeven, Boolean achieveEight, Boolean achieveNine) {
-        this.userId = userId;
+    public Achieve(User user, Boolean achieveOne, Boolean achieveTwo, Boolean achieveThree, Boolean achieveFour, Boolean achieveFive, Boolean achieveSix, Boolean achieveSeven, Boolean achieveEight, Boolean achieveNine) {
+        this.user = user;
         this.achieveOne = achieveOne;
         this.achieveTwo = achieveTwo;
         this.achieveThree = achieveThree;

@@ -2,8 +2,6 @@ package org.b104.alfredo.coin.service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.b104.alfredo.achieve.domain.Achieve;
-import org.b104.alfredo.achieve.response.AchieveDetailDto;
 import org.b104.alfredo.coin.domain.Coin;
 import org.b104.alfredo.coin.repository.CoinRepository;
 import org.b104.alfredo.coin.response.CoinDetailDto;

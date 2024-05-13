@@ -7,5 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AchieveRepository extends JpaRepository<Achieve, Long> {
-    Achieve findByUserId(User user);
+    Achieve findByUser(User user);
 }
+
