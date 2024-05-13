@@ -84,13 +84,13 @@ class RoutineApi {
   }
 
 //기본 루틴 정보 가져오기
-  Future<Routine> fetchBasicRoutine(String title) async {
-    final url = Uri.parse('$baseUrl/basic-routine/$title');
+  Future<Routine> fetchBasicRoutine(int basicRoutineId) async {
+    final url = Uri.parse('$baseUrl/basic-routine/$basicRoutineId');
     final response = await http.get(url, headers: _headers);
 
     if (response.statusCode == 200) {
       final decodedBody = utf8.decode(response.bodyBytes);
-      return Routine.fromJson(jsonDecode(decodedBody));
+      return Routine.fromJson(json.decode(decodedBody));
     } else {
       throw Exception('Failed to load basic routine: ${response.statusCode}');
     }

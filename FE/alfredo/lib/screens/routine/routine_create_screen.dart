@@ -37,32 +37,31 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
 
   _RoutineCreateScreenState({required this.ref});
 
-  Future<void> _fetchBasicRoutine(String title) async {
+  // 카테고리와 기본 루틴 ID를 매핑하는 맵
+  final Map<String, int> categoryToId = {
+    "기상": 1,
+    "명상": 2,
+    "운동": 3,
+    "공부": 4,
+    "취침": 5,
+  };
+
+  Future<void> _fetchBasicRoutine(int basicRoutineId) async {
     try {
-      final basicRoutine = await routineApi.fetchBasicRoutine(title);
+      final basicRoutine = await routineApi.fetchBasicRoutine(basicRoutineId);
       setState(() {
         titleController.text = basicRoutine.routineTitle;
         selectedTime = TimeOfDay(
           hour: basicRoutine.startTime.hour,
           minute: basicRoutine.startTime.minute,
         );
-        // selectedTime = TimeOfDay(
-        //   hour: int.parse(basicRoutine.startTime.toString().split(':')[0]),
-        //   minute: int.parse(basicRoutine.startTime.toString().split(':')[1]),
-        // );
-
-        // final startTimeParts = basicRoutine.startTime.split(':');
-        // selectedTime = TimeOfDay(
-        //   hour: int.parse(startTimeParts[0]),
-        //   minute: int.parse(startTimeParts[1]),
-        // );
         selectedDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
             .map((day) => basicRoutine.days.contains(day))
             .toList();
-        memoController.text = basicRoutine.memo ?? ''; //null이면 빈 문자열로 설정
-        print("베이직 $basicRoutine.basicRoutineId");
-        basicRoutineId = basicRoutine.id; // 기본 루틴 ID 저장  (주의 id임. 아직 이해 안감)
-        selectedCategory = title; // 선택된 카테고리 업데이트
+        memoController.text = basicRoutine.memo ?? ''; // null이면 빈 문자열로 설정
+        this.basicRoutineId = basicRoutine.id; // 기본 루틴 ID 저장
+        selectedCategory = categoryToId.keys
+            .firstWhere((k) => categoryToId[k] == basicRoutineId);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -96,14 +95,14 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Row(
-                children: [
-                  _buildCategoryBadge("기상"),
-                  _buildCategoryBadge("명상"),
-                  _buildCategoryBadge("운동"),
-                  _buildCategoryBadge("공부"),
-                  _buildCategoryBadge("취침"),
-                ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: categoryToId.keys.map((category) {
+                    return _buildCategoryBadge(
+                        category, categoryToId[category]!);
+                  }).toList(),
+                ),
               ),
               const SizedBox(height: 50),
               TextFormField(
@@ -137,7 +136,9 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                     child: GestureDetector(
                       onTap: () async {
                         final TimeOfDay? pickedTime = await showTimePicker(
-                            context: context, initialTime: selectedTime!);
+                          context: context,
+                          initialTime: selectedTime!,
+                        );
                         if (pickedTime != null) {
                           setState(() => selectedTime = pickedTime);
                         }
@@ -151,10 +152,6 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                 ],
               ),
               const SizedBox(height: 50),
-              // const Text(
-              //   "요일 설정",
-              //   style: TextStyle(fontSize: 18),
-              // ),
               SizedBox(
                 child: ToggleButtons(
                   isSelected: selectedDays,
@@ -179,34 +176,6 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       () => selectedDays[index] = !selectedDays[index]),
                 ),
               ),
-              // const SizedBox(height: 50),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     const Text(
-              //       "알람 설정",
-              //       style: TextStyle(fontSize: 18),
-              //     ),
-              //     DropdownButton<String>(
-              //       value: currentAlarmSound,
-              //       onChanged: (String? newValue) {
-              //         if (newValue != null) {
-              //           setState(() => currentAlarmSound = newValue);
-              //         }
-              //       },
-              //       items: <String>[
-              //         'Morning Glory',
-              //         'Beep Alarm',
-              //         'Digital Alarm'
-              //       ].map<DropdownMenuItem<String>>((String value) {
-              //         return DropdownMenuItem<String>(
-              //           value: value,
-              //           child: Text(value),
-              //         );
-              //       }).toList(),
-              //     ),
-              //   ],
-              // ),
               const SizedBox(height: 50),
               TextField(
                 controller: memoController,
@@ -268,22 +237,17 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
                       final memo = memoController.text;
 
                       await routineApi.createRoutine(
-                          idToken,
-                          routineTitle,
-                          startTime,
-                          days,
-                          currentAlarmSound,
-                          memo,
-                          basicRoutineId);
+                        idToken,
+                        routineTitle,
+                        startTime,
+                        days,
+                        currentAlarmSound,
+                        memo,
+                        basicRoutineId,
+                      );
                       ref.refresh(routineProvider);
 
                       Navigator.pop(context);
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => RoutineListScreen(),
-                      //   ),
-                      // );
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -300,9 +264,9 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
     );
   }
 
-  Widget _buildCategoryBadge(String title) {
+  Widget _buildCategoryBadge(String title, int basicRoutineId) {
     return GestureDetector(
-      onTap: () => _fetchBasicRoutine(title),
+      onTap: () => _fetchBasicRoutine(basicRoutineId),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
