@@ -226,7 +226,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
 
   Widget _buildSaveButton() {
     return Padding(
-      padding: const EdgeInsets.only(top: 20.0), // 위쪽에 20 픽셀의 패딩 추가
+      padding: const EdgeInsets.only(top: 20.0),
       child: ElevatedButton(
         onPressed: () async {
           if (_validateForm()) {
@@ -244,10 +244,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
               withTime: withTime,
             );
             try {
-              // 디바이스 토큰을 가져옵니다.
               String? token = await FirebaseMessaging.instance.getToken();
-
-              // 일정 생성 및 디바이스 토큰과 일정 정보를 백엔드로 전송
               if (startAlarm && token != null) {
                 await widget.controller.createSchedule(newSchedule);
                 AlarmApi alarmApi = AlarmApi();
@@ -256,17 +253,14 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
                 await alarmApi.sendTokenAndScheduleData(
                     token, title, formattedDateTime);
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('일정이 성공적으로 생성되었으며 알림이 설정되었습니다.')));
+                    content: Text('일정이 성공적으로 생성되었으며 알람이 설정되었습니다.')));
               } else {
                 await widget.controller.createSchedule(newSchedule);
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
               }
-              // 일정 목록 화면으로 이동
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const ScheduleListScreen()));
+              // 일정 생성 후 이전 화면으로 이동
+              Navigator.pop(context);
             } catch (error) {
               ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('일정 생성에 실패했습니다: $error')));
@@ -274,8 +268,8 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           }
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xfff0d2338), // 버튼 배경색 설정
-          foregroundColor: Colors.white, // 글씨색 설정
+          backgroundColor: const Color(0xfff0d2338),
+          foregroundColor: Colors.white,
         ),
         child: const Text('저장'),
       ),
