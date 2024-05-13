@@ -72,11 +72,15 @@ class _TodoListState extends ConsumerState<TodoList> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30.0, vertical: 0.5),
                         title: Text(
-                          todo.todoTitle,
+                          todo.todoTitle.length > 9
+                              ? '${todo.todoTitle.substring(0, 9)}...'
+                              : todo.todoTitle,
                           style: const TextStyle(
                             fontSize: 18,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
                           showDialog(
@@ -122,6 +126,7 @@ class _TodoListState extends ConsumerState<TodoList> {
         .then((_) => _onTodoUpdated());
   }
 }
+
 
 // import 'package:flutter/material.dart';
 // import 'dart:math' as math;
