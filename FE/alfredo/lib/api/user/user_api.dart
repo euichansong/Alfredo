@@ -57,9 +57,3 @@ class UserApi {
     }
   }
 }
-
-
-
-// 예를 들어, 다른 곳에서 이 UserApi를 사용할 때는 다음과 같이 사용할 수 있습니다.
-// final userApi = UserApi();
-// final userInfo = await userApi.getUserInfo(ref); // 'ref'는 ProviderReference 객체입니다.
