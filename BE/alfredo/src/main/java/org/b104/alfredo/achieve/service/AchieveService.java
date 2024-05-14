@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.achieve.domain.Achieve;
 import org.b104.alfredo.achieve.repository.AchieveRepository;
 import org.b104.alfredo.achieve.response.AchieveDetailDto;
+import org.b104.alfredo.coin.domain.Coin;
+import org.b104.alfredo.coin.repository.CoinRepository;
 import org.b104.alfredo.routine.repository.RoutineRepository;
 import org.b104.alfredo.schedule.domain.Schedule;
 import org.b104.alfredo.schedule.repository.ScheduleRepository;
@@ -24,6 +26,7 @@ public class AchieveService {
     private final TodoRepository todoRepository;
     private final RoutineRepository routineRepository;
     private final ScheduleRepository scheduleRepository;
+    private final CoinRepository coinRepository;
 
     // 생성
     @Transactional
@@ -54,7 +57,7 @@ public class AchieveService {
         return new AchieveDetailDto(achieve);
     }
 
-    // 6번째 업적 체크 로직
+    // 6번째 업적 체크 로직 -  - 총 일정의 갯수
     @Transactional
     public void checkTotalSchedule(User user) {
         // 해당 유저의 일정 리스트 가져오기
@@ -67,6 +70,12 @@ public class AchieveService {
         Achieve achieve = achieveRepository.findByUser(user);
         if (count >= 2 && (achieve != null && !achieve.getAchieveSix())) {
             achieve.updateAchieveSix(true);
+
+            // 6번째 업적이 달성되었으므로 Coin 업데이트
+            Coin coin = coinRepository.findByUserId(user);
+            if (coin != null) {
+                coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            }
 
         }
     }
