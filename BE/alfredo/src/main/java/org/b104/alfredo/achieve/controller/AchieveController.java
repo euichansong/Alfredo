@@ -64,7 +64,7 @@ public class AchieveController {
         }
     }
     // 두번째 업적 - 첫 ical 등록
-    @PostMapping("/one")
+    @PostMapping("/two")
     public ResponseEntity<String> checkFirstIcal(@RequestHeader(value = "Authorization") String authHeader) {
         try {
             String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
@@ -84,7 +84,7 @@ public class AchieveController {
         }
     }
     // 3번째 업적 - day 풀 참가
-    @PostMapping("/five")
+    @PostMapping("/three")
     public ResponseEntity<String> checkWeekendAchieve(@RequestHeader(value = "Authorization") String authHeader) {
         try {
             String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
