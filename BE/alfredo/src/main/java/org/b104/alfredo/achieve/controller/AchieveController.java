@@ -63,6 +63,66 @@ public class AchieveController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+    // 첫번째 업적 - 첫 ical 등록
+    @PostMapping("/one")
+    public ResponseEntity<String> checkFirstIcal(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+            User user = userService.getUserByUid(uid);
+
+            boolean isUpdated = achieveService.checkFirstIcal(user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+    // 4번째 업적 - 총 루틴의 갯수
+    @PostMapping("/four")
+    public ResponseEntity<String> checkRoutineAchieve(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+            User user = userService.getUserByUid(uid);
+
+            boolean isUpdated = achieveService.checkTotalRoutine(user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 5번째 업적 - 총 투두 갯수
+    @PostMapping("/five")
+    public ResponseEntity<String> checkTodoAchieve(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            boolean isUpdated = achieveService.checkTotalTodo(uid);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     // 6번째 업적 - 총 일정의 갯수
     @PostMapping("/six")
@@ -73,13 +133,16 @@ public class AchieveController {
             String uid = decodedToken.getUid();
 
             User user = userService.getUserByUid(uid);
-            achieveService.checkTotalSchedule(user);
 
-            return ResponseEntity.ok("Achievement status updated successfully.");
+            boolean isUpdated = achieveService.checkTotalSchedule(user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+            }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 }
