@@ -103,6 +103,7 @@ public class RoutineController {
     }
     @GetMapping("/basic-routine/{basicRoutineId}")
     public ResponseEntity<RoutineDto> getBasicRoutineById(@PathVariable Long basicRoutineId) {
+        log.info("basicRoutine 받아오기");
         BasicRoutine basicRoutine = basicRoutineRepository.findById(basicRoutineId)
                 .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + basicRoutineId));
         RoutineDto routineDto = RoutineDto.builder()
@@ -117,6 +118,7 @@ public class RoutineController {
 //        return ResponseEntity.ok()
 //                .contentType(MediaType.APPLICATION_JSON)
 //                .body(routineDto);
+        log.info(basicRoutine.getBasicRoutineTitle()+" basicRoutine title 한글 안깨지나 확인test");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
 
