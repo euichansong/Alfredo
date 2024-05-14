@@ -263,13 +263,16 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: isStart ? _startDate : _endDate ?? DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate: isStart ? DateTime.now() : _startDate,
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != (isStart ? _startDate : _endDate)) {
       setState(() {
         if (isStart) {
           _startDate = picked;
+          if (_endDate != null && _endDate!.isBefore(_startDate)) {
+            _endDate = _startDate; // 종료일을 시작일로 자동 설정
+          }
         } else {
           _endDate = picked;
         }
@@ -281,8 +284,8 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: isStart
-          ? (_startTime ?? const TimeOfDay(hour: 9, minute: 0))
-          : (_endTime ?? const TimeOfDay(hour: 9, minute: 0)),
+          ? (_startTime ?? TimeOfDay.now())
+          : (_endTime ?? TimeOfDay.now()),
     );
     if (picked != null) {
       setState(() {
@@ -298,7 +301,7 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
   Future<void> _selectAlarmTime() async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _alarmTime ?? const TimeOfDay(hour: 9, minute: 0),
+      initialTime: _alarmTime ?? TimeOfDay.now(),
     );
     if (picked != null) {
       DateTime potentialAlarmDate = DateTime(_startDate.year, _startDate.month,
@@ -344,6 +347,13 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
     if (_alarmDate != null && _alarmTime != null) {
       fullAlarmDateTime = DateTime(_alarmDate!.year, _alarmDate!.month,
           _alarmDate!.day, _alarmTime!.hour, _alarmTime!.minute);
+    }
+
+    // 사용자 설정에서 시간을 선택하지 않았을 때 경고 메시지 표시
+    if (_startAlarm && _selectedAlarmOption == 2 && _alarmTime == null) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('알람 시간을 설정해 주세요.')));
+      return; // 유효하지 않은 알람 시간으로 인해 업데이트를 중단합니다.
     }
 
     // 결합된 알람 시간이 현재 시간 이전인지 검증합니다.

@@ -283,13 +283,21 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           const SnackBar(content: Text('시작 시간과 종료 시간을 모두 입력해야 합니다.')));
       isValid = false;
     }
-    if (startAlarm && alarmDate != null && alarmTime != null) {
-      DateTime combinedDateTime = DateTime(alarmDate!.year, alarmDate!.month,
-          alarmDate!.day, alarmTime!.hour, alarmTime!.minute);
-      if (combinedDateTime.isBefore(DateTime.now())) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text('알람 시간은 현재 시간 이후여야 합니다. 다시 설정해 주세요.')));
+    if (startAlarm) {
+      if (selectedAlarmOption == 2 &&
+          (alarmDate == null || alarmTime == null)) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('알람 시간을 설정해 주세요.')));
         isValid = false;
+      }
+      if (alarmDate != null && alarmTime != null) {
+        DateTime combinedDateTime = DateTime(alarmDate!.year, alarmDate!.month,
+            alarmDate!.day, alarmTime!.hour, alarmTime!.minute);
+        if (combinedDateTime.isBefore(DateTime.now())) {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('알람 시간은 현재 시간 이후여야 합니다. 다시 설정해 주세요.')));
+          isValid = false;
+        }
       }
     }
     return isValid;
@@ -299,13 +307,8 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   Future<void> _selectDate(BuildContext context,
       {required bool isStart}) async {
     DateTime initialDate = isStart ? startDate : (endDate ?? startDate);
-    DateTime firstDate = DateTime(2000);
+    DateTime firstDate = isStart ? DateTime.now() : startDate;
     DateTime lastDate = DateTime(2100);
-
-    if (!isStart) {
-      // 종료일 선택기에 대해 시작일을 최소 날짜로 설정
-      firstDate = startDate;
-    }
 
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -335,8 +338,8 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: isStart
-          ? (startTime ?? const TimeOfDay(hour: 9, minute: 0))
-          : (endTime ?? const TimeOfDay(hour: 9, minute: 0)),
+          ? (startTime ?? TimeOfDay.now())
+          : (endTime ?? TimeOfDay.now()),
     );
     if (picked != null) {
       setState(() {
@@ -352,8 +355,7 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
   Future<void> _selectAlarmTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime:
-          alarmTime ?? const TimeOfDay(hour: 9, minute: 0), // 기본값으로 오전 9시 설정
+      initialTime: alarmTime ?? TimeOfDay.now(), // 기본값으로 현재 시간 설정
     );
     if (picked != null) {
       setState(() {
