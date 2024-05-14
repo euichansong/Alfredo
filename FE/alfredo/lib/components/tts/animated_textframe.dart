@@ -1,9 +1,10 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class AnimatedTextFrame extends StatefulWidget {
   final Function onTextTap;
-  AnimatedTextFrame({Key? key, required this.onTextTap}) : super(key: key);
+  const AnimatedTextFrame({super.key, required this.onTextTap});
 
   @override
   AnimatedTextFrameState createState() => AnimatedTextFrameState();
@@ -48,12 +49,13 @@ class AnimatedTextFrameState extends State<AnimatedTextFrame> {
       ];
     }
   }
- void changeText() {
-      final newText = stringList[Random().nextInt(stringList.length)];
-      setState(() {
-        displayedText = newText;
-        isApiTextDisplayed = false; // 로컬 리스트로 변경 시 상태 해제
-      });
+
+  void changeText() {
+    final newText = stringList[Random().nextInt(stringList.length)];
+    setState(() {
+      displayedText = newText;
+      isApiTextDisplayed = false; // 로컬 리스트로 변경 시 상태 해제
+    });
   }
 
   // API로부터 받은 새 텍스트로 업데이트
@@ -68,12 +70,12 @@ class AnimatedTextFrameState extends State<AnimatedTextFrame> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        widget.onTextTap();  // 사용자 정의 콜백 실행
-        changeText();  // 텍스트 변경 함수 실행
+        widget.onTextTap(); // 사용자 정의 콜백 실행
+        changeText(); // 텍스트 변경 함수 실행
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.8,
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.5),
           border: Border.all(color: Colors.black),
@@ -82,7 +84,7 @@ class AnimatedTextFrameState extends State<AnimatedTextFrame> {
         child: SingleChildScrollView(
           child: Text(
             displayedText,
-            style: TextStyle(fontSize: 16.0),
+            style: const TextStyle(fontSize: 16.0),
           ),
         ),
       ),

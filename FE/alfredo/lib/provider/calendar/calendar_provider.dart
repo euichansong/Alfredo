@@ -30,24 +30,59 @@ final loadTodo = Provider((ref) {
   return fetchedTodos;
 });
 
+DateTime combineDateTimeAndTimeOfDay(DateTime date, TimeOfDay time) {
+  return DateTime(date.year, date.month, date.day, time.hour, time.minute);
+}
+
 final loadScheduleData = FutureProvider<List<Appointment>>((ref) async {
   final List<Appointment> appointments = <Appointment>[];
   var fetchedSchedule = await ref.watch(loadSchedule);
   // var fetchedSchedule = await scheduleController.getSchedules();
   for (Schedule _schedule in fetchedSchedule) {
-    appointments.add(
-      Appointment(
-        startTime: _schedule.startDate,
-        endTime: _schedule.endDate ?? _schedule.startDate,
-        isAllDay: true,
-        subject: _schedule.scheduleTitle,
-        save_type: 'schedule',
-        params: _schedule.scheduleId.toString(),
-        color: const Color(0xFFe7d8bc),
-      ),
-    );
+    if (_schedule.startTime == null) {
+      appointments.add(
+        Appointment(
+          startTime: _schedule.startDate,
+          endTime: _schedule.endDate ?? _schedule.startDate,
+          isAllDay: true,
+          subject: _schedule.scheduleTitle,
+          save_type: 'schedule',
+          params: _schedule.scheduleId.toString(),
+          color: const Color(0xFFe7d8bc),
+        ),
+      );
+    } else {
+      if (_schedule.startDate == _schedule.endDate!) {
+        DateTime starttime = combineDateTimeAndTimeOfDay(
+            _schedule.startDate, _schedule.startTime!);
+        DateTime endtime =
+            combineDateTimeAndTimeOfDay(_schedule.endDate!, _schedule.endTime!);
+        appointments.add(
+          Appointment(
+            startTime: starttime,
+            endTime: endtime,
+            subject: _schedule.scheduleTitle,
+            save_type: 'schedule',
+            params: _schedule.scheduleId.toString(),
+            color: const Color(0xFFe7d8bc),
+          ),
+        );
+      } else {
+        appointments.add(
+          Appointment(
+            startTime: _schedule.startDate,
+            endTime: _schedule.endDate!,
+            isAllDay: true,
+            subject: _schedule.scheduleTitle,
+            save_type: 'schedule',
+            params: _schedule.scheduleId.toString(),
+            color: const Color(0xFFe7d8bc),
+          ),
+        );
+      }
+    }
   }
-  print('loadSchedule : $appointments');
+  // print('loadSchedule : $appointments');
   return appointments;
 });
 
@@ -67,7 +102,7 @@ final loadTodoData = FutureProvider<List<Appointment>>((ref) async {
       ),
     );
   }
-  print('loadTodos : $appointments');
+  // print('loadTodos : $appointments');
   return appointments;
 });
 
@@ -126,8 +161,8 @@ final loadiCalendar =
       }
     }
     if (flag) {
-      print('loadiCalendarData :');
-      print(appointments);
+      // print('loadiCalendarData :');
+      // print(appointments);
     }
   }
 

@@ -37,49 +37,61 @@ class TtsPage extends ConsumerWidget {
           ),
           Positioned(
             top: MediaQuery.of(context).size.height * 0,
-            left: 0,
-            right: MediaQuery.of(context).size.height * 0.2692,
-            child: ElevatedButton(
-              onPressed: () => authTokenAsyncValue.when(
-                data: (String? token) async {
-                  if (token != null) {
-                    try {
-                      // Fetch new text from API
-                      final summaryText =
-                          await ref.read(ttsSummaryProvider(token).future);
-                      animatedTextKey.currentState?.updateText(
-                          summaryText); // Update text on the animated text frame
+            left: MediaQuery.of(context).size.height * 0.02,
+            right: MediaQuery.of(context).size.height * 0.42,
+            child: Center(
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(const Color(0xFF0D2338)),
+                    padding: MaterialStateProperty.all(
+                        const EdgeInsets.symmetric(
+                            vertical: 0, horizontal: 0))),
+                onPressed: () => authTokenAsyncValue.when(
+                  data: (String? token) async {
+                    if (token != null) {
+                      try {
+                        // Fetch new text from API
+                        final summaryText =
+                            await ref.read(ttsSummaryProvider(token).future);
+                        animatedTextKey.currentState?.updateText(
+                            summaryText); // Update text on the animated text frame
 
-                      final response = await http.get(
-                          Uri.parse('$baseUrl/check'),
-                          headers: {'Authorization': 'Bearer $token'});
+                        final response = await http.get(
+                            Uri.parse('$baseUrl/check'),
+                            headers: {'Authorization': 'Bearer $token'});
 
-                      if (response.statusCode == 200) {
-                        // Start audio streaming
-                        Uri audioUri = Uri.parse('$baseUrl/stream');
-                        await player.setAudioSource(AudioSource.uri(audioUri,
-                            headers: {'Authorization': 'Bearer $token'}));
-                        player.play();
-                      } else if (response.statusCode == 429) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('일일 요청 제한에 도달했습니다')));
+                        if (response.statusCode == 200) {
+                          // Start audio streaming
+                          Uri audioUri = Uri.parse('$baseUrl/stream');
+                          await player.setAudioSource(AudioSource.uri(audioUri,
+                              headers: {'Authorization': 'Bearer $token'}));
+                          player.play();
+                        } else if (response.statusCode == 429) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('일일 요청 제한에 도달했습니다')));
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                                "Failed to play audio or fetch text: $e")));
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content:
-                              Text("Failed to play audio or fetch text: $e")));
+                              Text("Token is null, cannot perform actions.")));
                     }
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                        content:
-                            Text("Token is null, cannot perform actions.")));
-                  }
-                },
-                error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Token fetching failed: $e"))),
-                loading: () => const CircularProgressIndicator(),
+                  },
+                  error: (e, _) => ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Token fetching failed: $e"))),
+                  loading: () => const CircularProgressIndicator(),
+                ),
+                child: const Icon(
+                  Icons.mic,
+                  color: Colors.white,
+                ),
               ),
-              child: const Text('일정 확인'),
             ),
           ),
         ],
