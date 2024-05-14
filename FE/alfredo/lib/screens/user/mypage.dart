@@ -8,6 +8,7 @@ import './user_update.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controller/user/mute_controller.dart';
 import '../user/loading_screen.dart';
+import 'user_routine_test.dart';
 
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
@@ -28,7 +29,6 @@ class MyPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userProvider);
-
 
     return Scaffold(
       appBar: AppBar(
@@ -169,6 +169,20 @@ class MyPage extends ConsumerWidget {
                     ],
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 20.0), // 간격 추가
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 38.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const UserRoutineTestPage()),
+                  );
+                },
+                child: const Text('User Routine Test로 이동'),
               ),
             ),
           ],
