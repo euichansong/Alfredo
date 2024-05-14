@@ -83,6 +83,25 @@ public class AchieveController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+    // 3번째 업적 - day 풀 참가
+    @PostMapping("/five")
+    public ResponseEntity<String> checkWeekendAchieve(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            boolean isUpdated = achieveService.checkWeekendTodo(uid);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     // 4번째 업적 - 총 루틴의 갯수
     @PostMapping("/four")
     public ResponseEntity<String> checkRoutineAchieve(@RequestHeader(value = "Authorization") String authHeader) {
@@ -145,4 +164,28 @@ public class AchieveController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // 9번째 업적 - 생일인 경우
+    @PostMapping("/nine")
+    public ResponseEntity<String> checkBirthAchieve(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            User user = userService.getUserByUid(uid);
+
+            boolean isUpdated = achieveService.checkBirth(user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 }
