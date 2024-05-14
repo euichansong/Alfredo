@@ -39,7 +39,7 @@ final loadScheduleData = FutureProvider<List<Appointment>>((ref) async {
   var fetchedSchedule = await ref.watch(loadSchedule);
   // var fetchedSchedule = await scheduleController.getSchedules();
   for (Schedule _schedule in fetchedSchedule) {
-    if (_schedule.startTime == null) {
+    if (_schedule.withTime) {
       appointments.add(
         Appointment(
           startTime: _schedule.startDate,
