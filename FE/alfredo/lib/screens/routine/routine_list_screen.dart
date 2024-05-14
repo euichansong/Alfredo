@@ -19,8 +19,6 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
   @override
   Widget build(BuildContext context) {
     final routines = ref.watch(routineProvider);
-
-    print('$routines list screens');
     final screenWidth = MediaQuery.of(context).size.width; // 화면 크기 얻어오기
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -51,8 +49,6 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
               ),
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.only(
-                      top: 15.0, bottom: 20), // 리스트 위, 아래에 패딩 추가
                   itemCount: data.length,
                   itemBuilder: (context, index) {
                     final routine = data[index];
@@ -85,54 +81,38 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
                             ),
                           ),
                         ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Card(
-                            margin: const EdgeInsets.symmetric(vertical: 6.0),
-                            color: const Color(0xFFF2E9E9),
-                            child: Container(
-                              width: screenWidth * 0.9,
-                              height: screenHeight * 0.10,
-                              padding:
-                                  const EdgeInsets.all(13.0), // 카드 내부에 패딩 추가
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  SizedBox(
-                                    width: screenWidth * 0.35,
-                                    child: Text(
-                                      routine.routineTitle,
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.normal,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Row(
-                                        children:
-                                            _buildDayWidgets(routine.days),
-                                      ),
-                                      const SizedBox(width: 10), // 원하는 간격으로 조정
-                                      SizedBox(
-                                        width: 80,
-                                        child: Text(
-                                          formatTimeOfDay(routine.startTime),
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                        child: Card(
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 10.0, vertical: 6.0),
+                          color: const Color(0xFFF2E9E9),
+                          child: ListTile(
+                            leading: const Icon(Icons.event_note,
+                                color: Colors.grey),
+                            title: Text(
+                              routine.routineTitle,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             ),
+                            subtitle: Row(
+                              children: [
+                                Wrap(
+                                  spacing: 4.0,
+                                  children: _buildDayWidgets(routine.days),
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  formatTimeOfDay(routine.startTime),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios),
                           ),
                         ),
                       ),
@@ -148,33 +128,30 @@ class _RoutineListScreenState extends ConsumerState<RoutineListScreen> {
       ),
     );
   }
-}
 
-List<Widget> _buildDayWidgets(Set<String> days) {
-  const allDays = ["일", "월", "화", "수", "목", "금", "토"];
-  const allDaysShort = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  List<Widget> _buildDayWidgets(Set<String> days) {
+    const allDays = ["일", "월", "화", "수", "목", "금", "토"];
+    const allDaysShort = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
-  return List<Widget>.generate(7, (index) {
-    final day = allDays[index];
-    final dayShort = allDaysShort[index];
-    final isSelected = days.contains(dayShort);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2.0),
-      child: Text(
+    return List<Widget>.generate(7, (index) {
+      final day = allDays[index];
+      final dayShort = allDaysShort[index];
+      final isSelected = days.contains(dayShort);
+      return Text(
         day,
         style: TextStyle(
           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           color: isSelected ? Colors.black : Colors.grey,
-          fontSize: 12, // 글자 크기 설정
+          fontSize: 12,
         ),
-      ),
-    );
-  });
-}
+      );
+    });
+  }
 
-String formatTimeOfDay(TimeOfDay tod) {
-  final now = DateTime.now();
-  final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
-  final format = DateFormat.jm(); // Use 'jm' for AM/PM format
-  return format.format(dt);
+  String formatTimeOfDay(TimeOfDay tod) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    final format = DateFormat.jm(); // Use 'jm' for AM/PM format
+    return format.format(dt);
+  }
 }

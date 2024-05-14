@@ -58,8 +58,10 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
           ),
         ],
       ),
+      backgroundColor: const Color(0xFFF2E9E9),
       body: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding:
+            const EdgeInsets.only(top: 32, bottom: 32, left: 16, right: 16),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -102,57 +104,52 @@ class _RoutineDetailScreenState extends ConsumerState<RoutineDetailScreen> {
                 ],
               ),
               const SizedBox(height: 50),
-              SizedBox(
-                child: ToggleButtons(
-                  isSelected: _selectedDays,
-                  selectedColor: Colors.white,
-                  color: Colors.black,
-                  fillColor: const Color(0xFF0D2338),
-                  selectedBorderColor: const Color(0xFF0D2338),
-                  borderColor: Colors.grey,
-                  borderWidth: 1.0,
-                  borderRadius: BorderRadius.circular(0.0),
-                  children: const [
-                    Text("일"),
-                    Text("월"),
-                    Text("화"),
-                    Text("수"),
-                    Text("목"),
-                    Text("금"),
-                    Text("토"),
-                  ],
-                  onPressed: (int index) => setState(
-                      () => _selectedDays[index] = !_selectedDays[index]),
+              ToggleButtons(
+                isSelected: _selectedDays,
+                selectedColor: Colors.white,
+                color: Colors.black,
+                fillColor: const Color(0xFF0D2338),
+                selectedBorderColor: const Color(0xFF0D2338),
+                borderColor: Colors.grey,
+                borderWidth: 1.0,
+                borderRadius: BorderRadius.circular(0.0),
+                onPressed: (int index) => setState(
+                    () => _selectedDays[index] = !_selectedDays[index]),
+                constraints: BoxConstraints(
+                  minWidth: (MediaQuery.of(context).size.width - 64) /
+                      7, // 64는 양쪽 패딩 합계
                 ),
+                children: const [
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("일"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("월"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("화"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("수"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("목"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("금"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                    child: Text("토"),
+                  ),
+                ],
               ),
-              // const SizedBox(height: 50),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     const Text(
-              //       "알람 설정",
-              //       style: TextStyle(fontSize: 18),
-              //     ),
-              //     DropdownButton<String>(
-              //       value: _currentAlarmSound,
-              //       onChanged: (String? newValue) {
-              //         if (newValue != null) {
-              //           setState(() => _currentAlarmSound = newValue);
-              //         }
-              //       },
-              //       items: <String>[
-              //         'Morning Glory',
-              //         'Beep Alarm',
-              //         'Digital Alarm'
-              //       ].map<DropdownMenuItem<String>>((String value) {
-              //         return DropdownMenuItem<String>(
-              //           value: value,
-              //           child: Text(value),
-              //         );
-              //       }).toList(),
-              //     ),
-              //   ],
-              // ),
               const SizedBox(height: 50),
               TextField(
                 controller: _memoController,
