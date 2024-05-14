@@ -73,10 +73,9 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
               const SizedBox(height: 20),
               TextFormField(
                 controller: _googleCalendarUrlController,
-                decoration:
-                    const InputDecoration(labelText: 'Google Calendar URL'),
+                decoration: const InputDecoration(labelText: '외부 캘린더 URL'),
                 //   validator: (value) =>
-                //       value!.isEmpty ? 'Google Calendar URL을 입력하세요' : null,
+                //       value!.isEmpty ? '외부 캘린더 URL을 입력하세요' : null,
                 // ),
               ),
               const SizedBox(height: 20),

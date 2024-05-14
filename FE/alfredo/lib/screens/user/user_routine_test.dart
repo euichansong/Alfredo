@@ -35,6 +35,7 @@ class _UserRoutineTestPageState extends ConsumerState<UserRoutineTestPage> {
 
   Future<void> _submitSurvey() async {
     await SurveyApi.submitSurvey(answers);
+    Navigator.pushReplacementNamed(context, '/survey_save');
   }
 
   @override
