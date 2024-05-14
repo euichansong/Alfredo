@@ -63,7 +63,7 @@ public class AchieveController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-    // 첫번째 업적 - 첫 ical 등록
+    // 두번째 업적 - 첫 ical 등록
     @PostMapping("/one")
     public ResponseEntity<String> checkFirstIcal(@RequestHeader(value = "Authorization") String authHeader) {
         try {

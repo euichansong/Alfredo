@@ -65,7 +65,7 @@ public class AchieveService {
         }
         return new AchieveDetailDto(achieve);
     }
-    // 첫번째 업적 - 첫 ical 등록
+    // 두번째 업적 - 첫 ical 등록
     public boolean checkFirstIcal(User user) {
         Achieve achieve = achieveRepository.findByUser(user);
 
@@ -73,7 +73,7 @@ public class AchieveService {
             return false;
         }
 
-        achieve.updateAchieveOne(true);
+        achieve.updateAchieveTwo(true);
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
