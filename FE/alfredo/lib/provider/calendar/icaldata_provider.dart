@@ -22,7 +22,7 @@ final iCalProvider =
       // ignore: unnecessary_null_comparison
       data: (data) {
         if (data != null) {
-          print('iCal데이타 반환에 성공했습니다.');
+          // print('iCal데이타 반환에 성공했습니다. $data');
           appointments.addAll(data);
         }
       },
