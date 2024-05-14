@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'screens/user/survey_save.dart';
 import 'components/navbar/tabview.dart';
 import 'config/firebase_options.dart';
 import 'screens/calendar/calendar.dart';
@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const LoginPage(),
         '/main': (context) => const TabView(),
         '/user_routine_test': (context) => const UserRoutineTestPage(),
+        '/survey_save': (context) => const SurveySavePage(),
         '/calendar': (context) => const Calendar(),
       },
       debugShowCheckedModeBanner: false,
