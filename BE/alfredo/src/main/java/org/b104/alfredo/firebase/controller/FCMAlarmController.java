@@ -30,6 +30,7 @@ public class FCMAlarmController {
                     requestDTO.getTitle(),
                     requestDTO.getBody()
             );
+            System.out.println("send Alarm");
             return ResponseEntity.ok("Message scheduled successfully");
         } catch (Exception e) {
             log.error("Failed to schedule message", e);

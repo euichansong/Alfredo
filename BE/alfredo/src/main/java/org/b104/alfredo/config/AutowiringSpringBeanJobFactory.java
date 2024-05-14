@@ -1,13 +1,12 @@
 package org.b104.alfredo.config;
 
-import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.scheduling.quartz.AdaptableJobFactory;
+import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 
-public class AutowiringSpringBeanJobFactory extends AdaptableJobFactory implements ApplicationContextAware {
+public class AutowiringSpringBeanJobFactory extends SpringBeanJobFactory implements ApplicationContextAware {
 
     private transient AutowireCapableBeanFactory beanFactory;
     private transient ApplicationContext applicationContext;

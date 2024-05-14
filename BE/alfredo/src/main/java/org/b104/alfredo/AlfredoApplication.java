@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class AlfredoApplication {
 
     public static void main(String[] args) {
+        // DevTools 비활성화
+        System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication.run(AlfredoApplication.class, args);
     }
     @Bean
