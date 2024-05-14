@@ -1,5 +1,3 @@
-// ignore_for_file: unused_import
-
 import 'package:alfredo/provider/calendar/icaldata_provider.dart';
 import 'package:alfredo/provider/user/user_state_provider.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +33,7 @@ class _MainPageState extends ConsumerState<MainPage> {
             top: MediaQuery.of(context).size.height * 0.05,
             left: MediaQuery.of(context).size.height * 0,
             right: MediaQuery.of(context).size.height * 0,
-            bottom: MediaQuery.of(context).size.height * 0,
+            bottom: MediaQuery.of(context).size.height * 0.06,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SizedBox(
@@ -46,10 +44,10 @@ class _MainPageState extends ConsumerState<MainPage> {
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.45,
-            left: MediaQuery.of(context).size.height * 0.087,
-            right: MediaQuery.of(context).size.height * 0.087,
-            bottom: MediaQuery.of(context).size.height * 0.1,
+            top: MediaQuery.of(context).size.height * 0.48,
+            left: MediaQuery.of(context).size.height * 0.01,
+            right: MediaQuery.of(context).size.height * 0.01,
+            bottom: MediaQuery.of(context).size.height * 0.01,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               // ignore: prefer_const_constructors
