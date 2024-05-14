@@ -155,6 +155,7 @@ final loadiCalendar =
           iCalendarJson = iCalendar!.toJson();
         }
         await getCalendarDataSource(iCalendarJson);
+        print("aaa");
       } else {
         throw Exception('Failed to load iCal data');
       }

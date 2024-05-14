@@ -283,9 +283,21 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
           const SnackBar(content: Text('시작 시간과 종료 시간을 모두 입력해야 합니다.')));
       isValid = false;
     }
+    if (!withTime && startTime != null && endTime != null) {
+      DateTime startDateTime = DateTime(startDate.year, startDate.month,
+          startDate.day, startTime!.hour, startTime!.minute);
+      DateTime endDateTime = DateTime(endDate!.year, endDate!.month,
+          endDate!.day, endTime!.hour, endTime!.minute);
+      if (endDateTime.isBefore(startDateTime) || endDateTime.hour >= 24) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text('종료 시간은 시작 시간 이후여야 하며 오후 11시 59분 이전이어야 합니다.')));
+        isValid = false;
+      }
+    }
     if (startAlarm) {
-      if (selectedAlarmOption == 2 &&
-          (alarmDate == null || alarmTime == null)) {
+      if (selectedAlarmOption == null ||
+          (selectedAlarmOption == 2 &&
+              (alarmDate == null || alarmTime == null))) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('알람 시간을 설정해 주세요.')));
         isValid = false;

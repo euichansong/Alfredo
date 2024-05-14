@@ -243,14 +243,14 @@ class _ScheduleEditScreenState extends ConsumerState<ScheduleEditScreen> {
 
   DateTime _calculateBaseDateTime(int optionIndex) {
     DateTime baseDateTime = DateTime.now(); // Default to now if no time is set
-    if (optionIndex < 2) {
+    if (_withTime) {
       // Specific times set for options 0 and 1
       int hour =
           optionIndex == 0 ? 9 : 12; // 9 AM for option 0, 12 PM for option 1
       baseDateTime =
           DateTime(_startDate.year, _startDate.month, _startDate.day, hour, 0);
-    } else if (_startTime != null && !_withTime) {
-      // User-set time for option 2
+    } else if (_startTime != null) {
+      // User-set time for options 0 and 1 when not full day
       baseDateTime = DateTime(_startDate.year, _startDate.month, _startDate.day,
           _startTime!.hour, _startTime!.minute);
       int minutesSubtract = optionIndex == 0 ? 60 : 30;
