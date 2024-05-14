@@ -12,7 +12,6 @@ import org.b104.alfredo.user.Domain.User;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SurveyDto {
-    private Long userId;
     private Integer question1;
     private Integer question2;
     private Integer question3;
