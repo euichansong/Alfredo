@@ -17,11 +17,14 @@ import org.b104.alfredo.user.Domain.User;
 import org.b104.alfredo.user.Repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,6 +103,7 @@ public class RoutineController {
     }
     @GetMapping("/basic-routine/{basicRoutineId}")
     public ResponseEntity<RoutineDto> getBasicRoutineById(@PathVariable Long basicRoutineId) {
+        log.info("basicRoutine 받아오기");
         BasicRoutine basicRoutine = basicRoutineRepository.findById(basicRoutineId)
                 .orElseThrow(() -> new RuntimeException("BasicRoutine not found with title: " + basicRoutineId));
         RoutineDto routineDto = RoutineDto.builder()
@@ -111,9 +115,14 @@ public class RoutineController {
                 .memo(basicRoutine.getMemo())
                 .build();
 //        return ResponseEntity.ok().body(routineDto);
-        return ResponseEntity.ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(routineDto);
+//        return ResponseEntity.ok()
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(routineDto);
+        log.info(basicRoutine.getBasicRoutineTitle()+" basicRoutine title 한글 안깨지나 확인test");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", StandardCharsets.UTF_8));
+
+        return new ResponseEntity<>(routineDto, headers, HttpStatus.OK);
     }
 
     //수정 안한 추천 기본 루틴 추가(리스트 형식)
