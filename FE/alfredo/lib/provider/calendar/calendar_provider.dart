@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'dart:convert';
 import 'dart:core';
 
 import 'package:alfredo/models/schedule/schedule_model.dart';
@@ -82,6 +83,7 @@ final loadiCalendar =
     if (iCalendarJson != null) {
       for (Map? datas in iCalendarJson['data']) {
         if (datas!['dtstart'] != null) {
+          print(datas);
           DateTime startDateTime = DateTime.parse(datas['dtstart']['dt']);
           DateTime endDateTime = DateTime.parse(datas['dtend']['dt']);
           if (startDateTime.hour == 0 &&
@@ -106,16 +108,20 @@ final loadiCalendar =
             ));
           }
         }
-        if (lastModified != null &&
-            flag == false &&
-            lastModified!
-                .isBefore(DateTime.parse(datas['lastModified']['dt']))) {
-          lastModified = DateTime.parse(datas['lastModified']['dt']);
-          flag = true;
-          // ignore: prefer_conditional_assignment
-        } else if (lastModified == null) {
-          lastModified = DateTime.parse(datas['lastModified']['dt']);
-          flag = true;
+        if (datas['lastModified'] != null) {
+          if (lastModified != null &&
+              flag == false &&
+              lastModified!
+                  .isBefore(DateTime.parse(datas['lastModified']['dt']))) {
+            if (datas['lastModified'] != null) {
+              lastModified = DateTime.parse(datas['lastModified']['dt']);
+            }
+            flag = true;
+            // ignore: prefer_conditional_assignment
+          } else if (lastModified == null) {
+            lastModified = DateTime.parse(datas['lastModified']['dt']);
+            flag = true;
+          }
         }
       }
     }
@@ -125,13 +131,29 @@ final loadiCalendar =
     }
   }
 
+  bool isValidUtf8(List<int> bytes) {
+    try {
+      utf8.decode(bytes, allowMalformed: false);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<void> loadiCalendarData(String iCalUrl) async {
     try {
       final response = await http.get(Uri.parse(iCalUrl));
       if (response.statusCode == 200) {
         final icsString = response.body;
         iCalendar = ICalendar.fromString(icsString);
-        iCalendarJson = iCalendar!.toJson();
+        List<int> bytes = iCalendar.toString().codeUnits;
+
+        if (isValidUtf8(bytes)) {
+          String decodedSummary = utf8.decode(bytes);
+          iCalendarJson = jsonDecode(decodedSummary);
+        } else {
+          iCalendarJson = iCalendar!.toJson();
+        }
         await getCalendarDataSource(iCalendarJson);
       } else {
         throw Exception('Failed to load iCal data');
