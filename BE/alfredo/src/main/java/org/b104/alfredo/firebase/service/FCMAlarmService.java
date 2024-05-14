@@ -17,11 +17,9 @@ import org.b104.alfredo.schedule.service.ScheduleService;
 import org.b104.alfredo.user.Domain.User;
 import org.b104.alfredo.user.Repository.UserRepository;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +30,6 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class FCMAlarmService {
@@ -44,7 +41,7 @@ public class FCMAlarmService {
     private final UserRepository userRepository;
     private final ScheduleService scheduleService;
     private final ScheduleRepository scheduleRepository;
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
     @Autowired
     private ApplicationContext applicationContext; // ApplicationContext 주입
@@ -52,13 +49,13 @@ public class FCMAlarmService {
     @Value("${firebase.sdk}")
     private String firebaseConfigPath;
 
-    public FCMAlarmService(ObjectMapper objectMapper, UserRepository userRepository, ScheduleService scheduleService, ScheduleRepository scheduleRepository) throws SchedulerException {
+    @Autowired
+    public FCMAlarmService(ObjectMapper objectMapper, UserRepository userRepository, ScheduleService scheduleService, ScheduleRepository scheduleRepository, Scheduler scheduler) {
         this.objectMapper = objectMapper;
         this.userRepository = userRepository;
-        this.scheduler = StdSchedulerFactory.getDefaultScheduler();
         this.scheduleService = scheduleService;
         this.scheduleRepository = scheduleRepository;
-        scheduler.start();
+        this.scheduler = scheduler;
     }
 
     // 메시지를 스케줄링하는 메소드
@@ -76,11 +73,9 @@ public class FCMAlarmService {
 
         scheduleService.updateJobUidForSchedule(user, title, uniqueIdentifier);
 
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime scheduleTime = LocalDateTime.parse(body, formatter);
         Date startAt = Date.from(scheduleTime.atZone(ZoneId.systemDefault()).toInstant());
-
 
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity("trigger-" + uniqueIdentifier, "FCM-Messages")
@@ -92,7 +87,6 @@ public class FCMAlarmService {
 
     // 메시지를 스케줄링하는 메소드
     public void upscheduleMessage(String targetToken, String title, String body, Long scheduleId) throws SchedulerException {
-
         Schedule schedule = scheduleRepository.findByScheduleId(scheduleId);
 
         if (!schedule.getStartAlarm()) {
@@ -137,7 +131,6 @@ public class FCMAlarmService {
     public void sendMessageTo(String targetToken, String title, String body) throws IOException {
         String message = makeMessage(targetToken, title, body);
 
-
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         RequestBody requestBody = RequestBody.create(message, mediaType);
@@ -153,14 +146,15 @@ public class FCMAlarmService {
             System.out.println(response.isSuccessful() ? response.body().string() : "Failed with status: " + response.code());
         }
     }
+
     // FCM 메시지 형식을 생성하는 메소드
     private String makeMessage(String targetToken, String title, String body) throws JsonParseException, IOException {
         FcmMessage fcmMessage = FcmMessage.builder()
                 .message(FcmMessage.Message.builder()
                         .token(targetToken)
                         .notification(FcmMessage.Notification.builder()
-                                .title("일정 리마인더" )
-                                .body("안녕하세요! "+ title + "의 날입니다!")
+                                .title("일정 리마인더")
+                                .body("안녕하세요! " + title + "의 날입니다!")
                                 .image(null)
                                 .build())
                         .build())
@@ -172,7 +166,6 @@ public class FCMAlarmService {
 
     // Google API 토큰을 얻는 메소드
     private String getAccessToken() throws IOException {
-        // Firebase 설정 파일을 사용하여 GoogleCredentials 객체를 생성
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new FileSystemResource(firebaseConfigPath).getInputStream())
                 .createScoped(Collections.singletonList("https://www.googleapis.com/auth/cloud-platform"));
@@ -203,5 +196,4 @@ public class FCMAlarmService {
             System.out.println("Job does not exist or already deleted: " + jobKey);
         }
     }
-
 }
