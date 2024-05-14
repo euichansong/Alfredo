@@ -26,36 +26,8 @@ class _MainPageState extends ConsumerState<MainPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/mainback1.png'),
+                image: AssetImage('assets/mainalfredo.png'),
                 fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.3,
-            left: MediaQuery.of(context).size.height * 0,
-            right: MediaQuery.of(context).size.height * 0,
-            bottom: MediaQuery.of(context).size.height * 0.1,
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/image 12.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.4,
-            left: MediaQuery.of(context).size.height * 0,
-            right: MediaQuery.of(context).size.height * 0,
-            bottom: MediaQuery.of(context).size.height * 0.05,
-            child: Container(
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage('assets/image 11.png'),
-                  fit: BoxFit.cover,
-                ),
               ),
             ),
           ),
