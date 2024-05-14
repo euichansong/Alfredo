@@ -50,7 +50,7 @@ class _TodoListState extends ConsumerState<TodoList> {
           automaticallyImplyLeading: false,
           title: const Text('오늘의 할 일 목록',
               style: TextStyle(
-                  fontSize: 20.0, color: Color.fromARGB(255, 242, 237, 237))),
+                  fontSize: 20.0, color: Color.fromARGB(255, 77, 26, 86))),
         ),
       ),
       body: _todos == null
@@ -64,23 +64,21 @@ class _TodoListState extends ConsumerState<TodoList> {
                     return Container(
                       decoration: const BoxDecoration(
                         border: Border(
-                          bottom:
-                              BorderSide(width: 1, color: Colors.grey), // 밑줄 추가
+                          bottom: BorderSide(
+                              width: 1, color: Color(0xf80d3d3d3)), // 밑줄 추가
                         ),
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 30.0, vertical: 0.5),
                         title: Text(
-                          todo.todoTitle.length > 9
-                              ? '${todo.todoTitle.substring(0, 9)}...'
-                              : todo.todoTitle,
+                          todo.todoTitle,
                           style: const TextStyle(
                             fontSize: 18,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          // maxLines: 1,
+                          // overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
                           showDialog(

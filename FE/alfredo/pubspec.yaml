@@ -102,6 +102,11 @@ flutter:
     - .env
     - assets/mainback1.png
     - assets/mainalfredo.png
+    - assets/image-removebg-preview (4).png
+    - assets/mainback1.png
+    - assets/pngwing 2.png
+    - assets/image 11.png
+    - assets/image 12.png
 
   fonts:
     - family: Kyobo
