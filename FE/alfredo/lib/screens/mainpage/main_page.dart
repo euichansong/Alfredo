@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
 import '../tts/tts_page.dart';
+import '../achieve/achieve_detail_screen.dart'; // AchieveDetailScreen import
+import '../../provider/achieve/achieve_provider.dart'; // achieveProvider import
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
@@ -37,8 +39,6 @@ class _MainPageState extends ConsumerState<MainPage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SizedBox(
-                // width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height,
                 child: TtsPage(),
               ),
             ),
@@ -50,12 +50,27 @@ class _MainPageState extends ConsumerState<MainPage> {
             bottom: MediaQuery.of(context).size.height * 0.01,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              // ignore: prefer_const_constructors
-              child: SizedBox(
-                // width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height,
-                child: const TodoList(),
-              ),
+              child: const TodoList(),
+            ),
+          ),
+          // 업적 화면으로 이동하는 버튼
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.1,
+            left: MediaQuery.of(context).size.width * 0.5 -
+                30, // 버튼의 절반 너비를 빼서 중앙으로 위치시킴
+            child: FloatingActionButton(
+              onPressed: () async {
+                // 업적 데이터를 새로고침
+                ref.refresh(achieveProvider);
+                // 업적 화면으로 이동
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const AchieveDetailScreen()),
+                );
+              },
+              backgroundColor: Colors.blue,
+              child: const Icon(Icons.star),
             ),
           ),
         ],

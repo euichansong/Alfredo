@@ -13,6 +13,7 @@ Routine _$RoutineFromJson(Map<String, dynamic> json) => Routine(
       days: (json['days'] as List<dynamic>).map((e) => e as String).toSet(),
       alarmSound: json['alarmSound'] as String,
       memo: json['memo'] as String?,
+      basicRoutineId: (json['basicRoutineId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
@@ -22,4 +23,5 @@ Map<String, dynamic> _$RoutineToJson(Routine instance) => <String, dynamic>{
       'days': instance.days.toList(),
       'alarmSound': instance.alarmSound,
       'memo': instance.memo,
+      'basicRoutineId': instance.basicRoutineId,
     };
