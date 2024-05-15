@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,20 +39,34 @@ public class AchieveService {
     private final UserService userService;
     private final DayRepository dayRepository;
 
+    // LocalDate를 Date로 변환하는 유틸리티 메서드
+    private Date convertToDate(LocalDate localDate) {
+        return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+    }
+
     // 생성
     @Transactional
     public Achieve createAchieve(User user) {
         Achieve newAchieve = Achieve.builder()
                 .user(user)
                 .achieveOne(false)
+                .finishOne(null)
                 .achieveTwo(false)
+                .finishTwo(null)
                 .achieveThree(false)
+                .finishThree(null)
                 .achieveFour(false)
+                .finishFour(null)
                 .achieveFive(false)
+                .finishFive(null)
                 .achieveSix(false)
+                .finishSix(null)
                 .achieveSeven(false)
+                .finishSeven(null)
                 .achieveEight(false)
+                .finishEight(null)
                 .achieveNine(false)
+                .finishNine(null)
                 .build();
 
         return achieveRepository.save(newAchieve);
@@ -59,21 +75,22 @@ public class AchieveService {
     // 유저로 업적 찾기
     @Transactional
     public AchieveDetailDto getAchieveDetail(User user) {
-        Achieve achieve = achieveRepository.findByUser(user);  // 메소드 사용 변경
+        Achieve achieve = achieveRepository.findByUser(user);
         if (achieve == null) {
             return null;
         }
         return new AchieveDetailDto(achieve);
     }
+
     // 두번째 업적 - 첫 ical 등록
     public boolean checkFirstIcal(User user) {
         Achieve achieve = achieveRepository.findByUser(user);
 
-        if (user.getGoogleCalendarUrl() == null || achieve == null || achieve.getAchieveOne()) {
+        if (user.getGoogleCalendarUrl() == null || achieve == null || achieve.getAchieveTwo()) {
             return false;
         }
 
-        achieve.updateAchieveTwo(true);
+        achieve.updateAchieveTwo(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
@@ -89,19 +106,17 @@ public class AchieveService {
 
         int count = weekend.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        // 업적 달성에 필요한 갯수
         if (count < 7 || achieve == null || achieve.getAchieveThree()) {
             return false;
         }
 
-        achieve.updateAchieveThree(true);
+        achieve.updateAchieveThree(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
         }
         return true;
     }
-
 
     // 4번째 업적 - 총 루틴 갯수
     @Transactional
@@ -110,12 +125,11 @@ public class AchieveService {
 
         int count = routines.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        // 업적 달성에 필요한 갯수
         if (count < 2 || achieve == null || achieve.getAchieveFour()) {
             return false;
         }
 
-        achieve.updateAchieveFour(true);
+        achieve.updateAchieveFour(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
@@ -131,12 +145,11 @@ public class AchieveService {
 
         int count = todos.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        // 업적 달성에 필요한 갯수
         if (count < 2 || achieve == null || achieve.getAchieveFive()) {
             return false;
         }
 
-        achieve.updateAchieveFive(true);
+        achieve.updateAchieveFive(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
@@ -144,19 +157,18 @@ public class AchieveService {
         return true;
     }
 
-    // 6번째 업적 체크 로직 -  - 총 일정의 갯수
+    // 6번째 업적 체크 로직 - 총 일정의 갯수
     @Transactional
     public boolean checkTotalSchedule(User user) {
         List<Schedule> schedules = scheduleRepository.findByUserId(user);
 
         int count = schedules.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        // 업적 달성에 필요한 갯수
         if (count < 2 || achieve == null || achieve.getAchieveSix()) {
             return false;
         }
 
-        achieve.updateAchieveSix(true);
+        achieve.updateAchieveSix(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
@@ -169,7 +181,7 @@ public class AchieveService {
     public boolean checkBirth(User user) {
         Achieve achieve = achieveRepository.findByUser(user);
 
-        if (user.getBirth() == null || achieve == null || achieve.getAchieveOne()) {
+        if (user.getBirth() == null || achieve == null || achieve.getAchieveNine()) {
             return false;
         }
 
@@ -186,7 +198,7 @@ public class AchieveService {
 
         // 생일이 오늘인지 확인
         if (todayMonth == birthMonth && todayDay == birthDay) {
-            achieve.updateAchieveNine(true);
+            achieve.updateAchieveNine(true, convertToDate(LocalDate.now()));
             Coin coin = coinRepository.findByUserId(user);
             if (coin != null) {
                 coin.updateTotalCoin(coin.getTotalCoin() + 10);
