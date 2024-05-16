@@ -116,6 +116,7 @@ flutter:
     - assets/alfrecopy.png
     - assets/catmancopy.png
     - assets/opendoor.png
+    - assets/alfre.png
 
   fonts:
     - family: Kyobo

@@ -1,6 +1,7 @@
 // ignore_for_file: unused_import
 
 import 'package:alfredo/provider/calendar/icaldata_provider.dart';
+import 'package:alfredo/provider/store/store_provider.dart';
 import 'package:alfredo/provider/user/user_state_provider.dart';
 import 'package:alfredo/screens/store/store.dart';
 import 'package:flutter/material.dart';
@@ -23,15 +24,17 @@ class MainPage extends ConsumerStatefulWidget {
 class _MainPageState extends ConsumerState<MainPage> {
   @override
   Widget build(BuildContext context) {
+    var background = ref.watch(backgroundProvider);
+    var character = ref.watch(characterProvider);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // 배경 이미지
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/mainback1.png'),
+                image: AssetImage(background),
                 fit: BoxFit.cover,
               ),
             ),
@@ -42,10 +45,10 @@ class _MainPageState extends ConsumerState<MainPage> {
             right: MediaQuery.of(context).size.height * 0,
             bottom: MediaQuery.of(context).size.height * 0.1,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/image 12.png'),
-                  fit: BoxFit.scaleDown,
+                  image: AssetImage(character),
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -89,32 +92,44 @@ class _MainPageState extends ConsumerState<MainPage> {
             ),
           ),
           Positioned(
-            top: MediaQuery.of(context).size.height * 0.05,
-            right: MediaQuery.of(context).size.height * 0.02,
+            top: MediaQuery.of(context).size.height * 0.11,
+            left: MediaQuery.of(context).size.height * 0.02,
+            right: MediaQuery.of(context).size.height * 0.42,
             child: Column(
               children: [
                 ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all(const Color(0xFF0D2338)),
+                      padding: MaterialStateProperty.all(
+                          const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 0))),
                   onPressed: () {
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
-                      builder: (context) => const ShopScreen(),
+                      builder: (context) {
+                        return const ShopScreen();
+                      },
                     );
                   },
-                  child: const Text('Shop'),
+                  child: const Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
                 ),
-                const SizedBox(height: 10), // 간격을 주기 위해 추가
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AchieveDetailScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text('Achievements'),
-                ),
+                // const SizedBox(height: 10), // 간격을 주기 위해 추가
+                // ElevatedButton(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => const AchieveDetailScreen(),
+                //       ),
+                //     );
+                //   },
+                //   child: const Text('Achievements'),
+                // ),
               ],
             ),
           ),
