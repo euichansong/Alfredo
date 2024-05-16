@@ -95,25 +95,25 @@ public class AchieveService {
         User user = userService.getUserByUid(uid);
 
         Achieve achieve = achieveRepository.findByUser(user);
-        if (time.getSumTime() < 30 || achieve == null || achieve.getAchieveOne()) {
+        if (time.getSumTime() < 300 || achieve == null || achieve.getAchieveOne()) {
             return false;
         }
 
         achieve.updateAchieveOne(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "첫번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "인내의 숲");
         } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
     }
 
-    // 첫번째 업적 - 총 시간 합계 - 백엔드에서 체크
+    // 첫번째 업적 - 총 시간 합계 - 백엔드에서 체크 - todoservice의 updateSumTime 에서 같이 수정해야 한다
     @Transactional
     public boolean checkTime(String uid) {
 
@@ -125,11 +125,11 @@ public class AchieveService {
         achieve.updateAchieveOne(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "첫번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "인내의 숲");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -153,12 +153,12 @@ public class AchieveService {
         achieve.updateAchieveTwo(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
 
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "2번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "얼리어답터");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -176,16 +176,15 @@ public class AchieveService {
         if (dayCount < 7 || achieve == null || achieve.getAchieveThree()) {
             return false;
         }
-        System.out.println("day 풀");
-        System.out.println(dayCount);
+
         achieve.updateAchieveThree(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "3번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "한 주의 승리자");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -199,18 +198,18 @@ public class AchieveService {
         long routineCount = routineRepository.countByUserUserId(user.getUserId());
         System.out.println(routineCount);
         Achieve achieve = achieveRepository.findByUser(user);
-        if (routineCount < 2 || achieve == null || achieve.getAchieveFour()) {
+        if (routineCount < 5 || achieve == null || achieve.getAchieveFour()) {
             return false;
         }
 
         achieve.updateAchieveFour(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "4번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "갓생살기");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -243,18 +242,18 @@ public class AchieveService {
         User user = userService.getUserByUid(uid);
 
         Achieve achieve = achieveRepository.findByUser(user);
-        if (todoCount < 5 || achieve == null || achieve.getAchieveFive()) {
+        if (todoCount < 10 || achieve == null || achieve.getAchieveFive()) {
             return false;
         }
 
         achieve.updateAchieveFive(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "5번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "당신은 T이십니까?");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -274,11 +273,11 @@ public class AchieveService {
         achieve.updateAchieveSix(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
-            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
         }
         // FCM 알림 전송
         try {
-            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "6번째 ");
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "약속왕");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -311,11 +310,11 @@ public class AchieveService {
             achieve.updateAchieveNine(true, convertToDate(LocalDate.now()));
             Coin coin = coinRepository.findByUserId(user);
             if (coin != null) {
-                coin.updateTotalCoin(coin.getTotalCoin() + 10);
+                coin.updateTotalCoin(coin.getTotalCoin() + 50);
             }
             // FCM 알림 전송
             try {
-                fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "9번째 ");
+                fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "해피버스데이 ");
             } catch (IOException e) {
                 e.printStackTrace();
             }

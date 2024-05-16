@@ -208,7 +208,7 @@ public class TodoService {
             time.setSumTime(timeDifference);
             timeRepository.save(time);
         }
-        if (time.getSumTime() > 30) {
+        if (time.getSumTime() >= 300) {
             achieveService.checkTime(uid);
         }
 
