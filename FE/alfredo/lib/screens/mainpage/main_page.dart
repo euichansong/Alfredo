@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
+import '../../provider/achieve/achieve_provider.dart'; // achieveProvider import
+import '../../provider/coin/coin_provider.dart';
+import '../achieve/achieve_detail_screen.dart'; // AchieveDetailScreen import
+import '../coin/coin_detail_screen.dart'; // CoinDetailScreen import
 import '../tts/tts_page.dart';
 
 class MainPage extends ConsumerStatefulWidget {
@@ -65,8 +69,6 @@ class _MainPageState extends ConsumerState<MainPage> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SizedBox(
-                // width: MediaQuery.of(context).size.width,
-                // height: MediaQuery.of(context).size.height,
                 child: TtsPage(),
               ),
             ),
