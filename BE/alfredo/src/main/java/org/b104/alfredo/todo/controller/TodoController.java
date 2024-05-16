@@ -3,6 +3,7 @@ package org.b104.alfredo.todo.controller;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import org.b104.alfredo.achieve.service.AchieveService;
 import org.b104.alfredo.todo.domain.Day;
 import org.b104.alfredo.todo.domain.Todo;
 import org.b104.alfredo.todo.request.TodoCreateDto;
@@ -33,11 +34,13 @@ public class TodoController {
     @Autowired
     private final TodoService todoService;
     private final DayService dayService;
+    private final AchieveService achieveService;
 
     @Autowired
-    public TodoController(TodoService todoService, DayService dayService) {
+    public TodoController(TodoService todoService, DayService dayService, AchieveService achieveService) {
         this.todoService = todoService;
         this.dayService = dayService;
+        this.achieveService = achieveService;
     }
 
 
@@ -116,44 +119,7 @@ public class TodoController {
         return ResponseEntity.notFound().build();
     }
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<Void> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
-//        todoService.updateTodo(id, todoUpdateDto);
-//        return ResponseEntity.noContent().build();
-//    }
 
-    // Todo 업데이트 메소드
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<String> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto,
-//                                             @RequestHeader(value = "Authorization") String authHeader) {
-//        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-//        try {
-//            // Firebase 토큰 검증
-//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-//            String uid = decodedToken.getUid();
-//
-//            // 해당 Todo의 소유자 확인
-//            Todo todo = todoService.findById(id);
-//            if (!todo.getUid().equals(uid)) {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You do not have permission to update this todo.");
-//            }
-//
-//            // Todo 업데이트
-//            todoService.updateTodo(id, todoUpdateDto);
-//            return ResponseEntity.noContent().build();
-//        } catch (FirebaseAuthException e) {
-//            log.error("Firebase Auth error: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
-//        } catch (IllegalArgumentException e) {
-//            // Todo를 찾지 못한 경우
-//            log.error("Todo not found: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo not found");
-//        } catch (Exception e) {
-//            // 그 외의 예외 발생 시
-//            log.error("Error updating todo: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-//        }
-//    }
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
         try {
@@ -187,6 +153,11 @@ public class TodoController {
                 Optional<Day> dayOptional = dayService.findByUidAndDayIndex(uid, i);
                 int count = dayOptional.map(Day::getCount).orElse(0);
                 dayCounts.put(i, count);
+
+                // 토요일인 경우 3번째 업적 체크 메서드 호출
+                if (i == 6) {
+                    achieveService.checkWeekendTodo(uid);
+                }
             }
 
             // 만약 해당 uid에 대한 요일 데이터가 전혀 없는 경우, 일괄적으로 0으로 초기화

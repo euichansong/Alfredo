@@ -15,12 +15,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Day {
+public class Time {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String uid;
-    private int dayIndex;  // Day of the week (0=Sunday, 1=Monday, ..., 6=Saturday)
-    private int count;  // Count of tasks completed on the specific day
+    private int sumTime;
 }
-
