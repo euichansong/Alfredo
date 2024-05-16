@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/> <!-- 볼륨 제어 권한 추가 -->
+    <uses-permission android:name="android.permission.INTERNET"/> <!-- 인터넷 권한 추가 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> <!-- 네트워크 상태 권한 추가 -->
 
     <application
         android:label="alfredo"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher"
-        android:networkSecurityConfig="@xml/network_security_config"
-        >
+        android:icon="@mipmap/ic_launcher">
         
         <activity
             android:name=".MainActivity"

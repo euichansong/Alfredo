@@ -19,7 +19,7 @@ class MyPage extends ConsumerWidget {
       isScrollControlled: true,
       builder: (_) {
         return const FractionallySizedBox(
-          heightFactor: 0.91, // 모달의 높이를 화면 높이의 90%로 설정
+          heightFactor: 0.91,
           child: UserUpdateScreen(),
         );
       },
@@ -34,14 +34,12 @@ class MyPage extends ConsumerWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xfff0d2338),
         iconTheme: const IconThemeData(color: Color(0xFFF2E9E9)),
-        titleTextStyle: const TextStyle(
-          color: Color(0xFFF2E9E9),
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
         title: const Text(
-          'MyPage',
-          selectionColor: Color(0xFFF2E9E9),
+          '마이페이지',
+          style: TextStyle(
+            color: Color(0xFFF2E9E9),
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
       backgroundColor: const Color(0xFFF2E9E9),
@@ -114,7 +112,7 @@ class MyPage extends ConsumerWidget {
             const SizedBox(height: 30.0),
             ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: 80, // 최대 너비를 100으로 설정
+                maxWidth: 80,
               ),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
@@ -142,7 +140,7 @@ class MyPage extends ConsumerWidget {
                 children: [
                   IconButton(
                     icon: const Icon(Icons.volume_off),
-                    iconSize: 30, // 아이콘 크기 늘림
+                    iconSize: 30,
                     onPressed: () {
                       MuteController.toggleMute();
                       print("Mute toggled");
@@ -154,7 +152,7 @@ class MyPage extends ConsumerWidget {
                       IconButton(
                         icon: const Icon(Icons.exit_to_app),
                         color: Colors.red,
-                        iconSize: 30, // 아이콘 크기 늘림
+                        iconSize: 30,
                         onPressed: () async {
                           try {
                             await FirebaseAuth.instance.signOut();
@@ -171,20 +169,20 @@ class MyPage extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 20.0), // 간격 추가
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 38.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const UserRoutineTestPage()),
-                  );
-                },
-                child: const Text('User Routine Test로 이동'),
-              ),
-            ),
+            // const SizedBox(height: 20.0),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 38.0),
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) => const UserRoutineTestPage()),
+            //       );
+            //     },
+            //     child: const Text('User Routine Test로 이동'),
+            //   ),
+            // ),
           ],
         ),
         loading: () => const MyLoadingScreen(),
