@@ -15,13 +15,13 @@ public class RoutineNotificationSchedulerService {
     private final RoutineService routineService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
 
-    // 생성자 주입을 권장합니다
+    // @RequiredArgsConstructor 써도 될듯
     public RoutineNotificationSchedulerService(RoutineService routineService, FirebaseCloudMessageService firebaseCloudMessageService) {
         this.routineService = routineService;
         this.firebaseCloudMessageService = firebaseCloudMessageService;
     }
     @Transactional
-    @Scheduled(cron = "0 * * * * *") // 매 분마다 실행, 필요에 따라 조정하세요
+    @Scheduled(cron = "0 * * * * *") // 매 분마다 실행
     public void checkAndTriggerNotifications() throws IOException {
         log.info("1분마다 실행 확인");
         List<Routine> routinesToNotify = routineService.getRoutinesToNotify();

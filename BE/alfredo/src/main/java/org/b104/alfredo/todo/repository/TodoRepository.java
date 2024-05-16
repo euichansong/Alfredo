@@ -29,5 +29,8 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
 //    @Query("SELECT t FROM Todo t WHERE t.subIndex = :subIndex AND t.dueDate >= :date")
 //    List<Todo> findBySubIndexAndDueDateAfterOrEqual(@Param("subIndex") String subIndex, @Param("date") LocalDate date);
+    //sj 추가 시작
+    boolean existsByUidAndDueDateAndIsCompletedFalse(String uid, LocalDate dueDate);
+    //sj 추가 끝
 }
 
