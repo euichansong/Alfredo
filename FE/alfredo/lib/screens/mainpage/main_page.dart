@@ -50,9 +50,12 @@ class _MainPageState extends ConsumerState<MainPage> {
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('이번 주 출석 현황'),
+              const Text(
+                '이번 주 출석 현황',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               IconButton(
-                icon: const Icon(Icons.close),
+                icon: const Icon(Icons.close, size: 20),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -66,9 +69,10 @@ class _MainPageState extends ConsumerState<MainPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: _buildAttendanceList(attendanceHistory),
+                FittedBox(
+                  child: Row(
+                    children: _buildAttendanceList(attendanceHistory),
+                  ),
                 ),
               ],
             ),
