@@ -32,6 +32,17 @@ class AchieveController {
   }
 
   // 2번째 업적 - 첫 ical 등록 메서드
+  Future<void> checkTimeAchieve() async {
+    final token = await ref.read(authManagerProvider.future);
+    if (token != null) {
+      await api.checkTimeAchieve(token);
+      ref.refresh(achieveProvider);
+    } else {
+      throw Exception('User not authenticated');
+    }
+  }
+
+  // 2번째 업적 - 첫 ical 등록 메서드
   Future<void> checkFirstIcal() async {
     final token = await ref.read(authManagerProvider.future);
     if (token != null) {
