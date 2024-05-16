@@ -3,6 +3,11 @@ package org.b104.alfredo.user.Service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.achieve.domain.Achieve;
+import org.b104.alfredo.achieve.repository.AchieveRepository;
+import org.b104.alfredo.achieve.service.AchieveService;
+import org.b104.alfredo.coin.domain.Coin;
+import org.b104.alfredo.coin.repository.CoinRepository;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.response.RoutineDto;
 import org.b104.alfredo.user.Domain.Survey;
@@ -32,6 +37,8 @@ public class UserService {
     private RoutineRepository routineRepository;
 
     private final UserRepository userRepository;
+    private final AchieveRepository achieveRepository;
+    private final CoinRepository coinRepository;
 
     @Autowired
     private SurveyRepository surveyRepository;
@@ -47,6 +54,37 @@ public class UserService {
                 .build();
 
         user = userRepository.save(user);
+
+        Achieve newAchieve = Achieve.builder()
+                .user(user)
+                .achieveOne(false)
+                .finishOne(null)
+                .achieveTwo(false)
+                .finishTwo(null)
+                .achieveThree(false)
+                .finishThree(null)
+                .achieveFour(false)
+                .finishFour(null)
+                .achieveFive(false)
+                .finishFive(null)
+                .achieveSix(false)
+                .finishSix(null)
+                .achieveSeven(false)
+                .finishSeven(null)
+                .achieveEight(false)
+                .finishEight(null)
+                .achieveNine(false)
+                .finishNine(null)
+                .build();
+        newAchieve = achieveRepository.save(newAchieve);
+
+        Coin newCoin = Coin.builder()
+                .userId(user)
+                .totalCoin(0)
+                .todayCoin(0)
+                .build();
+
+        newCoin = coinRepository.save(newCoin);
 
         user.setNickname("사용자" + user.getUserId());
         return userRepository.save(user);
@@ -81,7 +119,7 @@ public class UserService {
     public User updateUserToken(String uid, String token) {
         User user = userRepository.findByUid(uid).orElseThrow(() -> new NoSuchElementException("No user found with uid: " + uid));
         user.setFcmToken(token);
-        System.out.println("여기 오니");
+//        System.out.println("여기 오니");
         return userRepository.saveAndFlush(user);
     }
 

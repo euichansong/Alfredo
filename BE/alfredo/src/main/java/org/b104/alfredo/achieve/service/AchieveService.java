@@ -197,7 +197,7 @@ public class AchieveService {
     @Transactional
     public boolean checkTotalRoutine(User user) {
         long routineCount = routineRepository.countByUserUserId(user.getUserId());
-
+        System.out.println(routineCount);
         Achieve achieve = achieveRepository.findByUser(user);
         if (routineCount < 2 || achieve == null || achieve.getAchieveFour()) {
             return false;
