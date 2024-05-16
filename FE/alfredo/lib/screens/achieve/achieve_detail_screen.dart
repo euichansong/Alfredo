@@ -30,6 +30,12 @@ class AchieveDetailScreen extends ConsumerWidget {
   Widget _buildAchieveList(BuildContext context, Achieve achieve) {
     final achieveStatuses = [
       {
+        "title": "첫번째 업적",
+        "status": achieve.achieveOne,
+        "description": "총 수행시간 업적",
+        "date": achieve.finishOne
+      },
+      {
         "title": "2번째 업적",
         "status": achieve.achieveTwo,
         "description": "첫 ical 등록 업적",

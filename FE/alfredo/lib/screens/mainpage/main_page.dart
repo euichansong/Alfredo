@@ -91,15 +91,31 @@ class _MainPageState extends ConsumerState<MainPage> {
           Positioned(
             top: MediaQuery.of(context).size.height * 0.05,
             right: MediaQuery.of(context).size.height * 0.02,
-            child: ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  builder: (context) => const ShopScreen(),
-                );
-              },
-              child: const Text('Shop'),
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (context) => const ShopScreen(),
+                    );
+                  },
+                  child: const Text('Shop'),
+                ),
+                const SizedBox(height: 10), // 간격을 주기 위해 추가
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AchieveDetailScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text('Achievements'),
+                ),
+              ],
             ),
           ),
         ],

@@ -41,6 +41,19 @@ class AchieveApi {
     }
   }
 
+// 1번째 업적 - 총 수행 시간
+  Future<void> checkTimeAchieve(String authToken) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/one'),
+      headers: _authHeaders(authToken),
+    );
+    if (response.statusCode == 200) {
+      print('First iCal achieve checked successfully.');
+    } else {
+      throw Exception('Failed to check first iCal achieve: ${response.body}');
+    }
+  }
+
   // 2번째 업적 - 첫 ical 등록
   Future<void> checkFirstIcal(String authToken) async {
     final response = await http.post(
