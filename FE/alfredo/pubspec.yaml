@@ -107,6 +107,7 @@ flutter:
     - assets/pngwing 2.png
     - assets/image 11.png
     - assets/image 12.png
+    - assets/image 13.png
 
   fonts:
     - family: Kyobo

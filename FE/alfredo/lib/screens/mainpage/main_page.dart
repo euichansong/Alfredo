@@ -1,14 +1,17 @@
+// ignore_for_file: unused_import
+
 import 'package:alfredo/provider/calendar/icaldata_provider.dart';
 import 'package:alfredo/provider/user/user_state_provider.dart';
+import 'package:alfredo/screens/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
-import '../tts/tts_page.dart';
-import '../achieve/achieve_detail_screen.dart'; // AchieveDetailScreen import
-import '../coin/coin_detail_screen.dart'; // CoinDetailScreen import
 import '../../provider/achieve/achieve_provider.dart'; // achieveProvider import
 import '../../provider/coin/coin_provider.dart';
+import '../achieve/achieve_detail_screen.dart'; // AchieveDetailScreen import
+import '../coin/coin_detail_screen.dart'; // CoinDetailScreen import
+import '../tts/tts_page.dart';
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
@@ -28,8 +31,33 @@ class _MainPageState extends ConsumerState<MainPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/mainalfredo.png'),
+                image: AssetImage('assets/mainback1.png'),
                 fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            top: MediaQuery.of(context).size.height * 0.1,
+            left: MediaQuery.of(context).size.height * 0,
+            right: MediaQuery.of(context).size.height * 0,
+            bottom: MediaQuery.of(context).size.height * 0.1,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/image 12.png'),
+                  fit: BoxFit.scaleDown,
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            top: MediaQuery.of(context).size.height * 0.4,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/image 13.png'),
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
           ),
@@ -37,7 +65,7 @@ class _MainPageState extends ConsumerState<MainPage> {
             top: MediaQuery.of(context).size.height * 0.05,
             left: MediaQuery.of(context).size.height * 0,
             right: MediaQuery.of(context).size.height * 0,
-            bottom: MediaQuery.of(context).size.height * 0.06,
+            bottom: MediaQuery.of(context).size.height * 0.07,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SizedBox(
@@ -52,49 +80,28 @@ class _MainPageState extends ConsumerState<MainPage> {
             bottom: MediaQuery.of(context).size.height * 0.01,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: const TodoList(),
+              // ignore: prefer_const_constructors
+              child: SizedBox(
+                // width: MediaQuery.of(context).size.width,
+                // height: MediaQuery.of(context).size.height,
+                child: const TodoList(),
+              ),
             ),
           ),
-          // 업적 화면으로 이동하는 버튼
           Positioned(
-            top: MediaQuery.of(context).size.height * 0.1,
-            left: MediaQuery.of(context).size.width * 0.5 -
-                30, // 버튼의 절반 너비를 빼서 중앙으로 위치시킴
-            child: FloatingActionButton(
-              onPressed: () async {
-                // 업적 데이터를 새로고침
-                ref.refresh(achieveProvider);
-                // 업적 화면으로 이동
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AchieveDetailScreen()),
+            top: MediaQuery.of(context).size.height * 0.05,
+            right: MediaQuery.of(context).size.height * 0.02,
+            child: ElevatedButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) => const ShopScreen(),
                 );
               },
-              backgroundColor: Colors.blue,
-              child: const Icon(Icons.star),
+              child: const Text('Shop'),
             ),
           ),
-          // 코인 화면으로 이동하는 버튼
-          // Positioned(
-          //   top: MediaQuery.of(context).size.height * 0.2,
-          //   left: MediaQuery.of(context).size.width * 0.5 -
-          //       30, // 버튼의 절반 너비를 빼서 중앙으로 위치시킴
-          //   child: FloatingActionButton(
-          //     onPressed: () async {
-          //       // 코인 데이터를 새로고침
-          //       ref.refresh(coinProvider);
-          //       // 코인 화면으로 이동
-          //       Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) => const CoinDetailScreen()),
-          //       );
-          //     },
-          //     backgroundColor: Colors.green,
-          //     child: const Icon(Icons.monetization_on),
-          //   ),
-          // ),
         ],
       ),
     );
