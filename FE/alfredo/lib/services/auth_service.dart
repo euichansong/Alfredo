@@ -9,6 +9,7 @@ class AuthService {
 
   AuthService() {
     _startTokenRefreshTimer();
+    _refreshTokenOnStartup();
   }
 
   void _startTokenRefreshTimer() {
@@ -17,6 +18,10 @@ class AuthService {
         Timer.periodic(const Duration(minutes: 50), (timer) async {
       await getIdToken(forceRefresh: true);
     });
+  }
+
+  void _refreshTokenOnStartup() async {
+    await getIdToken(forceRefresh: true);
   }
 
   Future<UserCredential?> signInWithGoogle() async {
