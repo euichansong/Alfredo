@@ -1,14 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-
 import '../../api/token_api.dart';
-
 import '../../services/auth_service.dart';
-
 import 'loading_screen.dart';
 import '../../components/navbar/tabview.dart';
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,7 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   User? _currentUser;
-  final bool _isLoading = false; // 로딩 상태 관리 변수
+  bool _isLoading = false; // 로딩 상태 관리 변수
 
   @override
   void initState() {
@@ -94,6 +90,10 @@ class LoginPageState extends State<LoginPage> {
   }
 
   void _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true; // 로그인 시 로딩 상태로 변경
+    });
+
     try {
       AuthService authService = AuthService();
       UserCredential? userCredential = await authService.signInWithGoogle();
@@ -107,8 +107,6 @@ class LoginPageState extends State<LoginPage> {
           await TokenApi.sendTokenToServer(idToken);
         }
 
-
-        //여기서부터 표시한곳까지 추가
         // 사용자의 Firebase Messaging 토큰을 가져옵니다.
         String? fcmToken = await FirebaseMessaging.instance.getToken();
         if (fcmToken != null) {
@@ -117,10 +115,8 @@ class LoginPageState extends State<LoginPage> {
             TokenApi.sendFcmTokenToServer(idToken, fcmToken);
           }
         }
-        //여기까지 추가
 
         // Firebase Auth에 사용자가 존재하는지 확인합니다.
-
         final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
         if (isNewUser) {
           Navigator.pushReplacementNamed(context, '/user_routine_test');
@@ -132,6 +128,10 @@ class LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print("Login error: $e");
+    } finally {
+      setState(() {
+        _isLoading = false; // 로그인 후 로딩 상태 해제
+      });
     }
   }
 

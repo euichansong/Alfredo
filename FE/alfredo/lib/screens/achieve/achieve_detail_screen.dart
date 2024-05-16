@@ -30,6 +30,12 @@ class AchieveDetailScreen extends ConsumerWidget {
   Widget _buildAchieveList(BuildContext context, Achieve achieve) {
     final achieveStatuses = [
       {
+        "title": "첫번째 업적",
+        "status": achieve.achieveOne,
+        "description": "총 수행시간 업적",
+        "date": achieve.finishOne
+      },
+      {
         "title": "2번째 업적",
         "status": achieve.achieveTwo,
         "description": "첫 ical 등록 업적",
@@ -84,10 +90,6 @@ class AchieveDetailScreen extends ConsumerWidget {
 
   Widget _buildAchieveCard(
       String title, bool status, String description, DateTime? date) {
-    if (title == "5번째 업적") {
-      print('finishFive: $date');
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Stack(

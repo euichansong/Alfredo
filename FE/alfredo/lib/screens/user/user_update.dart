@@ -57,8 +57,17 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('유저 정보 수정'),
+        backgroundColor: const Color(0xfff0d2338),
+        iconTheme: const IconThemeData(color: Color(0xFFF2E9E9)),
+        title: const Text(
+          '유저 정보 수정',
+          style: TextStyle(
+            color: Color(0xFFF2E9E9),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
+      backgroundColor: const Color(0xFFF2E9E9),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -74,9 +83,12 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
               TextFormField(
                 controller: _googleCalendarUrlController,
                 decoration: const InputDecoration(labelText: '외부 캘린더 URL'),
-                //   validator: (value) =>
-                //       value!.isEmpty ? '외부 캘린더 URL을 입력하세요' : null,
-                // ),
+                validator: (value) {
+                  if (value!.isNotEmpty && !value.endsWith('.ics')) {
+                    return '유효한 캘린더 URL을 입력하세요';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 20),
               ListTile(
