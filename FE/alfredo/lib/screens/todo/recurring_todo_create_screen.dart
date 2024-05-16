@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart'; // UUID 패키지 임포트
 import '../../models/todo/todo_model.dart';
 import '../../provider/todo/todo_provider.dart';
+import '../../provider/achieve/achieve_provider.dart';
 
 class RecurringTodoCreateScreen extends ConsumerStatefulWidget {
   const RecurringTodoCreateScreen({super.key});
@@ -53,7 +54,7 @@ class _RecurringTodoCreateScreenState
     }
   }
 
-  void _submitRecurringTodo() {
+  void _submitRecurringTodo() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
@@ -81,14 +82,20 @@ class _RecurringTodoCreateScreenState
 
       // 할 일 목록을 데이터베이스 또는 서버에 전송
       final controller = ref.read(todoControllerProvider);
-      controller.createTodos(todosToCreate).then((_) {
+      try {
+        await controller.createTodos(todosToCreate);
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text('할 일이 성공적으로 생성되었습니다.')));
+
+        // 업적 체크 메서드 호출
+        final achieveController = ref.read(achieveControllerProvider);
+        await achieveController.checkTotalTodoAchieve();
+
         Navigator.pushReplacementNamed(context, '/main');
-      }).catchError((error) {
+      } catch (error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text('할 일 생성에 실패했습니다: $error')));
-      });
+      }
     }
   }
 
@@ -168,6 +175,7 @@ class _RecurringTodoCreateScreenState
     );
   }
 }
+
 
 
 
