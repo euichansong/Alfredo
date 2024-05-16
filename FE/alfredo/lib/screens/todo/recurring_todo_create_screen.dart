@@ -135,8 +135,8 @@ class _RecurringTodoCreateScreenState
                   constraints: const BoxConstraints(
                       minHeight: 35.0, minWidth: 35.0), // 버튼 크기 조정
                   isSelected: daysOfWeek,
-                  fillColor: const Color(0xFFE7D8BC), // 선택된 버튼의 배경색 설정
-                  selectedColor: Colors.black, // 선택된 버튼의 글자색 설정
+                  fillColor: const Color(0xFF0D2338), // 선택된 버튼의 배경색 설정
+                  selectedColor: Colors.white, // 선택된 버튼의 글자색 설정
                   onPressed: (int index) {
                     setState(() {
                       daysOfWeek[index] = !daysOfWeek[index];
