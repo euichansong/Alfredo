@@ -107,19 +107,16 @@ class _MainPageState extends ConsumerState<MainPage> {
                 radius: 16,
                 backgroundColor:
                     attended ? Colors.blueAccent : Colors.grey[300],
-                child: Icon(
-                  attended ? Icons.check : Icons.close,
-                  color: Colors.white,
+                child: Text(
+                  daysOfWeek[day.weekday]!,
+                  style: TextStyle(
+                    color: attended ? Colors.white : Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
                 ),
               ),
-              const SizedBox(height: 4),
-              Text(
-                daysOfWeek[day.weekday]!,
-                style: TextStyle(
-                  color: attended ? Colors.blueAccent : Colors.grey,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              // const SizedBox(height: 4),
             ],
           ),
         ),
