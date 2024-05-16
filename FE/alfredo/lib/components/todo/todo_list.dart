@@ -77,8 +77,8 @@ class _TodoListState extends ConsumerState<TodoList> {
                             fontSize: 18,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
-                          // maxLines: 1,
-                          // overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
                           showDialog(
