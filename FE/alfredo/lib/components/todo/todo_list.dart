@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/todo/todo_model.dart';
 import '../../provider/todo/todo_provider.dart';
 import '../../screens/todo/todo_detail_screen.dart';
+import '../../provider/coin/coin_provider.dart'; // coin_provider를 import합니다.
 
 class TodoList extends ConsumerStatefulWidget {
   const TodoList({super.key});
@@ -77,8 +78,6 @@ class _TodoListState extends ConsumerState<TodoList> {
                             fontSize: 18,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
                           showDialog(
@@ -116,9 +115,21 @@ class _TodoListState extends ConsumerState<TodoList> {
 
   void _toggleTodoCompletion(Todo todo, bool isCompleted, int index) async {
     final todoController = ref.read(todoControllerProvider);
+    final coinController =
+        ref.read(coinControllerProvider); // coinController를 읽어옵니다.
+
     setState(() {
       _todos![index] = todo.copyWith(isCompleted: isCompleted);
     });
+
+    if (isCompleted) {
+      // 할 일이 완료되었을 때
+      await coinController.incrementCoin();
+    } else {
+      // 할 일이 완료 해제되었을 때
+      await coinController.decrementCoin();
+    }
+
     await todoController
         .updateTodo(_todos![index])
         .then((_) => _onTodoUpdated());
