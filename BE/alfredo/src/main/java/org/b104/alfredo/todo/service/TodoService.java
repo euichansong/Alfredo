@@ -192,6 +192,8 @@ public class TodoService {
                 todo.setPlace(todoUpdateDto.getPlace());
             }
         }
+
+
     @Transactional
     public void updateSumTime(String uid, int timeDifference) {
         Time time = timeRepository.findByUid(uid);
@@ -204,6 +206,8 @@ public class TodoService {
             time.setSumTime(timeDifference);
             timeRepository.save(time);
         }
+//        if (time.getSumTime() > 30)
+
     }
 
 
