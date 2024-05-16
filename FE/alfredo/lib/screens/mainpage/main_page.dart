@@ -47,7 +47,7 @@ class _MainPageState extends ConsumerState<MainPage> {
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.44,
+            top: MediaQuery.of(context).size.height * 0.4,
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
@@ -72,10 +72,10 @@ class _MainPageState extends ConsumerState<MainPage> {
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.45,
-            left: MediaQuery.of(context).size.height * 0.087,
-            right: MediaQuery.of(context).size.height * 0.087,
-            bottom: MediaQuery.of(context).size.height * 0.1,
+            top: MediaQuery.of(context).size.height * 0.48,
+            left: MediaQuery.of(context).size.height * 0.01,
+            right: MediaQuery.of(context).size.height * 0.01,
+            bottom: MediaQuery.of(context).size.height * 0.01,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               // ignore: prefer_const_constructors
