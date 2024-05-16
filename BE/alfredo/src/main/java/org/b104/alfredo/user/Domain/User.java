@@ -50,6 +50,10 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Survey survey;
 
+    //sj 추가 시작
+    private LocalDateTime lastLoginTime;
+    //sj 추가 끝
+
     @PrePersist
     protected void onRegister() {
         this.registeredAt = LocalDateTime.now();
