@@ -6,8 +6,11 @@ import org.b104.alfredo.coin.domain.Coin;
 import org.b104.alfredo.coin.repository.CoinRepository;
 import org.b104.alfredo.coin.response.CoinDetailDto;
 import org.b104.alfredo.user.Domain.User;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,4 +54,45 @@ public class CoinService {
         return coinRepository.save(newCoin);
     }
 
+    // 매일 자정에 todayCoin을 0으로 초기화하는 작업
+    @Scheduled(cron = "0 0 0 * * *")
+    @Transactional
+    public void resetTodayCoin() {
+        List<Coin> coins = coinRepository.findAll();
+        for (Coin coin : coins) {
+            coin.updateTodayCoin(0);
+        }
+    }
+
+    // todayCoin과 totalCoin을 5개씩 증가시키는 서비스
+    @Transactional
+    public void incrementCoins(User user) {
+        Coin coin = coinRepository.findByUserId(user);
+        // 하루 얻을수 있는 코인 갯수
+        if (coin != null && coin.getTodayCoin() < 50) {
+            coin.updateTodayCoin(coin.getTodayCoin() + 5);
+            coin.updateTotalCoin(coin.getTotalCoin() + 5);
+        }
+    }
+
+    // todayCoin과 totalCoin을 5개씩 감소시키는 서비스
+    @Transactional
+    public void decrementCoins(User user) {
+        Coin coin = coinRepository.findByUserId(user);
+        if (coin != null && coin.getTodayCoin() >= 5 && coin.getTotalCoin() >= 5) {
+            coin.updateTodayCoin(coin.getTodayCoin() - 5);
+            coin.updateTotalCoin(coin.getTotalCoin() - 5);
+        }
+    }
+
+    // 특정 값만큼 totalCoin을 감소시키는 서비스
+    @Transactional
+    public void decrementTotalCoin(User user, int decrementValue) {
+        Coin coin = coinRepository.findByUserId(user);
+        if (coin != null && coin.getTotalCoin() >= decrementValue) {
+            coin.updateTotalCoin(coin.getTotalCoin() - decrementValue);
+        } else {
+            throw new IllegalArgumentException("Not enough coins to decrement.");
+        }
+    }
 }
