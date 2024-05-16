@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../models/user/user_update_dto.dart';
 import '../../provider/user/user_state_provider.dart';
+import '../../controller/achieve/achieve_controller.dart';
+import '../../provider/achieve/achieve_provider.dart';
 
 class UserUpdateScreen extends ConsumerStatefulWidget {
   const UserUpdateScreen({super.key});
@@ -53,11 +55,26 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
     }
   }
 
+  Future<void> _checkAchievements() async {
+    try {
+      final achieveController = ref.read(achieveControllerProvider);
+
+      // 2번째 업적 체크
+      await achieveController.checkFirstIcal();
+
+      // 9번째 업적 체크
+      await achieveController.checkBirthAchieve();
+    } catch (e) {
+      // 예외 처리
+      print('Error checking achievements: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xfff0d2338),
+        backgroundColor: const Color(0xff0D2338),
         iconTheme: const IconThemeData(color: Color(0xFFF2E9E9)),
         title: const Text(
           '유저 정보 수정',
@@ -110,6 +127,7 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
                       googleCalendarUrl: _googleCalendarUrlController.text,
                     );
                     await ref.read(userUpdateProvider(userUpdateDto).future);
+                    await _checkAchievements(); // 업적 체크 추가
                     Navigator.pop(context);
                   }
                 },
