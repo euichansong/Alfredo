@@ -52,7 +52,6 @@ public class UserController {
                 return ResponseEntity.ok(user);
             }
         } catch (Exception e) {
-            // 토큰이 유효하지 않거나 다른 오류가 발생한 경우, 예외의 상세한 원인을 로그에 포함하여 무단 상태로 반환
             log.error("Token verification failed: {}", e.getMessage(), e);
 
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
@@ -73,11 +72,11 @@ public class UserController {
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 return new ResponseEntity<>(user, headers, HttpStatus.OK);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("user not found");
             }
         } catch (Exception e) {
             log.error("Error verifying token: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("통신오류");
         }
     }
 
@@ -95,7 +94,7 @@ public class UserController {
 
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token or user not found");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("오류 발생");
         }
     }
 
@@ -113,7 +112,7 @@ public class UserController {
             Survey savedSurvey = userService.saveSurvey(uid, surveyDto);
             return ResponseEntity.ok(savedSurvey);
         } catch (FirebaseAuthException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("통신 오류");
         } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
