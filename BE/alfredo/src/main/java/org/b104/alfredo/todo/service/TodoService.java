@@ -7,9 +7,11 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.b104.alfredo.todo.domain.Day;
 import org.b104.alfredo.todo.domain.OldTodo;
+import org.b104.alfredo.todo.domain.Time;
 import org.b104.alfredo.todo.domain.Todo;
 import org.b104.alfredo.todo.repository.DayRepository;
 import org.b104.alfredo.todo.repository.OldTodoRepository;
+import org.b104.alfredo.todo.repository.TimeRepository;
 import org.b104.alfredo.todo.repository.TodoRepository;
 import org.b104.alfredo.todo.request.TodoCreateDto;
 import org.b104.alfredo.todo.request.TodoUpdateDto;
@@ -41,6 +43,8 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final OldTodoRepository oldTodoRepository;
     private final DayRepository dayRepository;
+    private final TimeRepository timeRepository;
+
 
     @Transactional
     public List<TodoListDto> findAllTodosByUid(String uid) {
@@ -144,6 +148,7 @@ public class TodoService {
                 .orElseThrow(() -> new IllegalArgumentException("No Todo found for ID=" + id));
 
         boolean previousCompleted = todo.getIsCompleted();
+        int previousSpentTime = todo.getSpentTime() != null ? todo.getSpentTime() : 0;
 
         // Update fields
         updateTodoFields(todo, todoUpdateDto);
@@ -156,6 +161,11 @@ public class TodoService {
             int dayIndex = todo.getDueDate().getDayOfWeek().getValue() % 7;  // Convert DayOfWeek to 0-indexed integer
             int change = todo.getIsCompleted() ? 1 : -1;
             updateDayTable(todo.getUid(), dayIndex, change);
+        }
+        // Check if spentTime has changed
+        if (todoUpdateDto.getSpentTime() != null && previousSpentTime != todoUpdateDto.getSpentTime()) {
+            int timeDifference = todoUpdateDto.getSpentTime() - previousSpentTime;
+            updateSumTime(todo.getUid(), timeDifference);
         }
     }
 
@@ -182,6 +192,21 @@ public class TodoService {
                 todo.setPlace(todoUpdateDto.getPlace());
             }
         }
+    @Transactional
+    public void updateSumTime(String uid, int timeDifference) {
+        Time time = timeRepository.findByUid(uid);
+        if (time != null) {
+            time.setSumTime(time.getSumTime() + timeDifference);
+            timeRepository.save(time);
+        } else {
+            time = new Time();
+            time.setUid(uid);
+            time.setSumTime(timeDifference);
+            timeRepository.save(time);
+        }
+    }
+
+
 
     private void updateDayTable(String uid, int dayIndex, int change) {
         Optional<Day> dayOpt = dayRepository.findByUidAndDayIndex(uid, dayIndex);
@@ -215,41 +240,6 @@ public class TodoService {
 
 
 
-
-//    @Transactional
-//    public void updateTodosBySubIndex(String subIndex, TodoUpdateSubDto todoUpdateSubDto) {
-//        List<Todo> todos = todoRepository.findBySubIndex(subIndex);
-//
-//        if (todos.isEmpty()) {
-//            throw new RuntimeException("No Todos found with subIndex: " + subIndex);
-//        }
-//
-//        for (Todo todo : todos) {
-//            if (todoUpdateSubDto.getTodoTitle() != null) {
-//                todoUpdateSubDto.getTodoTitle().ifPresent(todo::setTodoTitle);
-//            }
-//            if (todoUpdateSubDto.getTodoContent() != null) {
-//                todoUpdateSubDto.getTodoContent().ifPresent(todo::setTodoContent);
-//            }
-//            if (todoUpdateSubDto.getDueDate() != null) {
-//                todoUpdateSubDto.getDueDate().ifPresent(todo::setDueDate);
-//            }
-//            if (todoUpdateSubDto.getSpentTime() != null) {
-//                todoUpdateSubDto.getSpentTime().ifPresent(todo::setSpentTime);
-//            }
-//            if (todoUpdateSubDto.getIsCompleted() != null) {
-//                todoUpdateSubDto.getIsCompleted().ifPresent(todo::setIsCompleted);
-//            }
-//            if (todoUpdateSubDto.getUrl() != null) {
-//                todoUpdateSubDto.getUrl().ifPresent(todo::setUrl);
-//            }
-//            if (todoUpdateSubDto.getPlace() != null) {
-//                todoUpdateSubDto.getPlace().ifPresent(todo::setPlace);
-//            }
-//
-//            todoRepository.save(todo);
-//        }
-//    }
     @Transactional
     public void deleteTodo(Long id) {
         todoRepository.deleteById(id);
@@ -268,30 +258,7 @@ public class TodoService {
 
 
 
-//    @Transactional
-//    public void updateTodosBySubIndexAndDate(TodoUpdateSubDto updateDto) {
-//        String subIndex = updateDto.getSubIndex(); // `subIndex` 값을 가져옵니다.
-//        LocalDate date = updateDto.getDate(); // `date` 값을 가져옵니다.
-//
-//        List<Todo> todos = todoRepository.findBySubIndexAndDueDateAfterOrEqual(subIndex, date); // `subIndex`와 `date` 이후의 항목들 가져오기
-//
-//        if (todos.isEmpty()) {
-//            log.warn("No Todos found with subIndex '{}' and date after '{}'", subIndex, date);
-//            return;
-//        }
-//
-//        log.info("Found {} Todos with subIndex '{}' and date after '{}'", todos.size(), subIndex, date);
-//
-//        for (Todo todo : todos) {
-//            if (updateDto.getTodoTitle() != null) {
-//                todo.setTodoTitle(updateDto.getTodoTitle());
-//            }
-//            // 다른 필드들도 동일하게 검사하고 업데이트합니다.
-//
-//            todoRepository.save(todo); // 업데이트 후 저장
-//            log.info("Updated Todo with ID {}", todo.getId());
-//        }
-//    }
+
     @Transactional
     public void updateTodosBySubIndexAndDate(TodoUpdateSubDto updateDto) {
         String subIndex = updateDto.getSubIndex(); // `subIndex` 값을 가져옵니다.
@@ -328,14 +295,6 @@ public class TodoService {
                 .orElseThrow(() -> new IllegalArgumentException("No Todo found for ID=" + id));
     }
 
-
-
-
-
-
-
-
-
 }
 
 
@@ -344,53 +303,4 @@ public class TodoService {
 
 
 
-//    @Transactional
-//    public void updateTodoById(TodoUpdateDto todoUpdateDto, Long id) {
-//        Todo todo = todoRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다. id=" + id));
-//        return new TodoUpdateDto(todo);
-//    }
-
-//    @Transactional
-//    public TodoUpdateDto updateTodoById(Long id, TodoUpdateDto todoUpdateDto) {
-//        Todo todo = todoRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다. id=" + id));
-//        todo.update(todoUpdateDto.getSubIndex(),
-//                todoUpdateDto.getTodoTitle(),
-//                todoUpdateDto.getTodoContent(),
-//                todoUpdateDto.getDueDate(),
-//                todoUpdateDto.getSpentTime(),
-//                todoUpdateDto.getIsCompleted(),
-//                todoUpdateDto.getUrl(),
-//                todoUpdateDto.getPlace());
-//        return todoUpdateDto;
-//    }
-
-
-//    @Transactional
-//    public void deleteTodoById(Long id) {
-//        Todo todo = todoRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("해당 스케줄이 없습니다. id=" + id));
-//        todoRepository.delete(todo);
-//    }
-//
-
-
-
-
-
-//    @Transactional
-//    public TodoCreateDto saveTodo(TodoCreateDto todoCreateDto) {
-//        return todoRepository.save(todoCreateDto);
-//    }
-
-
-
-
-//@Override
-//@Transactional
-//public void deleteTodo(Long id) {
-//    todoRepository.deleteById(id);
-//}
-//}
 

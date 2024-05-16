@@ -116,44 +116,7 @@ public class TodoController {
         return ResponseEntity.notFound().build();
     }
 
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<Void> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
-//        todoService.updateTodo(id, todoUpdateDto);
-//        return ResponseEntity.noContent().build();
-//    }
 
-    // Todo 업데이트 메소드
-//    @PatchMapping("/{id}")
-//    public ResponseEntity<String> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto,
-//                                             @RequestHeader(value = "Authorization") String authHeader) {
-//        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
-//        try {
-//            // Firebase 토큰 검증
-//            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
-//            String uid = decodedToken.getUid();
-//
-//            // 해당 Todo의 소유자 확인
-//            Todo todo = todoService.findById(id);
-//            if (!todo.getUid().equals(uid)) {
-//                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You do not have permission to update this todo.");
-//            }
-//
-//            // Todo 업데이트
-//            todoService.updateTodo(id, todoUpdateDto);
-//            return ResponseEntity.noContent().build();
-//        } catch (FirebaseAuthException e) {
-//            log.error("Firebase Auth error: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired token");
-//        } catch (IllegalArgumentException e) {
-//            // Todo를 찾지 못한 경우
-//            log.error("Todo not found: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo not found");
-//        } catch (Exception e) {
-//            // 그 외의 예외 발생 시
-//            log.error("Error updating todo: {}", e.getMessage(), e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal server error");
-//        }
-//    }
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateTodo(@PathVariable Long id, @RequestBody TodoUpdateDto todoUpdateDto) {
         try {
