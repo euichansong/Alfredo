@@ -1,5 +1,8 @@
+// ignore_for_file: unused_import
+
 import 'package:alfredo/provider/calendar/icaldata_provider.dart';
 import 'package:alfredo/provider/user/user_state_provider.dart';
+import 'package:alfredo/screens/store/store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,8 +27,33 @@ class _MainPageState extends ConsumerState<MainPage> {
           Container(
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage('assets/mainalfredo.png'),
+                image: AssetImage('assets/mainback1.png'),
                 fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            top: MediaQuery.of(context).size.height * 0.1,
+            left: MediaQuery.of(context).size.height * 0,
+            right: MediaQuery.of(context).size.height * 0,
+            bottom: MediaQuery.of(context).size.height * 0.1,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/image 12.png'),
+                  fit: BoxFit.scaleDown,
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            top: MediaQuery.of(context).size.height * 0.44,
+            child: Container(
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/image 13.png'),
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
           ),
@@ -33,7 +61,7 @@ class _MainPageState extends ConsumerState<MainPage> {
             top: MediaQuery.of(context).size.height * 0.05,
             left: MediaQuery.of(context).size.height * 0,
             right: MediaQuery.of(context).size.height * 0,
-            bottom: MediaQuery.of(context).size.height * 0.06,
+            bottom: MediaQuery.of(context).size.height * 0,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SizedBox(
@@ -44,10 +72,10 @@ class _MainPageState extends ConsumerState<MainPage> {
             ),
           ),
           Positioned.fill(
-            top: MediaQuery.of(context).size.height * 0.48,
-            left: MediaQuery.of(context).size.height * 0.01,
-            right: MediaQuery.of(context).size.height * 0.01,
-            bottom: MediaQuery.of(context).size.height * 0.01,
+            top: MediaQuery.of(context).size.height * 0.45,
+            left: MediaQuery.of(context).size.height * 0.087,
+            right: MediaQuery.of(context).size.height * 0.087,
+            bottom: MediaQuery.of(context).size.height * 0.1,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               // ignore: prefer_const_constructors
@@ -56,6 +84,20 @@ class _MainPageState extends ConsumerState<MainPage> {
                 // height: MediaQuery.of(context).size.height,
                 child: const TodoList(),
               ),
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).size.height * 0.05,
+            right: MediaQuery.of(context).size.height * 0.02,
+            child: ElevatedButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) => const ShopScreen(),
+                );
+              },
+              child: const Text('Shop'),
             ),
           ),
         ],
