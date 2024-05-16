@@ -47,15 +47,23 @@ class _MainPageState extends ConsumerState<MainPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          backgroundColor: const Color(0xFF0D2338), // 배경색 설정
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
                 '이번 주 출석 현황',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
               ),
               IconButton(
-                icon: const Icon(Icons.close, size: 20),
+                icon: const Icon(Icons.close, size: 20, color: Colors.white),
+                padding: const EdgeInsets.all(8.0),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -74,6 +82,11 @@ class _MainPageState extends ConsumerState<MainPage> {
                     children: _buildAttendanceList(attendanceHistory),
                   ),
                 ),
+                // const SizedBox(height: 10),
+                // const Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [Text("hi"), Text("hello")],
+                // )
               ],
             ),
           ),
@@ -111,12 +124,14 @@ class _MainPageState extends ConsumerState<MainPage> {
               CircleAvatar(
                 radius: 16,
                 backgroundColor: attended
-                    ? Colors.blueAccent.withOpacity(0.8)
+                    ? const Color(0x00e7d8bc).withOpacity(0.8)
                     : Colors.grey[300],
                 child: Text(
                   daysOfWeek[day.weekday]!,
                   style: TextStyle(
-                    color: attended ? Colors.blueAccent : Colors.black,
+                    color: attended
+                        ? const Color.fromARGB(0, 211, 193, 159)
+                        : const Color.fromARGB(123, 0, 0, 0),
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   ),
@@ -125,7 +140,7 @@ class _MainPageState extends ConsumerState<MainPage> {
               if (attended)
                 Icon(
                   Icons.check,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withOpacity(1.0),
                   size: 16,
                 ),
             ],
