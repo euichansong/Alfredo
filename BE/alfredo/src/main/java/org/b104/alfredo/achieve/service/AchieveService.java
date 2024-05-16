@@ -176,7 +176,8 @@ public class AchieveService {
         if (dayCount < 7 || achieve == null || achieve.getAchieveThree()) {
             return false;
         }
-
+        System.out.println("day 풀");
+        System.out.println(dayCount);
         achieve.updateAchieveThree(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {

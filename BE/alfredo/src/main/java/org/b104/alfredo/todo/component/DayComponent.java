@@ -12,6 +12,7 @@ public class DayComponent {
 
     @Scheduled(cron = "0 1 0 * * SUN")  // 매주 일요일 자정 1분에 실행
     public void weeklyDeletion() {
+
         dayService.deleteAllDays();  // 모든 'day' 데이터를 삭제
     }
 }

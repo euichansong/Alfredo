@@ -3,6 +3,7 @@ package org.b104.alfredo.todo.controller;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
+import org.b104.alfredo.achieve.service.AchieveService;
 import org.b104.alfredo.todo.domain.Day;
 import org.b104.alfredo.todo.domain.Todo;
 import org.b104.alfredo.todo.request.TodoCreateDto;
@@ -33,11 +34,13 @@ public class TodoController {
     @Autowired
     private final TodoService todoService;
     private final DayService dayService;
+    private final AchieveService achieveService;
 
     @Autowired
-    public TodoController(TodoService todoService, DayService dayService) {
+    public TodoController(TodoService todoService, DayService dayService, AchieveService achieveService) {
         this.todoService = todoService;
         this.dayService = dayService;
+        this.achieveService = achieveService;
     }
 
 
@@ -150,6 +153,11 @@ public class TodoController {
                 Optional<Day> dayOptional = dayService.findByUidAndDayIndex(uid, i);
                 int count = dayOptional.map(Day::getCount).orElse(0);
                 dayCounts.put(i, count);
+
+                // 토요일인 경우 3번째 업적 체크 메서드 호출
+                if (i == 6) {
+                    achieveService.checkWeekendTodo(uid);
+                }
             }
 
             // 만약 해당 uid에 대한 요일 데이터가 전혀 없는 경우, 일괄적으로 0으로 초기화
