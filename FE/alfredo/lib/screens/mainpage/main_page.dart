@@ -1,9 +1,9 @@
-import 'package:alfredo/provider/calendar/icaldata_provider.dart';
-import 'package:alfredo/provider/user/user_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
+import '../../provider/attendance/attendance_provider.dart';
+import '../../provider/user/future_provider.dart';
 import '../tts/tts_page.dart';
 
 class MainPage extends ConsumerStatefulWidget {
@@ -14,6 +14,20 @@ class MainPage extends ConsumerStatefulWidget {
 }
 
 class _MainPageState extends ConsumerState<MainPage> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAttendance();
+  }
+
+  Future<void> _checkAttendance() async {
+    final idToken = await ref.read(authManagerProvider.future);
+    ref.read(attendanceProvider).checkAttendance(idToken).catchError((error) {
+      // 오류 처리
+      print('Failed to check attendance: $error');
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
