@@ -22,7 +22,6 @@ class _SurveySavePageState extends ConsumerState<SurveySavePage> {
         throw Exception('No ID Token found');
       }
 
-      // 루틴 추천 API 요청
       final recommendResponse = await http.get(
         Uri.parse('${dotenv.env['USER_API_URL']}/basic'),
         headers: {
@@ -35,7 +34,6 @@ class _SurveySavePageState extends ConsumerState<SurveySavePage> {
         final recommendData = json.decode(recommendResponse.body);
         final basicRoutineIds = List<int>.from(recommendData['basicRoutineId']);
 
-        // 추천받은 루틴 등록 API 요청
         final registerResponse = await http.post(
           Uri.parse('${dotenv.env['ROUTINE_API_URL']}/add-basic-routines'),
           headers: {
@@ -61,14 +59,40 @@ class _SurveySavePageState extends ConsumerState<SurveySavePage> {
     }
   }
 
+  void _onStartPressed() {
+    Navigator.pushReplacementNamed(context, '/main');
+    _fetchAndSaveRoutines();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _fetchAndSaveRoutines,
-          child: const Text('시작하기'),
-        ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            'assets/opendoor.png',
+            fit: BoxFit.cover,
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 30.0),
+              child: ElevatedButton(
+                onPressed: _onStartPressed,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xfff0d2338),
+                  foregroundColor: const Color(0xFFF2E9E9),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 50, vertical: 25),
+                ),
+                child: const Text(
+                  '알프레도와 함께하기',
+                  style: TextStyle(fontSize: 24),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

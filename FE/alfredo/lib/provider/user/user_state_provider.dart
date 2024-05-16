@@ -22,5 +22,5 @@ final userUpdateProvider =
   }
 
   await UserApi().updateUser(idToken, userUpdateDto);
-  ref.refresh(userProvider);
+  await ref.refresh(userProvider.future);
 });

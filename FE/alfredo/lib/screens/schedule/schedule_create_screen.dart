@@ -8,6 +8,7 @@ import '../../provider/schedule/schedule_provider.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../../services/firebase_messaging_service.dart';
 import '../../api/alarm/alarm_api.dart';
+import '../../provider/achieve/achieve_provider.dart';
 
 class ScheduleCreateScreen extends ConsumerWidget {
   const ScheduleCreateScreen({super.key});
@@ -15,20 +16,26 @@ class ScheduleCreateScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.read(scheduleControllerProvider);
-    return _ScheduleCreateScreenBody(controller: controller);
+    return _ScheduleCreateScreenBody(
+      controller: controller,
+      ref: ref,
+    ); // ref를 전달합니다.
   }
 }
 
-class _ScheduleCreateScreenBody extends StatefulWidget {
+class _ScheduleCreateScreenBody extends ConsumerStatefulWidget {
   final ScheduleController controller;
+  final WidgetRef ref; // ref 추가
 
-  const _ScheduleCreateScreenBody({super.key, required this.controller});
+  const _ScheduleCreateScreenBody(
+      {super.key, required this.controller, required this.ref});
 
   @override
   _ScheduleCreateScreenState createState() => _ScheduleCreateScreenState();
 }
 
-class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
+class _ScheduleCreateScreenState
+    extends ConsumerState<_ScheduleCreateScreenBody> {
   final _formKey = GlobalKey<FormState>();
 
   String title = '';
@@ -252,13 +259,17 @@ class _ScheduleCreateScreenState extends State<_ScheduleCreateScreenBody> {
                     alarmApi.formatScheduleDateTime(alarmDate, alarmTime);
                 await alarmApi.sendTokenAndScheduleData(
                     token, title, formattedDateTime);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('일정이 성공적으로 생성되었으며 알람이 설정되었습니다.')));
               } else {
                 await widget.controller.createSchedule(newSchedule);
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
               }
+
+              // 업적 체크 메서드 호출
+              final achieveController = ref.read(achieveControllerProvider);
+              await achieveController.checkTotalScheduleAchieve();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('일정이 성공적으로 생성되었습니다.')));
+
               // 일정 생성 후 이전 화면으로 이동
               Navigator.pop(context);
             } catch (error) {

@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../components/tts/animated_textframe.dart';
 import '../../provider/tts/tts_provider.dart';
@@ -53,7 +56,7 @@ class TtsPage extends ConsumerWidget {
                       try {
                         // Fetch new text from API
                         final summaryText =
-                            await ref.read(ttsSummaryProvider(token).future);
+                            await ref.refresh(ttsSummaryProvider(token).future);
                         animatedTextKey.currentState?.updateText(
                             summaryText); // Update text on the animated text frame
 
@@ -62,11 +65,18 @@ class TtsPage extends ConsumerWidget {
                             headers: {'Authorization': 'Bearer $token'});
 
                         if (response.statusCode == 200) {
-                          // Start audio streaming
                           Uri audioUri = Uri.parse('$baseUrl/stream');
-                          await player.setAudioSource(AudioSource.uri(audioUri,
-                              headers: {'Authorization': 'Bearer $token'}));
-                          player.play();
+                          final audioResponse = await http.get(audioUri,
+                              headers: {'Authorization': 'Bearer $token'});
+
+                          final directory =
+                              await getApplicationDocumentsDirectory();
+                          final file = File('${directory.path}/temp_audio.ogg');
+                          await file.writeAsBytes(audioResponse.bodyBytes);
+                          debugPrint('Audio file saved at: ${file.path}');
+
+                          await player.setFilePath(file.path);
+                          await player.play();
                         } else if (response.statusCode == 429) {
                           ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
@@ -88,7 +98,7 @@ class TtsPage extends ConsumerWidget {
                   loading: () => const CircularProgressIndicator(),
                 ),
                 child: const Icon(
-                  Icons.mic,
+                  Icons.volume_up,
                   color: Colors.white,
                 ),
               ),
