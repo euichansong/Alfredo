@@ -3,6 +3,11 @@ package org.b104.alfredo.user.Service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import lombok.RequiredArgsConstructor;
+import org.b104.alfredo.achieve.domain.Achieve;
+import org.b104.alfredo.achieve.repository.AchieveRepository;
+import org.b104.alfredo.achieve.service.AchieveService;
+import org.b104.alfredo.coin.domain.Coin;
+import org.b104.alfredo.coin.repository.CoinRepository;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.response.RoutineDto;
 import org.b104.alfredo.user.Domain.Survey;
@@ -11,6 +16,7 @@ import org.b104.alfredo.user.Dto.*;
 import org.b104.alfredo.user.Repository.*;
 import org.b104.alfredo.user.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -31,9 +37,14 @@ public class UserService {
     private RoutineRepository routineRepository;
 
     private final UserRepository userRepository;
+    private final AchieveRepository achieveRepository;
+    private final CoinRepository coinRepository;
 
     @Autowired
     private SurveyRepository surveyRepository;
+
+    @Value("${flask.url}")
+    private String flaskUrl;
 
 
     public User createUser(UserCreateDto userCreateDto) {
@@ -43,6 +54,37 @@ public class UserService {
                 .build();
 
         user = userRepository.save(user);
+
+        Achieve newAchieve = Achieve.builder()
+                .user(user)
+                .achieveOne(false)
+                .finishOne(null)
+                .achieveTwo(false)
+                .finishTwo(null)
+                .achieveThree(false)
+                .finishThree(null)
+                .achieveFour(false)
+                .finishFour(null)
+                .achieveFive(false)
+                .finishFive(null)
+                .achieveSix(false)
+                .finishSix(null)
+                .achieveSeven(false)
+                .finishSeven(null)
+                .achieveEight(false)
+                .finishEight(null)
+                .achieveNine(false)
+                .finishNine(null)
+                .build();
+        newAchieve = achieveRepository.save(newAchieve);
+
+        Coin newCoin = Coin.builder()
+                .userId(user)
+                .totalCoin(0)
+                .todayCoin(0)
+                .build();
+
+        newCoin = coinRepository.save(newCoin);
 
         user.setNickname("사용자" + user.getUserId());
         return userRepository.save(user);
@@ -63,7 +105,7 @@ public class UserService {
 
     public User updateUser(String uid, UserUpdateDto userUpdateDto) {
         User user = userRepository.findByUid(uid).orElseThrow(() ->
-                new NoSuchElementException("User not found with uid: " + uid));
+                new NoSuchElementException("user not found: " + uid));
 
         UserUpdateDto.updateEntity(user, userUpdateDto);
         return userRepository.save(user);
@@ -77,12 +119,12 @@ public class UserService {
     public User updateUserToken(String uid, String token) {
         User user = userRepository.findByUid(uid).orElseThrow(() -> new NoSuchElementException("No user found with uid: " + uid));
         user.setFcmToken(token);
-        System.out.println("여기 오니");
+//        System.out.println("여기 오니");
         return userRepository.saveAndFlush(user);
     }
 
 
-    ////////////////////////////////// 루틴추천서비스 ///////////////////////////
+    //////////////////////////////// 루틴추천서비스 ///////////////////////////
     public Survey saveSurvey(String uid, SurveyDto surveyDto) {
         User user = userRepository.findByUid(uid).orElseThrow(() ->
                 new NoSuchElementException("User not found with uid: " + uid));
@@ -112,21 +154,18 @@ public class UserService {
         map.put("question5", answers.get(4));
         map.put("userId", user.getUserId());
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
-        String url = "http://127.0.0.1:5000/recommend";
 
+        String url = flaskUrl + "/recommend";
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-        Long similarUserId = Long.parseLong(response.getBody());  // 문자열 응답을 Long으로 변환
-
-        System.out.println("Similar User ID: " + similarUserId);
+        Long similarUserId = Long.parseLong(response.getBody());
 
         List<Routine> routines = routineRepository.findByUserUserIdOrderByStartTimeAsc(similarUserId);
-        List<Long> uniqueBasicRoutineIds = routines.stream()
+        Set<Long> uniqueBasicRoutineIds = routines.stream()
                 .filter(routine -> routine.getBasicRoutine() != null)
                 .map(routine -> routine.getBasicRoutine().getId())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
-        return new RecommendRoutineDto(uniqueBasicRoutineIds);
+        return new RecommendRoutineDto(new ArrayList<>(uniqueBasicRoutineIds));
     }
-
 
 }
