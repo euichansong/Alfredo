@@ -12,8 +12,10 @@ import org.b104.alfredo.routine.repository.RoutineRepository;
 import org.b104.alfredo.schedule.domain.Schedule;
 import org.b104.alfredo.schedule.repository.ScheduleRepository;
 import org.b104.alfredo.todo.domain.Day;
+import org.b104.alfredo.todo.domain.Time;
 import org.b104.alfredo.todo.domain.Todo;
 import org.b104.alfredo.todo.repository.DayRepository;
+import org.b104.alfredo.todo.repository.TimeRepository;
 import org.b104.alfredo.todo.repository.TodoRepository;
 import org.b104.alfredo.user.Domain.User;
 import org.b104.alfredo.user.Repository.UserRepository;
@@ -41,6 +43,7 @@ public class AchieveService {
     private final UserService userService;
     private final DayRepository dayRepository;
     private final FCMAlarmService fcmAlarmService;
+    private final TimeRepository timeRepository;
 
     // LocalDate를 Date로 변환하는 유틸리티 메서드
     private Date convertToDate(LocalDate localDate) {
@@ -83,6 +86,31 @@ public class AchieveService {
             return null;
         }
         return new AchieveDetailDto(achieve);
+    }
+
+    // 첫번째 업적 - 총 시간 합계
+    @Transactional
+    public boolean checkTimeTodo(String uid) {
+        Time time = timeRepository.findByUid(uid);
+        User user = userService.getUserByUid(uid);
+
+        Achieve achieve = achieveRepository.findByUser(user);
+        if (time.getSumTime() < 30 || achieve == null || achieve.getAchieveOne()) {
+            return false;
+        }
+
+        achieve.updateAchieveOne(true, convertToDate(LocalDate.now()));
+        Coin coin = coinRepository.findByUserId(user);
+        if (coin != null) {
+            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+        }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "첫번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
     }
 
     // 두번째 업적 - 첫 ical 등록
@@ -191,7 +219,7 @@ public class AchieveService {
         User user = userService.getUserByUid(uid);
 
         Achieve achieve = achieveRepository.findByUser(user);
-        if (todoCount < 2 || achieve == null || achieve.getAchieveFive()) {
+        if (todoCount < 5 || achieve == null || achieve.getAchieveFive()) {
             return false;
         }
 
@@ -214,9 +242,8 @@ public class AchieveService {
     @Transactional
     public boolean checkTotalSchedule(User user) {
         long scheduleCount = scheduleRepository.countByUserId(user);
-
         Achieve achieve = achieveRepository.findByUser(user);
-        if (scheduleCount < 2 || achieve == null || achieve.getAchieveSix()) {
+        if (scheduleCount < 5 || achieve == null || achieve.getAchieveSix()) {
             return false;
         }
 

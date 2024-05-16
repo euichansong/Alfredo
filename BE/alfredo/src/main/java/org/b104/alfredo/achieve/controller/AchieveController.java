@@ -63,6 +63,25 @@ public class AchieveController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
+    // 첫번째 업적 - 총 수행시간
+    @PostMapping("/one")
+    public ResponseEntity<String> checkTimeAchieve(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            boolean isUpdated = achieveService.checkTimeTodo(uid);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.ok("Achievement not updated.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
     // 두번째 업적 - 첫 ical 등록
     @PostMapping("/two")
     public ResponseEntity<String> checkFirstIcal(@RequestHeader(value = "Authorization") String authHeader) {
@@ -76,7 +95,7 @@ public class AchieveController {
             if (isUpdated) {
                 return ResponseEntity.ok("Achievement status updated successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+                return ResponseEntity.ok("Achievement not updated.");
             }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
@@ -95,7 +114,7 @@ public class AchieveController {
             if (isUpdated) {
                 return ResponseEntity.ok("Achievement status updated successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+                return ResponseEntity.ok("Achievement not updated.");
             }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
@@ -115,7 +134,7 @@ public class AchieveController {
             if (isUpdated) {
                 return ResponseEntity.ok("Achievement status updated successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+                return ResponseEntity.ok("Achievement not updated.");
             }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
@@ -135,7 +154,7 @@ public class AchieveController {
             if (isUpdated) {
                 return ResponseEntity.ok("Achievement status updated successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+                return ResponseEntity.ok("Achievement not updated.");
             }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
@@ -157,7 +176,7 @@ public class AchieveController {
             if (isUpdated) {
                 return ResponseEntity.ok("Achievement status updated successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+                return ResponseEntity.ok("Achievement not updated.");
             }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
@@ -179,7 +198,7 @@ public class AchieveController {
             if (isUpdated) {
                 return ResponseEntity.ok("Achievement status updated successfully.");
             } else {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Achievement not updated. Conditions not met.");
+                return ResponseEntity.ok("Achievement not updated.");
             }
         } catch (Exception e) {
             log.error("Failed to update achievement status", e);
