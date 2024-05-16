@@ -22,4 +22,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     Schedule findByScheduleId(Long id);
     List<Schedule> findByEndDateBefore(LocalDate date);
 
+    long countByUserId(User user);
 }

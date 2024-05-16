@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface RoutineRepository extends JpaRepository<Routine,Long> {
     List<Routine> findByUserUserIdOrderByStartTimeAsc(Long userId);
+
+    long countByUserUserId(Long userId);
 }

@@ -164,6 +164,43 @@ public class FCMAlarmService {
         return objectMapper.writeValueAsString(fcmMessage);
     }
 
+    // 실제 FCM 메시지를 구성하고 전송하는 메소드
+    public void sendMessageToAchieve(String targetToken, String title, String body) throws IOException {
+        String message = makeMessageAchieve(targetToken, title, body);
+
+        OkHttpClient client = new OkHttpClient();
+        MediaType mediaType = MediaType.get("application/json; charset=utf-8");
+        RequestBody requestBody = RequestBody.create(message, mediaType);
+
+        Request request = new Request.Builder()
+                .url(API_URL)
+                .post(requestBody)
+                .addHeader("Authorization", "Bearer " + getAccessToken())
+                .addHeader("Content-Type", "application/json; charset=utf-8")
+                .build();
+
+        try (Response response = client.newCall(request).execute()) {
+            System.out.println(response.isSuccessful() ? response.body().string() : "Failed with status: " + response.code());
+        }
+    }
+
+    // FCM 메시지 형식을 생성하는 메소드
+    private String makeMessageAchieve(String targetToken, String title, String body) throws JsonParseException, IOException {
+        FcmMessage fcmMessage = FcmMessage.builder()
+                .message(FcmMessage.Message.builder()
+                        .token(targetToken)
+                        .notification(FcmMessage.Notification.builder()
+                                .title(title)
+                                .body(body + "업적을 달성하셨습니다!!")
+                                .image(null)
+                                .build())
+                        .build())
+                .validateOnly(false)
+                .build();
+
+        return objectMapper.writeValueAsString(fcmMessage);
+    }
+
     // Google API 토큰을 얻는 메소드
     private String getAccessToken() throws IOException {
         GoogleCredentials googleCredentials = GoogleCredentials
