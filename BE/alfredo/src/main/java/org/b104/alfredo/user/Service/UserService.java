@@ -11,6 +11,7 @@ import org.b104.alfredo.user.Dto.*;
 import org.b104.alfredo.user.Repository.*;
 import org.b104.alfredo.user.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -34,6 +35,9 @@ public class UserService {
 
     @Autowired
     private SurveyRepository surveyRepository;
+
+    @Value("${flask.url}")
+    private String flaskUrl;
 
 
     public User createUser(UserCreateDto userCreateDto) {
@@ -63,7 +67,7 @@ public class UserService {
 
     public User updateUser(String uid, UserUpdateDto userUpdateDto) {
         User user = userRepository.findByUid(uid).orElseThrow(() ->
-                new NoSuchElementException("User not found with uid: " + uid));
+                new NoSuchElementException("user not found: " + uid));
 
         UserUpdateDto.updateEntity(user, userUpdateDto);
         return userRepository.save(user);
@@ -112,21 +116,18 @@ public class UserService {
         map.put("question5", answers.get(4));
         map.put("userId", user.getUserId());
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(map, headers);
-        String url = "http://127.0.0.1:5000/recommend";
 
+        String url = flaskUrl + "/recommend";
         ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
-        Long similarUserId = Long.parseLong(response.getBody());  // 문자열 응답을 Long으로 변환
-
-        System.out.println("Similar User ID: " + similarUserId);
+        Long similarUserId = Long.parseLong(response.getBody());
 
         List<Routine> routines = routineRepository.findByUserUserIdOrderByStartTimeAsc(similarUserId);
-        List<Long> uniqueBasicRoutineIds = routines.stream()
+        Set<Long> uniqueBasicRoutineIds = routines.stream()
                 .filter(routine -> routine.getBasicRoutine() != null)
                 .map(routine -> routine.getBasicRoutine().getId())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
-        return new RecommendRoutineDto(uniqueBasicRoutineIds);
+        return new RecommendRoutineDto(new ArrayList<>(uniqueBasicRoutineIds));
     }
-
 
 }
