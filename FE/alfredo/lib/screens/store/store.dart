@@ -1,6 +1,8 @@
 import 'package:alfredo/provider/coin/coin_provider.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:alfredo/provider/store/store_provider.dart';
 
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({super.key});
@@ -20,28 +22,97 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Shop'),
+        backgroundColor: const Color(0xFF0D2338),
+        foregroundColor: Colors.white,
       ),
       body: Stack(
         children: [
+          Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/storebackground.png'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildShopItem(0, 'background'),
-                    const SizedBox(width: 20),
-                    _buildShopItem(1, 'background'),
-                  ],
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Text(
+                    '배경 구매',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildShopItem(0, 'character'),
-                    const SizedBox(width: 20),
-                    _buildShopItem(1, 'character'),
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 200,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.33,
+                    initialPage: 0,
+                    enableInfiniteScroll: false,
+                    reverse: false,
+                    autoPlay: false,
+                    autoPlayInterval: const Duration(seconds: 3),
+                    autoPlayAnimationDuration:
+                        const Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    onPageChanged: (index, reason) {},
+                    scrollDirection: Axis.horizontal,
+                  ),
+                  items: [
+                    _buildShopItem(0, 'background', 'assets/mainback1.png'),
+                    _buildShopItem(1, 'background', 'assets/officemain.png'),
+                  ],
+                ),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: const Text(
+                    '캐릭터 구매',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                CarouselSlider(
+                  options: CarouselOptions(
+                    height: 200,
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.33,
+                    initialPage: 0,
+                    enableInfiniteScroll: false,
+                    reverse: false,
+                    autoPlay: false,
+                    autoPlayInterval: const Duration(seconds: 3),
+                    autoPlayAnimationDuration:
+                        const Duration(milliseconds: 800),
+                    autoPlayCurve: Curves.fastOutSlowIn,
+                    enlargeCenterPage: true,
+                    onPageChanged: (index, reason) {},
+                    scrollDirection: Axis.horizontal,
+                  ),
+                  items: [
+                    _buildShopItem(0, 'character', 'assets/alfrecopy.png'),
+                    _buildShopItem(1, 'character', 'assets/catmancopy.png'),
                   ],
                 ),
               ],
@@ -55,17 +126,24 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 final coinCount = ref.watch(coinProvider);
                 return coinCount.when(
                     data: (data) {
-                      return Row(
-                        children: [
-                          const Icon(Icons.monetization_on,
-                              color: Colors.amber, size: 24),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${data.totalCoin}',
-                            style: const TextStyle(
-                                fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15),
+                          color: Colors.white,
+                        ),
+                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.monetization_on,
+                                color: Colors.amber, size: 24),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${data.totalCoin}',
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       );
                     },
                     error: (err, stack) => Text('Error: $err'),
@@ -78,7 +156,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     );
   }
 
-  Widget _buildShopItem(int index, String type) {
+  Widget _buildShopItem(int index, String type, String background) {
     List<bool> items =
         type == 'background' ? purchasedBackground : purchasedCharacter;
     int? selectedIndex =
@@ -95,16 +173,9 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
               height: 110,
               decoration: BoxDecoration(
                 color: selectedIndex == index
-                    ? Colors.green[100]
-                    : Colors.blue[100],
+                    ? const Color(0xFFE7D8BC)
+                    : const Color(0xFFD9D9D9),
                 borderRadius: BorderRadius.circular(15),
-              ),
-              child: Center(
-                child: Text(
-                  'Item ${index + 1}',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
-                ),
               ),
             ),
             Container(
@@ -112,9 +183,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
               height: 100,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                image: const DecorationImage(
-                  image: AssetImage('assets/mainback1.png'),
-                  fit: BoxFit.cover,
+                image: DecorationImage(
+                  // ignore: unnecessary_string_interpolations
+                  image: AssetImage(background),
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
@@ -186,6 +258,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     );
                   }
                 },
+          style: ElevatedButton.styleFrom(
+            disabledBackgroundColor: const Color(0xFFE0E0E0),
+            foregroundColor: const Color(0xFF0D2338),
+          ),
           child: Text(items[index] ? '선택' : '\$1 구매'),
         ),
       ],
