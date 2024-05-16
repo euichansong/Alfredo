@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
 import '../tts/tts_page.dart';
 import '../achieve/achieve_detail_screen.dart'; // AchieveDetailScreen import
+import '../coin/coin_detail_screen.dart'; // CoinDetailScreen import
 import '../../provider/achieve/achieve_provider.dart'; // achieveProvider import
+import '../../provider/coin/coin_provider.dart';
 
 class MainPage extends ConsumerStatefulWidget {
   const MainPage({super.key});
@@ -73,6 +75,26 @@ class _MainPageState extends ConsumerState<MainPage> {
               child: const Icon(Icons.star),
             ),
           ),
+          // 코인 화면으로 이동하는 버튼
+          // Positioned(
+          //   top: MediaQuery.of(context).size.height * 0.2,
+          //   left: MediaQuery.of(context).size.width * 0.5 -
+          //       30, // 버튼의 절반 너비를 빼서 중앙으로 위치시킴
+          //   child: FloatingActionButton(
+          //     onPressed: () async {
+          //       // 코인 데이터를 새로고침
+          //       ref.refresh(coinProvider);
+          //       // 코인 화면으로 이동
+          //       Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) => const CoinDetailScreen()),
+          //       );
+          //     },
+          //     backgroundColor: Colors.green,
+          //     child: const Icon(Icons.monetization_on),
+          //   ),
+          // ),
         ],
       ),
     );
