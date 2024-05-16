@@ -90,10 +90,6 @@ class AchieveDetailScreen extends ConsumerWidget {
 
   Widget _buildAchieveCard(
       String title, bool status, String description, DateTime? date) {
-    if (title == "5번째 업적") {
-      print('finishFive: $date');
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Stack(
