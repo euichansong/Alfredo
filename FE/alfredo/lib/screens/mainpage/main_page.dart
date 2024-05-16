@@ -26,7 +26,7 @@ class _MainPageState extends ConsumerState<MainPage> {
     final String? lastCheckDate = prefs.getString('lastCheckDate');
     final String todayDate = DateTime.now().toString().substring(0, 10);
     //TODO !=로 변경
-    if (lastCheckDate != todayDate) {
+    if (lastCheckDate == todayDate) {
       final idToken = await ref.read(authManagerProvider.future);
       try {
         await ref.read(attendanceProvider).checkAttendance(idToken);
@@ -47,7 +47,18 @@ class _MainPageState extends ConsumerState<MainPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('이번 주 출석 현황'),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('이번 주 출석 현황'),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
           content: Container(
             constraints: const BoxConstraints(
               maxHeight: 200, // 모달의 최대 높이를 설정
@@ -62,14 +73,6 @@ class _MainPageState extends ConsumerState<MainPage> {
               ],
             ),
           ),
-          // actions: [
-          //   TextButton(
-          //     child: const Text('닫기'),
-          //     onPressed: () {
-          //       Navigator.of(context).pop();
-          //     },
-          //   ),
-          // ],
         );
       },
     );
