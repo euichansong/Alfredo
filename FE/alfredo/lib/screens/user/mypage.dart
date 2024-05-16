@@ -8,7 +8,7 @@ import './user_update.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../controller/user/mute_controller.dart';
 import '../user/loading_screen.dart';
-import 'user_routine_test.dart';
+import '../achieve/achieve_detail_screen.dart';
 
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
@@ -47,18 +47,49 @@ class MyPage extends ConsumerWidget {
         data: (user) => ListView(
           padding: const EdgeInsets.only(top: 30),
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20.0, bottom: 26.0),
-                child: Text(
-                  user.nickname,
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
+            Padding(
+              padding:
+                  const EdgeInsets.only(left: 20.0, bottom: 26.0, right: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    user.nickname,
+                    style: const TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
                   ),
-                ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const AchieveDetailScreen(),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      children: [
+                        Icon(
+                          Icons.emoji_events_outlined,
+                          size: 40,
+                          color: Colors.amber,
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          '업적',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xfff0d2338),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             Container(
