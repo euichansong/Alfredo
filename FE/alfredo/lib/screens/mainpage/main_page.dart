@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
 import '../../provider/attendance/attendance_provider.dart';
@@ -21,11 +22,40 @@ class _MainPageState extends ConsumerState<MainPage> {
   }
 
   Future<void> _checkAttendance() async {
-    final idToken = await ref.read(authManagerProvider.future);
-    ref.read(attendanceProvider).checkAttendance(idToken).catchError((error) {
-      // 오류 처리
-      print('Failed to check attendance: $error');
-    });
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? lastCheckDate = prefs.getString('lastCheckDate');
+    final String todayDate = DateTime.now().toString().substring(0, 10);
+
+    if (lastCheckDate != todayDate) {
+      final idToken = await ref.read(authManagerProvider.future);
+      try {
+        await ref.read(attendanceProvider).checkAttendance(idToken);
+        await prefs.setString('lastCheckDate', todayDate);
+        _showAttendanceModal();
+      } catch (error) {
+        print('Failed to check attendance: $error');
+      }
+    }
+  }
+
+  void _showAttendanceModal() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('출석 체크 완료'),
+          content: const Text('오늘의 출석이 완료되었습니다!'),
+          actions: [
+            TextButton(
+              child: const Text('닫기'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
