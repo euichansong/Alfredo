@@ -20,7 +20,7 @@ class TodoTabView extends ConsumerWidget {
             labelColor: Colors.white, // 선택된 탭의 텍스트 색상
             unselectedLabelColor: Colors.white70, // 선택되지 않은 탭의 텍스트 색상
             tabs: [
-              Tab(icon: Icon(Icons.add), text: '단일 할 일'),
+              Tab(icon: Icon(Icons.add), text: '할 일'),
               Tab(icon: Icon(Icons.repeat), text: '반복 할 일'),
             ],
           ),

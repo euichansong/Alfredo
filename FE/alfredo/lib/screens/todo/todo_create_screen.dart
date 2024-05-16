@@ -86,7 +86,7 @@ class _TodoCreateScreenState extends ConsumerState<TodoCreateScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.calendar_today),
-              title: Text('마감 기한: ${DateFormat('yyyy-MM-dd').format(dueDate)}'),
+              title: Text('날짜: ${DateFormat('yyyy-MM-dd').format(dueDate)}'),
               onTap: () => _selectDueDate(context),
             ),
             TextFormField(
