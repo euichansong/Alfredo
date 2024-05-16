@@ -101,22 +101,29 @@ class _MainPageState extends ConsumerState<MainPage> {
       attendanceWidgets.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
-          child: Column(
+          child: Stack(
+            alignment: Alignment.center,
             children: [
               CircleAvatar(
                 radius: 16,
-                backgroundColor:
-                    attended ? Colors.blueAccent : Colors.grey[300],
+                backgroundColor: attended
+                    ? Colors.blueAccent.withOpacity(0.8)
+                    : Colors.grey[300],
                 child: Text(
                   daysOfWeek[day.weekday]!,
                   style: TextStyle(
-                    color: attended ? Colors.white : Colors.black,
+                    color: attended ? Colors.blueAccent : Colors.black,
                     fontWeight: FontWeight.bold,
                     fontSize: 12,
                   ),
                 ),
               ),
-              // const SizedBox(height: 4),
+              if (attended)
+                Icon(
+                  Icons.check,
+                  color: Colors.white.withOpacity(0.8),
+                  size: 16,
+                ),
             ],
           ),
         ),
