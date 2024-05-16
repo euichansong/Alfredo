@@ -15,4 +15,6 @@ public interface DayRepository extends JpaRepository<Day, Long> {
     Optional<Day> findByUidAndDayIndex(String uid, int dayIndex);
 
     List<Day> findAllByUid(String uid);
+
+    long countByUid(String uid);
 }

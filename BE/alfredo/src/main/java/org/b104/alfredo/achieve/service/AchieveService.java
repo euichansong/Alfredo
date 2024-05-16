@@ -6,6 +6,7 @@ import org.b104.alfredo.achieve.repository.AchieveRepository;
 import org.b104.alfredo.achieve.response.AchieveDetailDto;
 import org.b104.alfredo.coin.domain.Coin;
 import org.b104.alfredo.coin.repository.CoinRepository;
+import org.b104.alfredo.firebase.service.FCMAlarmService;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.repository.RoutineRepository;
 import org.b104.alfredo.schedule.domain.Schedule;
@@ -20,6 +21,7 @@ import org.b104.alfredo.user.Service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Calendar;
@@ -38,6 +40,7 @@ public class AchieveService {
     private final CoinRepository coinRepository;
     private final UserService userService;
     private final DayRepository dayRepository;
+    private final FCMAlarmService fcmAlarmService;
 
     // LocalDate를 Date로 변환하는 유틸리티 메서드
     private Date convertToDate(LocalDate localDate) {
@@ -83,30 +86,43 @@ public class AchieveService {
     }
 
     // 두번째 업적 - 첫 ical 등록
+    @Transactional
     public boolean checkFirstIcal(User user) {
         Achieve achieve = achieveRepository.findByUser(user);
-
-        if (user.getGoogleCalendarUrl() == null || achieve == null || achieve.getAchieveTwo()) {
+        // 사용자가 두 번째 업적을 이미 달성한 경우 false 반환
+        if (achieve.getAchieveTwo()) {
             return false;
         }
 
+        // 사용자가 Google Calendar URL을 등록하지 않았거나 업적 기록이 없는 경우 false 반환
+        if (user.getGoogleCalendarUrl() == null) {
+            return false;
+        }
+        // 두 번째 업적을 달성한 경우 업적 업데이트 및 코인 추가
         achieve.updateAchieveTwo(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
         }
+
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "2번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
     // 3번째 업적 - day 풀 참가
     @Transactional
     public boolean checkWeekendTodo(String uid) {
-        List<Day> weekend = dayRepository.findAllByUid(uid);
+        long dayCount = dayRepository.countByUid(uid);
         User user = userService.getUserByUid(uid);
 
-        int count = weekend.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        if (count < 7 || achieve == null || achieve.getAchieveThree()) {
+        if (dayCount < 7 || achieve == null || achieve.getAchieveThree()) {
             return false;
         }
 
@@ -115,17 +131,23 @@ public class AchieveService {
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
         }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "3번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
     // 4번째 업적 - 총 루틴 갯수
     @Transactional
     public boolean checkTotalRoutine(User user) {
-        List<Routine> routines = routineRepository.findByUserUserIdOrderByStartTimeAsc(user.getUserId());
+        long routineCount = routineRepository.countByUserUserId(user.getUserId());
 
-        int count = routines.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        if (count < 2 || achieve == null || achieve.getAchieveFour()) {
+        if (routineCount < 2 || achieve == null || achieve.getAchieveFour()) {
             return false;
         }
 
@@ -134,18 +156,42 @@ public class AchieveService {
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
         }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "4번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
-
+    // 4번째 업적
+    // 리스트로 사용하지 않고 count함수 사용하기
+//    @Transactional
+//    public boolean checkTotalRoutine(User user) {
+//        List<Routine> routines = routineRepository.findByUserUserIdOrderByStartTimeAsc(user.getUserId());
+//
+//        int count = routines.size();
+//        Achieve achieve = achieveRepository.findByUser(user);
+//        if (count < 2 || achieve == null || achieve.getAchieveFour()) {
+//            return false;
+//        }
+//
+//        achieve.updateAchieveFour(true, convertToDate(LocalDate.now()));
+//        Coin coin = coinRepository.findByUserId(user);
+//        if (coin != null) {
+//            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+//        }
+//        return true;
+//    }
     // 5번째 업적 - 총 투두 갯수
     @Transactional
     public boolean checkTotalTodo(String uid) {
-        List<Todo> todos = todoRepository.findAllByUid(uid);
+        long todoCount = todoRepository.countByUid(uid);
         User user = userService.getUserByUid(uid);
 
-        int count = todos.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        if (count < 2 || achieve == null || achieve.getAchieveFive()) {
+        if (todoCount < 2 || achieve == null || achieve.getAchieveFive()) {
             return false;
         }
 
@@ -154,17 +200,23 @@ public class AchieveService {
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
         }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "5번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
     // 6번째 업적 체크 로직 - 총 일정의 갯수
     @Transactional
     public boolean checkTotalSchedule(User user) {
-        List<Schedule> schedules = scheduleRepository.findByUserId(user);
+        long scheduleCount = scheduleRepository.countByUserId(user);
 
-        int count = schedules.size();
         Achieve achieve = achieveRepository.findByUser(user);
-        if (count < 2 || achieve == null || achieve.getAchieveSix()) {
+        if (scheduleCount < 2 || achieve == null || achieve.getAchieveSix()) {
             return false;
         }
 
@@ -173,6 +225,13 @@ public class AchieveService {
         if (coin != null) {
             coin.updateTotalCoin(coin.getTotalCoin() + 10);
         }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "6번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 
@@ -203,6 +262,13 @@ public class AchieveService {
             if (coin != null) {
                 coin.updateTotalCoin(coin.getTotalCoin() + 10);
             }
+            // FCM 알림 전송
+            try {
+                fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "9번째 ");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             return true;
         }
 
