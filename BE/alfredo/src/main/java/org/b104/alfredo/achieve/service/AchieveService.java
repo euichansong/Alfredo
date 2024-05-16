@@ -113,6 +113,29 @@ public class AchieveService {
         return true;
     }
 
+    // 첫번째 업적 - 총 시간 합계 - 백엔드에서 체크
+    @Transactional
+    public boolean checkTime(String uid) {
+
+        User user = userService.getUserByUid(uid);
+        Achieve achieve = achieveRepository.findByUser(user);
+        if (achieve.getAchieveOne()) {
+            return false;
+        }
+        achieve.updateAchieveOne(true, convertToDate(LocalDate.now()));
+        Coin coin = coinRepository.findByUserId(user);
+        if (coin != null) {
+            coin.updateTotalCoin(coin.getTotalCoin() + 10);
+        }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "첫번째 ");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
     // 두번째 업적 - 첫 ical 등록
     @Transactional
     public boolean checkFirstIcal(User user) {
