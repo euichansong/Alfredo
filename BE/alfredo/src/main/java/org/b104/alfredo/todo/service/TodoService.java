@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import lombok.extern.slf4j.Slf4j;
+import org.b104.alfredo.achieve.service.AchieveService;
 import org.b104.alfredo.todo.domain.Day;
 import org.b104.alfredo.todo.domain.OldTodo;
 import org.b104.alfredo.todo.domain.Time;
@@ -44,6 +45,7 @@ public class TodoService {
     private final OldTodoRepository oldTodoRepository;
     private final DayRepository dayRepository;
     private final TimeRepository timeRepository;
+    private  final AchieveService achieveService;
 
 
     @Transactional
@@ -206,7 +208,9 @@ public class TodoService {
             time.setSumTime(timeDifference);
             timeRepository.save(time);
         }
-//        if (time.getSumTime() > 30)
+        if (time.getSumTime() > 30) {
+            achieveService.checkTime(uid);
+        }
 
     }
 
