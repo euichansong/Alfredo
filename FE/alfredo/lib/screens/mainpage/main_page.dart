@@ -25,37 +25,105 @@ class _MainPageState extends ConsumerState<MainPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? lastCheckDate = prefs.getString('lastCheckDate');
     final String todayDate = DateTime.now().toString().substring(0, 10);
-
+    //TODO !=로 변경
     if (lastCheckDate != todayDate) {
       final idToken = await ref.read(authManagerProvider.future);
       try {
         await ref.read(attendanceProvider).checkAttendance(idToken);
+        print("여기 실행 중");
         await prefs.setString('lastCheckDate', todayDate);
-        _showAttendanceModal();
+        List<DateTime> attendanceHistory = await ref
+            .read(attendanceProvider)
+            .getAttendanceForCurrentWeek(idToken);
+        _showAttendanceModal(attendanceHistory);
       } catch (error) {
         print('Failed to check attendance: $error');
       }
     }
   }
 
-  void _showAttendanceModal() {
+  void _showAttendanceModal(List<DateTime> attendanceHistory) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('출석 체크 완료'),
-          content: const Text('오늘의 출석이 완료되었습니다!'),
-          actions: [
-            TextButton(
-              child: const Text('닫기'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+          title: const Text('이번 주 출석 현황'),
+          content: Container(
+            constraints: const BoxConstraints(
+              maxHeight: 200, // 모달의 최대 높이를 설정
             ),
-          ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: _buildAttendanceList(attendanceHistory),
+                ),
+              ],
+            ),
+          ),
+          // actions: [
+          //   TextButton(
+          //     child: const Text('닫기'),
+          //     onPressed: () {
+          //       Navigator.of(context).pop();
+          //     },
+          //   ),
+          // ],
         );
       },
     );
+  }
+
+  List<Widget> _buildAttendanceList(List<DateTime> attendanceHistory) {
+    List<Widget> attendanceWidgets = [];
+    Map<int, String> daysOfWeek = {
+      DateTime.sunday: "일",
+      DateTime.monday: "월",
+      DateTime.tuesday: "화",
+      DateTime.wednesday: "수",
+      DateTime.thursday: "목",
+      DateTime.friday: "금",
+      DateTime.saturday: "토"
+    };
+
+    DateTime now = DateTime.now();
+    DateTime startOfWeek = now.subtract(Duration(days: now.weekday % 7));
+    for (int i = 0; i < 7; i++) {
+      DateTime day = startOfWeek.add(Duration(days: i));
+      bool attended = attendanceHistory.any((date) =>
+          date.year == day.year &&
+          date.month == day.month &&
+          date.day == day.day);
+      attendanceWidgets.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: Column(
+            children: [
+              CircleAvatar(
+                radius: 16,
+                backgroundColor:
+                    attended ? Colors.blueAccent : Colors.grey[300],
+                child: Icon(
+                  attended ? Icons.check : Icons.close,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                daysOfWeek[day.weekday]!,
+                style: TextStyle(
+                  color: attended ? Colors.blueAccent : Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return attendanceWidgets;
   }
 
   @override
