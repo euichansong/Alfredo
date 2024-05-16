@@ -65,7 +65,7 @@ class _MainPageState extends ConsumerState<MainPage> {
             top: MediaQuery.of(context).size.height * 0.05,
             left: MediaQuery.of(context).size.height * 0,
             right: MediaQuery.of(context).size.height * 0,
-            bottom: MediaQuery.of(context).size.height * 0,
+            bottom: MediaQuery.of(context).size.height * 0.07,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: SizedBox(

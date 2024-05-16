@@ -1,22 +1,19 @@
+import 'package:alfredo/provider/coin/coin_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ShopScreen extends StatefulWidget {
+class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({super.key});
 
   @override
   _ShopScreenState createState() => _ShopScreenState();
 }
 
-class _ShopScreenState extends State<ShopScreen> {
-  List<bool> purchasedItems = [false, false, false, false];
-  int coinCount = 100;
-
-  void _purchaseItem(int index) {
-    setState(() {
-      purchasedItems[index] = true;
-      coinCount -= 10; // Each item costs 10 coins
-    });
-  }
+class _ShopScreenState extends ConsumerState<ShopScreen> {
+  List<bool> purchasedBackground = [false, false];
+  List<bool> purchasedCharacter = [false, false];
+  int? selectedBackgroundIndex;
+  int? selectedCharacterIndex;
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +30,18 @@ class _ShopScreenState extends State<ShopScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildShopItem(0),
+                    _buildShopItem(0, 'background'),
                     const SizedBox(width: 20),
-                    _buildShopItem(1),
+                    _buildShopItem(1, 'background'),
                   ],
                 ),
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildShopItem(2),
+                    _buildShopItem(0, 'character'),
                     const SizedBox(width: 20),
-                    _buildShopItem(3),
+                    _buildShopItem(1, 'character'),
                   ],
                 ),
               ],
@@ -53,17 +50,27 @@ class _ShopScreenState extends State<ShopScreen> {
           Positioned(
             top: 16,
             right: 16,
-            child: Row(
-              children: [
-                const Icon(Icons.monetization_on,
-                    color: Colors.amber, size: 24),
-                const SizedBox(width: 4),
-                Text(
-                  '$coinCount',
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
+            child: Consumer(
+              builder: (context, watch, child) {
+                final coinCount = ref.watch(coinProvider);
+                return coinCount.when(
+                    data: (data) {
+                      return Row(
+                        children: [
+                          const Icon(Icons.monetization_on,
+                              color: Colors.amber, size: 24),
+                          const SizedBox(width: 4),
+                          Text(
+                            '${data.totalCoin}',
+                            style: const TextStyle(
+                                fontSize: 24, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      );
+                    },
+                    error: (err, stack) => Text('Error: $err'),
+                    loading: () => const CircularProgressIndicator());
+              },
             ),
           ),
         ],
@@ -71,7 +78,12 @@ class _ShopScreenState extends State<ShopScreen> {
     );
   }
 
-  Widget _buildShopItem(int index) {
+  Widget _buildShopItem(int index, String type) {
+    List<bool> items =
+        type == 'background' ? purchasedBackground : purchasedCharacter;
+    int? selectedIndex =
+        type == 'background' ? selectedBackgroundIndex : selectedCharacterIndex;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -79,10 +91,12 @@ class _ShopScreenState extends State<ShopScreen> {
           alignment: Alignment.center,
           children: [
             Container(
-              width: 100,
-              height: 100,
+              width: 110,
+              height: 110,
               decoration: BoxDecoration(
-                color: Colors.blue[100],
+                color: selectedIndex == index
+                    ? Colors.green[100]
+                    : Colors.blue[100],
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Center(
@@ -93,7 +107,18 @@ class _ShopScreenState extends State<ShopScreen> {
                 ),
               ),
             ),
-            if (!purchasedItems[index])
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                image: const DecorationImage(
+                  image: AssetImage('assets/mainback1.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            if (!items[index])
               Container(
                 width: 100,
                 height: 100,
@@ -107,12 +132,61 @@ class _ShopScreenState extends State<ShopScreen> {
                   color: Colors.white,
                 ),
               ),
+            if (selectedIndex == index)
+              Container(
+                width: 100,
+                height: 100,
+                decoration: BoxDecoration(
+                  color: Colors.black54.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  size: 40,
+                  color: Colors.white,
+                ),
+              ),
           ],
         ),
         const SizedBox(height: 10),
         ElevatedButton(
-          onPressed: purchasedItems[index] ? null : () => _purchaseItem(index),
-          child: Text(purchasedItems[index] ? 'Purchased' : 'Purchase'),
+          onPressed: items[index]
+              ? type == 'background'
+                  ? selectedBackgroundIndex == index
+                      ? null
+                      : () {
+                          setState(() {
+                            selectedBackgroundIndex = index;
+                          });
+                        }
+                  : selectedCharacterIndex == index
+                      ? null
+                      : () {
+                          setState(() {
+                            selectedCharacterIndex = index;
+                          });
+                        }
+              : () async {
+                  var coin =
+                      await ref.read(coinControllerProvider).getCoinDetail();
+                  if (coin.totalCoin >= 1) {
+                    // ref.read(coinControllerProvider).incrementCoin();
+                    // ref.read(coinControllerProvider).decrementTotalCoin(1);
+                    setState(() {
+                      items[index] = true;
+                      if (type == 'background') {
+                        selectedBackgroundIndex = index;
+                      } else {
+                        selectedCharacterIndex = index;
+                      }
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('코인 갯수가 적습니다.')),
+                    );
+                  }
+                },
+          child: Text(items[index] ? '선택' : '\$1 구매'),
         ),
       ],
     );
