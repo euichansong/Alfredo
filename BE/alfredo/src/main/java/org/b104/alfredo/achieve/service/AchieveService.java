@@ -89,7 +89,7 @@ public class AchieveService {
         return new AchieveDetailDto(achieve);
     }
 
-    // 첫번째 업적 - 총 시간 합계
+    // 첫번째 업적 - 총 시간 합계 - todoservice의 updateSumTime도 값 변경시 같이 수정 필!!
     @Transactional
     public boolean checkTimeTodo(String uid) {
         Time time = timeRepository.findByUid(uid);
@@ -202,7 +202,7 @@ public class AchieveService {
         long routineCount = routineRepository.countByUserUserId(user.getUserId());
         System.out.println(routineCount);
         Achieve achieve = achieveRepository.findByUser(user);
-        if (routineCount < 5 || achieve == null || achieve.getAchieveFour()) {
+        if (routineCount < 15 || achieve == null || achieve.getAchieveFour()) {
             return false;
         }
 
@@ -247,7 +247,7 @@ public class AchieveService {
         User user = userService.getUserByUid(uid);
 
         Achieve achieve = achieveRepository.findByUser(user);
-        if (todoCount < 10 || achieve == null || achieve.getAchieveFive()) {
+        if (todoCount < 15 || achieve == null || achieve.getAchieveFive()) {
             return false;
         }
 
