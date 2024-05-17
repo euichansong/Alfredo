@@ -9,7 +9,7 @@ final attendanceProvider = Provider((ref) => AttendanceService());
 class AttendanceService {
   static final String baseUrl = dotenv.get("ATTENDANCE_API_URL");
   Future<void> checkAttendance(String? authToken) async {
-    print("출석provider 실행중");
+    // print("출석provider 실행중");
     final url = Uri.parse('$baseUrl/check');
     final response = await http.post(
       url,

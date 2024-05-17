@@ -28,13 +28,13 @@ class RoutineApi {
     if (response.statusCode == 200) {
       final decodedBody = utf8.decode(response.bodyBytes);
       final List<dynamic> routines = jsonDecode(decodedBody);
-      print('잘 읽어왔어용');
+      // print('잘 읽어왔어용');
       return routines.map((routine) => Routine.fromJson(routine)).toList();
       // return (json.decode(decodedBody) as List)
       //     .map((data) => Routine.fromJson(data))
       //     .toList();
     } else {
-      print('못읽었어용');
+      // print('못읽었어용');
       throw Exception('Failed to load routines: ${response.statusCode}');
     }
   }
@@ -46,10 +46,10 @@ class RoutineApi {
 
     if (response.statusCode == 200) {
       final decodedBody = utf8.decode(response.bodyBytes);
-      print('잘 읽어왔어용');
+      // print('잘 읽어왔어용');
       return Routine.fromJson(json.decode(decodedBody));
     } else {
-      print('못읽었어용');
+      // print('못읽었어용');
       throw Exception('Failed to load routine: ${response.statusCode}');
     }
   }
@@ -98,12 +98,12 @@ class RoutineApi {
 
   // 일정 삭제
   Future<void> deleteRoutine(int routineId) async {
-    print("삭제");
+    // print("삭제");
     final url = Uri.parse('$baseUrl/$routineId');
     final response = await http.delete(url);
 
     if (response.statusCode != 200 && response.statusCode != 204) {
-      print('Failed to delete. Status: ${response.statusCode}');
+      // print('Failed to delete. Status: ${response.statusCode}');
       throw Exception('Failed to delete routine: ${response.statusCode}');
     }
   }
@@ -129,13 +129,13 @@ class RoutineApi {
       );
 
       if (response.statusCode == 200) {
-        print("Routine updated successfully.");
+        // print("Routine updated successfully.");
       } else {
-        print('Failed to update routine: ${response.body}');
+        // print('Failed to update routine: ${response.body}');
         throw Exception('Failed to update routine');
       }
     } catch (e) {
-      print('Error updating routine: $e');
+      // print('Error updating routine: $e');
       throw Exception('Error updating routine');
     }
   }

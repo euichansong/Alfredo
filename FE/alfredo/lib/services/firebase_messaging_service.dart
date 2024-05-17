@@ -39,18 +39,18 @@ class FirebaseMessagingService {
 
     // FCM 토큰을 가져옵니다.
     deviceToken = await _messaging.getToken();
-    print('Firebase 메시징 토큰: $deviceToken');
+    // print('Firebase 메시징 토큰: $deviceToken');
 
     // 토큰이 있을 경우 서버로 전송
 
     // 포그라운드 상태에서 메시지 수신 리스너 등록
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('포그라운드에서 메시지 수신!');
-      print('메시지 데이터: ${message.data}');
+      // print('포그라운드에서 메시지 수신!');
+      // print('메시지 데이터: ${message.data}');
 
       if (message.notification != null) {
-        print(
-            '알림 포함 메시지: 제목: ${message.notification!.title}, 본문: ${message.notification!.body}');
+        // print(
+        //     '알림 포함 메시지: 제목: ${message.notification!.title}, 본문: ${message.notification!.body}');
         _showNotification(
             message.notification!.title, message.notification!.body);
       }
@@ -61,9 +61,9 @@ class FirebaseMessagingService {
 
     // 알림 클릭 시 루틴 화면으로 이동
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('sj Message clicked!');
+      // print('sj Message clicked!');
       if (message.data['type'] == 'routine') {
-        print("routine sended");
+        // print("routine sended");
         // Navigator가 context 밖에서 사용할 수 없기 때문에 NavigationService를 이용하거나, MyApp에서 라우트 설정을 통해 처리해야 합니다.
         // 아래 코드를 MyApp의 _firebaseMessagingBackgroundHandler로 이동합니다.
       }
@@ -85,13 +85,13 @@ class FirebaseMessagingService {
   /// 백그라운드 메시지를 처리합니다.
   static Future<void> _firebaseMessagingBackgroundHandler(
       RemoteMessage message) async {
-    print("백그라운드 메시지 처리: 메시지 ID: ${message.messageId}");
+    // print("백그라운드 메시지 처리: 메시지 ID: ${message.messageId}");
     if (message.data.isNotEmpty) {
-      print("백그라운드 메시지 데이터: ${message.data}");
+      // print("백그라운드 메시지 데이터: ${message.data}");
     }
     if (message.notification != null) {
-      print(
-          "백그라운드 알림: 제목: ${message.notification!.title}, 본문: ${message.notification!.body}");
+      // print(
+      //     "백그라운드 알림: 제목: ${message.notification!.title}, 본문: ${message.notification!.body}");
     }
   }
 }
