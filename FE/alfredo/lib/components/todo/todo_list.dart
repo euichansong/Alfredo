@@ -71,11 +71,11 @@ class _TodoListState extends ConsumerState<TodoList> {
                       ),
                       child: ListTile(
                         contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 30.0, vertical: 0.5),
+                            horizontal: 10.0, vertical: 0),
                         title: Text(
                           todo.todoTitle,
                           style: const TextStyle(
-                            fontSize: 18,
+                            fontSize: 12,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
                           maxLines: 2, // 최대 줄 수를 2로 설정
@@ -91,7 +91,7 @@ class _TodoListState extends ConsumerState<TodoList> {
                               _onTodoUpdated()); // 대화 상자가 닫힌 후 데이터를 갱신합니다.
                         },
                         trailing: Transform.scale(
-                          scale: 1.5,
+                          scale: 1.3,
                           child: Checkbox(
                             value: todo.isCompleted,
                             onChanged: (bool? newValue) {
