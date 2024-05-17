@@ -5,6 +5,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../provider/user/future_provider.dart';
+import '../../controller/achieve/achieve_controller.dart';
+import '../../provider/achieve/achieve_provider.dart';
 
 class ChartApi {
   static final String _baseUrl = dotenv.env['TODO_API_URL']!;
@@ -25,6 +27,7 @@ class ChartApi {
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
+        await _checkThirdAchievement(ref, data); // 3번째 업적 체크 로직 추가
         return List.generate(
             7,
             (index) => BarChartGroupData(x: index, barRods: [
@@ -37,6 +40,18 @@ class ChartApi {
       }
     } catch (e) {
       throw Exception('Error fetching data: $e');
+    }
+  }
+
+  static Future<void> _checkThirdAchievement(
+      WidgetRef ref, Map<String, dynamic> data) async {
+    if (data['6'] > 0) {
+      try {
+        final achieveController = ref.read(achieveControllerProvider);
+        await achieveController.checkWeekendAchieve();
+      } catch (e) {
+        print('Error checking third achievement: $e');
+      }
     }
   }
 }
