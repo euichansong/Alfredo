@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../../controller/user/mute_controller.dart';
 import '../user/loading_screen.dart';
 import '../achieve/achieve_detail_screen.dart';
+import 'package:workmanager/workmanager.dart';
 
 class MyPage extends ConsumerWidget {
   const MyPage({super.key});
@@ -187,6 +188,7 @@ class MyPage extends ConsumerWidget {
                         onPressed: () async {
                           try {
                             await FirebaseAuth.instance.signOut();
+                            await Workmanager().cancelAll(); // 백그라운드 작업 취소
                             print("Logged out");
                             Navigator.pushReplacementNamed(context, '/');
                           } catch (e) {
