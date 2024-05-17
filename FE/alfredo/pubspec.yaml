@@ -126,6 +126,8 @@ flutter:
     - assets/third_achieve.png
     - assets/fourth_achieve.png
     - assets/sixth_achieve.png
+    - assets/seventh_achieve.png
+    - assets/eighth_achieve.png
     - assets/alfre.png
 
   fonts:
