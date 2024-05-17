@@ -308,7 +308,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                       await ref.read(coinControllerProvider).getCoinDetail();
                   if (coin.totalCoin >= 1) {
                     // ref.read(coinControllerProvider).incrementCoin();
-                    // ref.read(coinControllerProvider).decrementTotalCoin(1);
+                    ref.read(coinControllerProvider).decrementTotalCoin(50);
 
                     items[index] = true;
                     if (type == 'background') {
@@ -334,7 +334,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             disabledBackgroundColor: const Color(0xFFE0E0E0),
             foregroundColor: const Color(0xFF0D2338),
           ),
-          child: Text(items[index] ? '선택' : '\$1 구매'),
+          child: Text(items[index] ? '선택' : '\$50 구매'),
         ),
       ],
     );

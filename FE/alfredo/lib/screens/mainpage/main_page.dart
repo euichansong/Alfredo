@@ -40,7 +40,6 @@ class _MainPageState extends ConsumerState<MainPage> {
       final idToken = await ref.read(authManagerProvider.future);
       try {
         await ref.read(attendanceProvider).checkAttendance(idToken);
-        print("여기 실행 중");
         await prefs.setString('lastCheckDate', todayDate);
         List<DateTime> attendanceHistory = await ref
             .read(attendanceProvider)
