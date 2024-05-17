@@ -1,9 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+
 import '../../models/achieve/achieve_model.dart';
 import '../../provider/achieve/achieve_provider.dart';
-import 'dart:ui';
-import 'package:intl/intl.dart';
 import '../user/loading_screen.dart';
 
 class AchieveDetailScreen extends ConsumerWidget {
@@ -65,14 +67,14 @@ class AchieveDetailScreen extends ConsumerWidget {
       {
         "title": "갓생살기",
         "status": achieve.achieveFour,
-        "description": "총 루틴 갯수 5개 이상 시 달성",
+        "description": "총 루틴 갯수 15개 이상 시 달성",
         "date": achieve.finishFour,
         "backgroundImage": "assets/fourth_achieve.png"
       },
       {
         "title": "당신은 T이십니까?",
         "status": achieve.achieveFive,
-        "description": "총 투두 갯수 10개 이상 시 달성",
+        "description": "총 투두 갯수 15개 이상 시 달성",
         "date": achieve.finishFive,
         "backgroundImage": "assets/todocat.png"
       },
