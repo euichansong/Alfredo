@@ -57,6 +57,9 @@ public class AttendanceServiceImpl implements AttendanceService {
                     attendanceRepository.save(attendance);
                 }
         );
+        // 9번째 업적 - 생일 업데이트 하고, 로그인한 오늘이 생일인 경우
+        achieveService.checkBirth(currentUser);
+
     }
 
 
