@@ -2,6 +2,7 @@ package org.b104.alfredo.attendance.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.b104.alfredo.achieve.service.AchieveService;
 import org.b104.alfredo.attendance.domain.Attendance;
 import org.b104.alfredo.attendance.repository.AttendanceRepository;
 import org.b104.alfredo.attendance.response.AttendanceDateDto;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 public class AttendanceServiceImpl implements AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final UserRepository userRepository;
+    private final AchieveService achieveService;
     @Override
     public void checkAttendance(String uid) {
         LocalDate today = LocalDate.now();
@@ -112,7 +114,10 @@ public class AttendanceServiceImpl implements AttendanceService {
             maxStreak = Math.max(maxStreak, currentStreak);
             lastDate = attendance.getDate();
         }
-
+        // 연속 6일이면 업적 달성
+        if (maxStreak > 5){
+            achieveService.checkChainAttendance(currentUser);
+        }
         return maxStreak;
     }
 
@@ -124,6 +129,13 @@ public class AttendanceServiceImpl implements AttendanceService {
         }
         User currentUser = user.get();
         Long userId = currentUser.getUserId();
-        return attendanceRepository.countByUserUserId(userId);
+        int countAttendance = attendanceRepository.countByUserUserId(userId);
+
+        // 8번째 업적 - 3일 이상 출석
+        if (countAttendance> 2){
+            achieveService.checkTotalAttendance(currentUser);
+        }
+
+        return countAttendance;
     }
 }

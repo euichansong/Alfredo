@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.b104.alfredo.achieve.domain.Achieve;
 import org.b104.alfredo.achieve.repository.AchieveRepository;
 import org.b104.alfredo.achieve.response.AchieveDetailDto;
+import org.b104.alfredo.attendance.repository.AttendanceRepository;
 import org.b104.alfredo.coin.domain.Coin;
 import org.b104.alfredo.coin.repository.CoinRepository;
 import org.b104.alfredo.firebase.service.FCMAlarmService;
@@ -35,7 +36,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AchieveService {
     private final AchieveRepository achieveRepository;
-    private final UserRepository userRepository;
     private final TodoRepository todoRepository;
     private final RoutineRepository routineRepository;
     private final ScheduleRepository scheduleRepository;
@@ -44,6 +44,7 @@ public class AchieveService {
     private final DayRepository dayRepository;
     private final FCMAlarmService fcmAlarmService;
     private final TimeRepository timeRepository;
+    private final AttendanceRepository attendanceRepository;
 
     // LocalDate를 Date로 변환하는 유틸리티 메서드
     private Date convertToDate(LocalDate localDate) {
@@ -140,15 +141,18 @@ public class AchieveService {
     @Transactional
     public boolean checkFirstIcal(User user) {
         Achieve achieve = achieveRepository.findByUser(user);
+
         // 사용자가 두 번째 업적을 이미 달성한 경우 false 반환
         if (achieve.getAchieveTwo()) {
             return false;
         }
 
         // 사용자가 Google Calendar URL을 등록하지 않았거나 업적 기록이 없는 경우 false 반환
-        if (user.getGoogleCalendarUrl() == null) {
+        String googleCalendarUrl = user.getGoogleCalendarUrl();
+        if (googleCalendarUrl == null || googleCalendarUrl.isEmpty()) {
             return false;
         }
+
         // 두 번째 업적을 달성한 경우 업적 업데이트 및 코인 추가
         achieve.updateAchieveTwo(true, convertToDate(LocalDate.now()));
         Coin coin = coinRepository.findByUserId(user);
@@ -216,6 +220,7 @@ public class AchieveService {
 
         return true;
     }
+
     // 4번째 업적
     // 리스트로 사용하지 않고 count함수 사용하기
 //    @Transactional
@@ -283,6 +288,54 @@ public class AchieveService {
         }
 
         return true;
+    }
+
+    // 7번째 업적 - 1주일에 6일 연속 출석
+    @Transactional
+    public boolean checkChainAttendance(User user) {
+        Achieve achieve = achieveRepository.findByUser(user);
+
+        if (achieve == null || achieve.getAchieveSeven()) {
+            return false;
+        }
+
+        achieve.updateAchieveSeven(true, convertToDate(LocalDate.now()));
+        Coin coin = coinRepository.findByUserId(user);
+        if (coin != null) {
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
+        }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "주 6일제");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+
+    }
+
+    // 8번째 업적 - 총 출석 일수 3일 이상
+    @Transactional
+    public boolean checkTotalAttendance(User user) {
+        Achieve achieve = achieveRepository.findByUser(user);
+
+        if (achieve == null || achieve.getAchieveEight()) {
+            return false;
+        }
+
+        achieve.updateAchieveEight(true, convertToDate(LocalDate.now()));
+        Coin coin = coinRepository.findByUserId(user);
+        if (coin != null) {
+            coin.updateTotalCoin(coin.getTotalCoin() + 50);
+        }
+        // FCM 알림 전송
+        try {
+            fcmAlarmService.sendMessageToAchieve(user.getFcmToken(), "업적 달성!", "한 분 두식이 석삼이");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+
     }
 
     // 9번째 업적 - 생일인 경우

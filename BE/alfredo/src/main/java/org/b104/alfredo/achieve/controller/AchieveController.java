@@ -184,6 +184,50 @@ public class AchieveController {
         }
     }
 
+    // 7번째 업적 - 1주일에 6일 연속 출석
+    @PostMapping("/seven")
+    public ResponseEntity<String> checkChainAtt(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            User user = userService.getUserByUid(uid);
+
+            boolean isUpdated = achieveService.checkChainAttendance(user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.ok("Achievement not updated.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    // 8번째 업적 - 총 출석 일수 6일
+    @PostMapping("/eight")
+    public ResponseEntity<String> checkTotalAtt(@RequestHeader(value = "Authorization") String authHeader) {
+        try {
+            String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+            FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+            String uid = decodedToken.getUid();
+
+            User user = userService.getUserByUid(uid);
+
+            boolean isUpdated = achieveService.checkTotalAttendance(user);
+            if (isUpdated) {
+                return ResponseEntity.ok("Achievement status updated successfully.");
+            } else {
+                return ResponseEntity.ok("Achievement not updated.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to update achievement status", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     // 9번째 업적 - 생일인 경우
     @PostMapping("/nine")
     public ResponseEntity<String> checkBirthAchieve(@RequestHeader(value = "Authorization") String authHeader) {
