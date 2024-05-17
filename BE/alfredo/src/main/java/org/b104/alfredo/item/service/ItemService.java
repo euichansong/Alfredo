@@ -26,7 +26,7 @@ public class ItemService {
         UserItemInventory userItemInventory = userItemInventoryRepository.findByUid(uid);
 
         if (userItemInventory == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new IllegalArgumentException("UserItemInventory not found");
         }
 
         ItemDto itemDto = new ItemDto();
@@ -46,7 +46,7 @@ public class ItemService {
         UserItemStatus userItemStatus = userItemStatusRepository.findByUid(uid);
 
         if (userItemStatus == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new IllegalArgumentException("UserItemStatus not found");
         }
 
         SelectDto selectDto = new SelectDto();
@@ -61,6 +61,10 @@ public class ItemService {
         String uid = decodedToken.getUid();
         UserItemStatus userItemStatus = userItemStatusRepository.findByUid(uid);
 
+        if (userItemStatus == null) {
+            throw new IllegalArgumentException("UserItemStatus not found");
+        }
+
         if (selectDto.getBackground() != null) {
             userItemStatus.setBackground(selectDto.getBackground());
         }
@@ -72,4 +76,32 @@ public class ItemService {
     }
 
 
+    public void buyItem(String authHeader, SelectDto selectDto) throws FirebaseAuthException {
+        String idToken = authHeader.startsWith("Bearer ") ? authHeader.substring(7) : authHeader;
+        FirebaseToken decodedToken = FirebaseAuth.getInstance().verifyIdToken(idToken);
+        String uid = decodedToken.getUid();
+        UserItemInventory userItemInventory = userItemInventoryRepository.findByUid(uid);
+
+        if (userItemInventory == null) {
+            throw new IllegalArgumentException("UserItemInventory not found");
+        }
+
+        if (selectDto.getBackground() != null) {
+            if (selectDto.getBackground() == 2) {
+                userItemInventory.setBackground2(true);
+            } else if (selectDto.getBackground() == 3) {
+                userItemInventory.setBackground3(true);
+            }
+        }
+
+        if (selectDto.getCharacterType() != null) {
+            if (selectDto.getCharacterType() == 2) {
+                userItemInventory.setCharacter2(true);
+            } else if (selectDto.getCharacterType() == 3) {
+                userItemInventory.setCharacter3(true);
+            }
+        }
+
+        userItemInventoryRepository.save(userItemInventory);
+    }
 }
