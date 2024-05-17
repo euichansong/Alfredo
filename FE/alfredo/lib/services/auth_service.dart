@@ -8,11 +8,10 @@ class AuthService {
   Timer? _tokenRefreshTimer;
 
   AuthService() {
-    _startTokenRefreshTimer();
-    _refreshTokenOnStartup();
+    startTokenRefreshTimer();
   }
 
-  void _startTokenRefreshTimer() {
+  void startTokenRefreshTimer() {
     _tokenRefreshTimer?.cancel();
     _tokenRefreshTimer =
         Timer.periodic(const Duration(minutes: 50), (timer) async {
@@ -20,11 +19,7 @@ class AuthService {
     });
   }
 
-  void _refreshTokenOnStartup() async {
-    await getIdToken(forceRefresh: true);
-  }
-
-  Future<UserCredential?> signInWithGoogle() async {
+  Future<Map<String, dynamic>?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) return null;
@@ -38,8 +33,12 @@ class AuthService {
 
       final userCredential =
           await _firebaseAuth.signInWithCredential(credential);
-      _startTokenRefreshTimer(); // Start the timer after sign-in
-      return userCredential;
+      startTokenRefreshTimer();
+      final token = await userCredential.user?.getIdToken();
+      return {
+        'userCredential': userCredential,
+        'token': token,
+      };
     } catch (e) {
       print(e);
       return null;

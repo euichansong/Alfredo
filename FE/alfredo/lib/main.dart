@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:workmanager/workmanager.dart';
 import 'screens/user/survey_save.dart';
 import 'components/navbar/tabview.dart';
 import 'config/firebase_options.dart';
@@ -12,6 +13,18 @@ import 'screens/user/user_routine_test.dart';
 import 'services/firebase_messaging_service.dart';
 import 'services/auth_service.dart';
 
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    final authService = AuthService();
+    await authService.getIdToken(forceRefresh: true);
+    return Future.value(true);
+  });
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
@@ -20,6 +33,8 @@ void main() async {
   );
   FirebaseMessagingService fcmService = FirebaseMessagingService();
   await fcmService.setupInteractions();
+
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -38,11 +53,19 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _authService.startTokenRefreshTimer();
+
+    Workmanager().registerPeriodicTask(
+      "1",
+      "simplePeriodicTask",
+      frequency: const Duration(minutes: 50),
+    );
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    _authService.dispose();
     super.dispose();
   }
 
@@ -67,11 +90,10 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       },
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'Kyobo', // 전역 글꼴로 Koybo를 사용
+        fontFamily: 'Kyobo',
       ),
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
-        // ... app-specific localization delegate[s] here
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
