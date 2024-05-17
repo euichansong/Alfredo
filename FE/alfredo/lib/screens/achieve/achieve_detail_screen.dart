@@ -4,6 +4,7 @@ import '../../models/achieve/achieve_model.dart';
 import '../../provider/achieve/achieve_provider.dart';
 import 'dart:ui';
 import 'package:intl/intl.dart';
+import '../user/loading_screen.dart';
 
 class AchieveDetailScreen extends ConsumerWidget {
   const AchieveDetailScreen({super.key});
@@ -30,7 +31,7 @@ class AchieveDetailScreen extends ConsumerWidget {
           ),
           achieveAsyncValue.when(
             data: (achieve) => _buildAchieveGrid(context, achieve),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            loading: () => const MyLoadingScreen(),
             error: (err, stack) => Center(child: Text('Error: $err')),
           ),
         ],
@@ -81,6 +82,20 @@ class AchieveDetailScreen extends ConsumerWidget {
         "description": "총 일정 갯수 5개 이상 시 달성",
         "date": achieve.finishSix,
         "backgroundImage": "assets/sixth_achieve.png"
+      },
+      {
+        "title": "주 6일제",
+        "status": achieve.achieveSeven,
+        "description": "일주일에 6일 연속 출석 달성",
+        "date": achieve.finishSeven,
+        "backgroundImage": "assets/seventh_achieve.png"
+      },
+      {
+        "title": "한 분 두식이 석삼이",
+        "status": achieve.achieveEight,
+        "description": "총 출석일수 3일 달성",
+        "date": achieve.finishEight,
+        "backgroundImage": "assets/eighth_achieve.png"
       },
       {
         "title": "해피버쓰데이",
@@ -223,7 +238,6 @@ class AchieveDetailScreen extends ConsumerWidget {
     );
   }
 }
-
 
 
 

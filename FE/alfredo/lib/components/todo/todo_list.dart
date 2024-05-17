@@ -78,6 +78,8 @@ class _TodoListState extends ConsumerState<TodoList> {
                             fontSize: 18,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
+                          maxLines: 2, // 최대 줄 수를 2로 설정
+                          overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
                           showDialog(
