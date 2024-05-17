@@ -196,7 +196,7 @@ class TodoApi {
       print('Update successful. Status: ${response.statusCode}');
     } else {
       print('Failed to update. Status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       throw Exception('Failed to update todo');
     }
   }
@@ -223,7 +223,7 @@ class TodoApi {
       print('Delete successful. Status: ${response.statusCode}');
     } else {
       print('Failed to delete. Status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       throw Exception('Failed to delete todo');
     }
   }
