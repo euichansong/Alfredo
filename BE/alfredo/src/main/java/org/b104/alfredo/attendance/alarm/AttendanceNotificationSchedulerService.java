@@ -24,6 +24,7 @@ public class AttendanceNotificationSchedulerService {
 
     @Scheduled(cron = "0 0 12 * * ?")
     public void sendNoonReminder() throws IOException {
+        log.info("12시 알림 작동함");
         sendReminder("lunch");
     }
 
@@ -35,6 +36,7 @@ public class AttendanceNotificationSchedulerService {
 
     @Scheduled(cron = "0 0 23 * * ?")
     public void sendNightReminder() throws IOException {
+        log.info("밤 알림 수행");
         sendReminder("night");
     }
 

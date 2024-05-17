@@ -149,7 +149,7 @@ public class RoutineServiceImpl implements RoutineService {
         LocalTime nowTime = now.toLocalTime().truncatedTo(ChronoUnit.MINUTES);
         LocalTime routineTime = routine.getStartTime();
         String dayOfWeekShort = now.getDayOfWeek().toString().substring(0, 3);
-        log.info(String.valueOf(routineTime.equals(nowTime)));
+//        log.info(String.valueOf(routineTime.equals(nowTime)));
         // 'now' 시간에 루틴에 대한 알림을 보내야 하는지 결정하는 예시 로직
         return routine.getDays().contains(dayOfWeekShort) &&
                 routineTime.equals(nowTime);
