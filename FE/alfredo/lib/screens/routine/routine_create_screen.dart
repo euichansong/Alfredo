@@ -42,14 +42,13 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
   final Map<String, int> categoryToId = {
     "기상": 1,
     "명상": 2,
-    "운동": 3,
+    "모닝커피": 3,
     "공부": 4,
-    "취침": 5,
-    "모닝커피": 6,
-    "아침식사": 7,
-    "독서": 8,
-    "샤워": 9,
-    "스트레칭": 10,
+    "운동": 5,
+    "독서": 6,
+    "샤워": 7,
+    "스트레칭": 8,
+    "취침": 9,
   };
 
   Future<void> _fetchBasicRoutine(int basicRoutineId) async {
