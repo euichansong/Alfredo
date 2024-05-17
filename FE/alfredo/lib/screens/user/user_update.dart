@@ -1,11 +1,11 @@
+import 'package:alfredo/provider/coin/coin_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../models/user/user_update_dto.dart';
-import '../../provider/user/user_state_provider.dart';
-import '../../controller/achieve/achieve_controller.dart';
 import '../../provider/achieve/achieve_provider.dart';
+import '../../provider/user/user_state_provider.dart';
 
 class UserUpdateScreen extends ConsumerStatefulWidget {
   const UserUpdateScreen({super.key});
@@ -64,6 +64,7 @@ class _UserUpdateScreenState extends ConsumerState<UserUpdateScreen> {
 
       // 9번째 업적 체크
       await achieveController.checkBirthAchieve();
+      ref.refresh(coinProvider);
     } catch (e) {
       // 예외 처리
       print('Error checking achievements: $e');

@@ -12,8 +12,8 @@ class ShopScreen extends ConsumerStatefulWidget {
 }
 
 class _ShopScreenState extends ConsumerState<ShopScreen> {
-  List<bool> purchasedBackground = [true, false, false];
-  List<bool> purchasedCharacter = [true, false, false];
+  List<bool> purchasedBackground = [];
+  List<bool> purchasedCharacter = [];
   int selectedBackgroundIndex = 0;
   int selectedCharacterIndex = 0;
   final CarouselController backgroundCarouselController =
@@ -23,158 +23,200 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Shop'),
-        backgroundColor: const Color(0xFF0D2338),
-        foregroundColor: Colors.white,
-      ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage('assets/storebackground.png'),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
+    var shopData = ref.watch(shopListProvider);
+    var shopStatus = ref.watch(shopStatusProvider);
+
+    return shopData.when(
+        data: (data) {
+          // purchasedBackground.add(data['background1']);
+          // purchasedBackground.add(data['background2']);
+          // purchasedBackground.add(data['background3']);
+          // purchasedCharacter.add(data['character1']);
+          // purchasedCharacter.add(data['character2']);
+          // purchasedCharacter.add(data['character3']);
+          addlist(3, purchasedBackground, 'background', data);
+          addlist(3, purchasedCharacter, 'character', data);
+          return shopStatus.when(
+              data: (data) {
+                selectedBackgroundIndex = data['background'] - 1;
+                selectedCharacterIndex = data['characterType'] - 1;
+                return Scaffold(
+                  appBar: AppBar(
+                    title: const Text('Shop'),
+                    backgroundColor: const Color(0xFF0D2338),
+                    foregroundColor: Colors.white,
                   ),
-                  child: const Text(
-                    '배경 구매',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: 200,
-                  child: CarouselSlider(
-                    carouselController: backgroundCarouselController,
-                    options: CarouselOptions(
-                      height: 300,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 0.33,
-                      initialPage: 0,
-                      enableInfiniteScroll: false,
-                      reverse: false,
-                      autoPlay: false,
-                      autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enlargeCenterPage: true,
-                      onPageChanged: (index, reason) {},
-                      scrollDirection: Axis.horizontal,
-                    ),
-                    items: [
-                      _buildShopItem(
-                          0, 'background', 'assets/mainback1.png', null),
-                      _buildShopItem(
-                          1, 'background', 'assets/officemain.png', null),
-                      _buildShopItem(
-                          2, 'background', 'assets/mainback1.png', null),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Text(
-                    '캐릭터 구매',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: 200,
-                  child: CarouselSlider(
-                    carouselController: characterCarouselController,
-                    options: CarouselOptions(
-                      height: 400,
-                      aspectRatio: 16 / 9,
-                      viewportFraction: 0.33,
-                      initialPage: 0,
-                      enableInfiniteScroll: false,
-                      reverse: false,
-                      autoPlay: false,
-                      autoPlayInterval: const Duration(seconds: 3),
-                      autoPlayAnimationDuration:
-                          const Duration(milliseconds: 800),
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      enlargeCenterPage: true,
-                      onPageChanged: (index, reason) {},
-                      scrollDirection: Axis.horizontal,
-                    ),
-                    items: [
-                      _buildShopItem(0, 'character', 'assets/alfrecopy.png',
-                          'assets/alfre.png'),
-                      _buildShopItem(1, 'character', 'assets/catmancopy.png',
-                          'assets/catman.png'),
-                      _buildShopItem(2, 'character', 'assets/catmancopy.png',
-                          'assets/catman.png'),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Positioned(
-            top: 16,
-            right: 16,
-            child: Consumer(
-              builder: (context, watch, child) {
-                final coinCount = ref.watch(coinProvider);
-                return coinCount.when(
-                    data: (data) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.white,
+                  body: Stack(
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/storebackground.png'),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.monetization_on,
-                                color: Colors.amber, size: 24),
-                            const SizedBox(width: 4),
-                            Text(
-                              '${data.totalCoin}',
-                              style: const TextStyle(
-                                  fontSize: 24, fontWeight: FontWeight.bold),
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: const Text(
+                                '배경 구매',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 200,
+                              child: CarouselSlider(
+                                carouselController:
+                                    backgroundCarouselController,
+                                options: CarouselOptions(
+                                  height: 300,
+                                  aspectRatio: 16 / 9,
+                                  viewportFraction: 0.33,
+                                  initialPage: selectedBackgroundIndex,
+                                  enableInfiniteScroll: false,
+                                  reverse: false,
+                                  autoPlay: false,
+                                  autoPlayInterval: const Duration(seconds: 3),
+                                  autoPlayAnimationDuration:
+                                      const Duration(milliseconds: 800),
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enlargeCenterPage: true,
+                                  onPageChanged: (index, reason) {},
+                                  scrollDirection: Axis.horizontal,
+                                ),
+                                items: [
+                                  _buildShopItem(0, 'background',
+                                      'assets/mainback1.png', null),
+                                  _buildShopItem(1, 'background',
+                                      'assets/officemain.png', null),
+                                  _buildShopItem(2, 'background',
+                                      'assets/garden.png', null),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding:
+                                  const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: const Text(
+                                '캐릭터 구매',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 200,
+                              child: CarouselSlider(
+                                carouselController: characterCarouselController,
+                                options: CarouselOptions(
+                                  height: 400,
+                                  aspectRatio: 16 / 9,
+                                  viewportFraction: 0.33,
+                                  initialPage: selectedCharacterIndex,
+                                  enableInfiniteScroll: false,
+                                  reverse: false,
+                                  autoPlay: false,
+                                  autoPlayInterval: const Duration(seconds: 3),
+                                  autoPlayAnimationDuration:
+                                      const Duration(milliseconds: 800),
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  enlargeCenterPage: true,
+                                  onPageChanged: (index, reason) {},
+                                  scrollDirection: Axis.horizontal,
+                                ),
+                                items: [
+                                  _buildShopItem(
+                                      0,
+                                      'character',
+                                      'assets/alfrecopy.png',
+                                      'assets/alfre.png'),
+                                  _buildShopItem(
+                                      1,
+                                      'character',
+                                      'assets/catmancopy.png',
+                                      'assets/catman.png'),
+                                  _buildShopItem(2, 'character',
+                                      'assets/redman.png', 'assets/redman.png'),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    },
-                    error: (err, stack) => Text('Error: $err'),
-                    loading: () => const CircularProgressIndicator());
+                      ),
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: Consumer(
+                          builder: (context, watch, child) {
+                            final coinCount = ref.watch(coinProvider);
+                            return coinCount.when(
+                                data: (data) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: Colors.white,
+                                    ),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                    child: Row(
+                                      children: [
+                                        const Icon(Icons.monetization_on,
+                                            color: Colors.amber, size: 24),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          '${data.totalCoin}',
+                                          style: const TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                                error: (err, stack) => Text('Error: $err'),
+                                loading: () =>
+                                    const CircularProgressIndicator());
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
               },
-            ),
-          ),
-        ],
-      ),
-    );
+              error: (err, stack) => Text('shopStatusError: $err'),
+              loading: () => const CircularProgressIndicator());
+        },
+        error: (err, stack) => Text('shopDataError: $err'),
+        loading: () => const CircularProgressIndicator());
+  }
+
+  void addlist(int index, List list, String text, Map data) {
+    list.clear();
+    for (int i = 1; i <= index; i++) {
+      list.add(data['$text$i']);
+    }
   }
 
   Widget _buildShopItem(
@@ -250,23 +292,16 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                       ? null
                       : () {
                           backgroundCarouselController.animateToPage(index);
-                          ref
-                              .read(backgroundProvider.notifier)
-                              .update(background);
-                          setState(() {
-                            selectedBackgroundIndex = index;
-                          });
+
+                          ref.read(shopStatusUpdataProvider(
+                              {'background': index + 1}));
                         }
                   : selectedCharacterIndex == index
                       ? null
                       : () {
                           characterCarouselController.animateToPage(index);
-                          setState(() {
-                            ref
-                                .read(characterProvider.notifier)
-                                .update(character!);
-                            selectedCharacterIndex = index;
-                          });
+                          ref.read(shopStatusUpdataProvider(
+                              {'characterType': index + 1}));
                         }
               : () async {
                   var coin =
@@ -274,20 +309,21 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   if (coin.totalCoin >= 1) {
                     // ref.read(coinControllerProvider).incrementCoin();
                     // ref.read(coinControllerProvider).decrementTotalCoin(1);
-                    setState(() {
-                      items[index] = true;
-                      if (type == 'background') {
-                        backgroundCarouselController.animateToPage(index);
-                        ref
-                            .read(backgroundProvider.notifier)
-                            .update(background);
-                        selectedBackgroundIndex = index;
-                      } else {
-                        characterCarouselController.animateToPage(index);
-                        ref.read(characterProvider.notifier).update(character!);
-                        selectedCharacterIndex = index;
-                      }
-                    });
+
+                    items[index] = true;
+                    if (type == 'background') {
+                      backgroundCarouselController.animateToPage(index);
+                      ref.read(
+                          shopBuyStatusProvider({'background': index + 1}));
+                      ref.read(
+                          shopStatusUpdataProvider({'background': index + 1}));
+                    } else {
+                      characterCarouselController.animateToPage(index);
+                      ref.read(
+                          shopBuyStatusProvider({'characterType': index + 1}));
+                      ref.read(shopStatusUpdataProvider(
+                          {'characterType': index + 1}));
+                    }
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('코인 개수가 적습니다.')),

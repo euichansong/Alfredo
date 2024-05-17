@@ -1,3 +1,5 @@
+import 'package:alfredo/api/store/shop_api.dart';
+import 'package:alfredo/provider/user/future_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class Background extends StateNotifier<String> {
@@ -26,4 +28,46 @@ class Character extends StateNotifier<String> {
 
 final characterProvider = StateNotifierProvider<Character, String>((ref) {
   return Character('assets/alfre.png');
+});
+
+final shopListProvider = FutureProvider.autoDispose((ref) async {
+  final idToken = await ref.watch(authManagerProvider.future);
+  if (idToken == null || idToken.isEmpty) {
+    throw Exception('No ID Token found');
+  }
+
+  return ShopApi().getShopList(idToken);
+});
+
+final shopStatusProvider = FutureProvider.autoDispose((ref) async {
+  final idToken = await ref.watch(authManagerProvider.future);
+  if (idToken == null || idToken.isEmpty) {
+    throw Exception('No ID Token found');
+  }
+
+  return ShopApi().getShopStatus(idToken);
+});
+
+final shopStatusUpdataProvider =
+    FutureProvider.family<void, Map>((ref, shopStatus) async {
+  final idToken = await ref.watch(authManagerProvider.future);
+  if (idToken == null || idToken.isEmpty) {
+    throw Exception('No ID Token found');
+  }
+
+  await ShopApi().shopUpdataStatus(
+      idToken, shopStatus['background'], shopStatus['characterType']);
+  ref.refresh(shopStatusProvider);
+});
+
+final shopBuyStatusProvider =
+    FutureProvider.family<void, Map>((ref, shopStatus) async {
+  final idToken = await ref.watch(authManagerProvider.future);
+  if (idToken == null || idToken.isEmpty) {
+    throw Exception('No ID Token found');
+  }
+
+  await ShopApi().buyUpdataStatus(
+      idToken, shopStatus['background'], shopStatus['characterType']);
+  ref.refresh(shopListProvider);
 });

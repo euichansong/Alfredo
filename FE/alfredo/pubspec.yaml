@@ -129,6 +129,8 @@ flutter:
     - assets/seventh_achieve.png
     - assets/eighth_achieve.png
     - assets/alfre.png
+    - assets/redman.png
+    - assets/garden.png
 
   fonts:
     - family: Kyobo
