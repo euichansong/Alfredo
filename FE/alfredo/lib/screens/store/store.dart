@@ -1,5 +1,6 @@
 import 'package:alfredo/provider/coin/coin_provider.dart';
 import 'package:alfredo/provider/store/store_provider.dart';
+import 'package:alfredo/screens/user/loading_screen.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -206,10 +207,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 );
               },
               error: (err, stack) => Text('shopStatusError: $err'),
-              loading: () => const CircularProgressIndicator());
+              loading: () => const MyLoadingScreen());
         },
         error: (err, stack) => Text('shopDataError: $err'),
-        loading: () => const CircularProgressIndicator());
+        loading: () => const MyLoadingScreen());
   }
 
   void addlist(int index, List list, String text, Map data) {
