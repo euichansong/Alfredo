@@ -9,10 +9,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
-import '../../provider/attendance/attendance_provider.dart';
-import '../../provider/user/future_provider.dart';
 import '../../provider/achieve/achieve_provider.dart'; // achieveProvider import
+import '../../provider/attendance/attendance_provider.dart';
 import '../../provider/coin/coin_provider.dart';
+import '../../provider/user/future_provider.dart';
 import '../achieve/achieve_detail_screen.dart'; // AchieveDetailScreen import
 import '../coin/coin_detail_screen.dart'; // CoinDetailScreen import
 import '../tts/tts_page.dart';
@@ -36,7 +36,7 @@ class _MainPageState extends ConsumerState<MainPage> {
     final String? lastCheckDate = prefs.getString('lastCheckDate');
     final String todayDate = DateTime.now().toString().substring(0, 10);
     //TODO !=로 변경
-    if (lastCheckDate == todayDate) {
+    if (lastCheckDate != todayDate) {
       final idToken = await ref.read(authManagerProvider.future);
       try {
         await ref.read(attendanceProvider).checkAttendance(idToken);
@@ -92,11 +92,11 @@ class _MainPageState extends ConsumerState<MainPage> {
                     children: _buildAttendanceList(attendanceHistory),
                   ),
                 ),
-                // const SizedBox(height: 10),
-                // const Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [Text("hi"), Text("hello")],
-                // )
+                const SizedBox(height: 10),
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text("hi"), Text("hello")],
+                )
               ],
             ),
           ),
