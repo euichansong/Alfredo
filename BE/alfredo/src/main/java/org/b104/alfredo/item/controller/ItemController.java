@@ -46,8 +46,7 @@ public class ItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
-
-
+    
     @PostMapping("/select")
     public ResponseEntity<?> select(@RequestHeader(value = "Authorization") String authHeader,
                                     @RequestBody SelectDto selectDto){
@@ -62,6 +61,23 @@ public class ItemController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
+
+    @PostMapping("/buy")
+    public ResponseEntity<?> buy(@RequestHeader(value = "Authorization") String authHeader,
+                                 @RequestBody SelectDto selectDto){
+        try {
+            itemService.buyItem(authHeader, selectDto);
+            return ResponseEntity.ok("Purchase successfully");
+        } catch (FirebaseAuthException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Firebase token");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
+        }
+    }
+
+
 
 
 
