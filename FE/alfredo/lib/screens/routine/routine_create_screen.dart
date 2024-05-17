@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../api/routine/routine_api.dart';
+import '../../provider/achieve/achieve_provider.dart';
 import '../../provider/routine/routine_provider.dart';
 import '../../provider/user/future_provider.dart';
-import '../../controller/achieve/achieve_controller.dart';
-import '../../provider/achieve/achieve_provider.dart';
 
 class RoutineCreateScreen extends ConsumerWidget {
   const RoutineCreateScreen({super.key});
@@ -46,6 +45,11 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
     "운동": 3,
     "공부": 4,
     "취침": 5,
+    "모닝커피": 6,
+    "아침식사": 7,
+    "독서": 8,
+    "샤워": 9,
+    "스트레칭": 10,
   };
 
   Future<void> _fetchBasicRoutine(int basicRoutineId) async {
