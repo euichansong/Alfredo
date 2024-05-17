@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../api/routine/routine_api.dart';
 import '../../provider/routine/routine_provider.dart';
 import '../../provider/user/future_provider.dart';
+import '../../controller/achieve/achieve_controller.dart';
+import '../../provider/achieve/achieve_provider.dart';
 
 class RoutineCreateScreen extends ConsumerWidget {
   const RoutineCreateScreen({super.key});
@@ -67,6 +69,68 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to fetch routine: $e')),
       );
+    }
+  }
+
+  Future<void> _saveRoutine() async {
+    if (titleController.text.isEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text("경고"),
+          content: const Text("루틴 제목을 입력해주세요"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+    } else {
+      try {
+        final String? idToken = await ref.watch(authManagerProvider.future);
+        final routineTitle = titleController.text;
+        final hour = selectedTime!.hour.toString().padLeft(2, '0');
+        final minute = selectedTime!.minute.toString().padLeft(2, '0');
+
+        final startTime = '$hour:$minute:00';
+        final days = selectedDays
+            .asMap()
+            .entries
+            .map((e) => e.value
+                ? ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][e.key]
+                : "")
+            .where((d) => d.isNotEmpty)
+            .toList();
+
+        final memo = memoController.text;
+
+        // 루틴 생성
+        await routineApi.createRoutine(
+          idToken,
+          routineTitle,
+          startTime,
+          days,
+          currentAlarmSound,
+          memo,
+          basicRoutineId,
+        );
+
+        // 루틴 데이터를 새로고침
+        ref.refresh(routineProvider);
+
+        // 4번째 업적 조회
+        final achieveController = ref.read(achieveControllerProvider);
+        await achieveController.checkTotalRoutineAchieve();
+
+        // 화면 종료
+        Navigator.pop(context);
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save routine: $e')),
+        );
+      }
     }
   }
 
@@ -216,64 +280,7 @@ class _RoutineCreateScreenState extends State<_RoutineCreateScreenBody> {
               SizedBox(
                 width: double.infinity, // 버튼의 가로 크기를 전체로 설정
                 child: ElevatedButton(
-                  onPressed: () async {
-                    if (titleController.text.isEmpty) {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text("경고"),
-                          content: const Text("루틴 제목을 입력해주세요"),
-                          actions: <Widget>[
-                            TextButton(
-                              child: const Text('확인'),
-                              onPressed: () => Navigator.of(context).pop(),
-                            ),
-                          ],
-                        ),
-                      );
-                    } else {
-                      final String? idToken =
-                          await ref.watch(authManagerProvider.future);
-                      final routineTitle = titleController.text;
-                      final hour =
-                          selectedTime!.hour.toString().padLeft(2, '0');
-                      final minute =
-                          selectedTime!.minute.toString().padLeft(2, '0');
-
-                      final startTime = '$hour:$minute:00';
-                      final days = selectedDays
-                          .asMap()
-                          .entries
-                          .map((e) => e.value
-                              ? [
-                                  "SUN",
-                                  "MON",
-                                  "TUE",
-                                  "WED",
-                                  "THU",
-                                  "FRI",
-                                  "SAT"
-                                ][e.key]
-                              : "")
-                          .where((d) => d.isNotEmpty)
-                          .toList();
-
-                      final memo = memoController.text;
-
-                      await routineApi.createRoutine(
-                        idToken,
-                        routineTitle,
-                        startTime,
-                        days,
-                        currentAlarmSound,
-                        memo,
-                        basicRoutineId,
-                      );
-                      ref.refresh(routineProvider);
-
-                      Navigator.pop(context);
-                    }
-                  },
+                  onPressed: _saveRoutine,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF0D2338), // 버튼 배경색
                     foregroundColor: Colors.white, // 버튼 텍스트 색

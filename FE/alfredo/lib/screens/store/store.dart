@@ -1,8 +1,8 @@
 import 'package:alfredo/provider/coin/coin_provider.dart';
+import 'package:alfredo/provider/store/store_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:alfredo/provider/store/store_provider.dart';
 
 class ShopScreen extends ConsumerStatefulWidget {
   const ShopScreen({super.key});
@@ -12,10 +12,14 @@ class ShopScreen extends ConsumerStatefulWidget {
 }
 
 class _ShopScreenState extends ConsumerState<ShopScreen> {
-  List<bool> purchasedBackground = [false, false];
-  List<bool> purchasedCharacter = [false, false];
-  int? selectedBackgroundIndex;
-  int? selectedCharacterIndex;
+  List<bool> purchasedBackground = [true, false, false];
+  List<bool> purchasedCharacter = [true, false, false];
+  int selectedBackgroundIndex = 0;
+  int selectedCharacterIndex = 0;
+  final CarouselController backgroundCarouselController =
+      CarouselController(); // 캐러셀 컨트롤러
+  final CarouselController characterCarouselController =
+      CarouselController(); // 캐러셀 컨트롤러
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +42,8 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
                   decoration: BoxDecoration(
@@ -55,27 +60,35 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: 200,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.33,
-                    initialPage: 0,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 800),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, reason) {},
-                    scrollDirection: Axis.horizontal,
+                SizedBox(
+                  height: 200,
+                  child: CarouselSlider(
+                    carouselController: backgroundCarouselController,
+                    options: CarouselOptions(
+                      height: 300,
+                      aspectRatio: 16 / 9,
+                      viewportFraction: 0.33,
+                      initialPage: 0,
+                      enableInfiniteScroll: false,
+                      reverse: false,
+                      autoPlay: false,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enlargeCenterPage: true,
+                      onPageChanged: (index, reason) {},
+                      scrollDirection: Axis.horizontal,
+                    ),
+                    items: [
+                      _buildShopItem(
+                          0, 'background', 'assets/mainback1.png', null),
+                      _buildShopItem(
+                          1, 'background', 'assets/officemain.png', null),
+                      _buildShopItem(
+                          2, 'background', 'assets/mainback1.png', null),
+                    ],
                   ),
-                  items: [
-                    _buildShopItem(0, 'background', 'assets/mainback1.png'),
-                    _buildShopItem(1, 'background', 'assets/officemain.png'),
-                  ],
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -93,27 +106,35 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                CarouselSlider(
-                  options: CarouselOptions(
-                    height: 200,
-                    aspectRatio: 16 / 9,
-                    viewportFraction: 0.33,
-                    initialPage: 0,
-                    enableInfiniteScroll: false,
-                    reverse: false,
-                    autoPlay: false,
-                    autoPlayInterval: const Duration(seconds: 3),
-                    autoPlayAnimationDuration:
-                        const Duration(milliseconds: 800),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    enlargeCenterPage: true,
-                    onPageChanged: (index, reason) {},
-                    scrollDirection: Axis.horizontal,
+                SizedBox(
+                  height: 200,
+                  child: CarouselSlider(
+                    carouselController: characterCarouselController,
+                    options: CarouselOptions(
+                      height: 400,
+                      aspectRatio: 16 / 9,
+                      viewportFraction: 0.33,
+                      initialPage: 0,
+                      enableInfiniteScroll: false,
+                      reverse: false,
+                      autoPlay: false,
+                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayAnimationDuration:
+                          const Duration(milliseconds: 800),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      enlargeCenterPage: true,
+                      onPageChanged: (index, reason) {},
+                      scrollDirection: Axis.horizontal,
+                    ),
+                    items: [
+                      _buildShopItem(0, 'character', 'assets/alfrecopy.png',
+                          'assets/alfre.png'),
+                      _buildShopItem(1, 'character', 'assets/catmancopy.png',
+                          'assets/catman.png'),
+                      _buildShopItem(2, 'character', 'assets/catmancopy.png',
+                          'assets/catman.png'),
+                    ],
                   ),
-                  items: [
-                    _buildShopItem(0, 'character', 'assets/alfrecopy.png'),
-                    _buildShopItem(1, 'character', 'assets/catmancopy.png'),
-                  ],
                 ),
               ],
             ),
@@ -156,10 +177,11 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
     );
   }
 
-  Widget _buildShopItem(int index, String type, String background) {
+  Widget _buildShopItem(
+      int index, String type, String background, String? character) {
     List<bool> items =
         type == 'background' ? purchasedBackground : purchasedCharacter;
-    int? selectedIndex =
+    int selectedIndex =
         type == 'background' ? selectedBackgroundIndex : selectedCharacterIndex;
 
     return Column(
@@ -227,6 +249,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   ? selectedBackgroundIndex == index
                       ? null
                       : () {
+                          backgroundCarouselController.animateToPage(index);
+                          ref
+                              .read(backgroundProvider.notifier)
+                              .update(background);
                           setState(() {
                             selectedBackgroundIndex = index;
                           });
@@ -234,7 +260,11 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   : selectedCharacterIndex == index
                       ? null
                       : () {
+                          characterCarouselController.animateToPage(index);
                           setState(() {
+                            ref
+                                .read(characterProvider.notifier)
+                                .update(character!);
                             selectedCharacterIndex = index;
                           });
                         }
@@ -247,14 +277,20 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     setState(() {
                       items[index] = true;
                       if (type == 'background') {
+                        backgroundCarouselController.animateToPage(index);
+                        ref
+                            .read(backgroundProvider.notifier)
+                            .update(background);
                         selectedBackgroundIndex = index;
                       } else {
+                        characterCarouselController.animateToPage(index);
+                        ref.read(characterProvider.notifier).update(character!);
                         selectedCharacterIndex = index;
                       }
                     });
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('코인 갯수가 적습니다.')),
+                      const SnackBar(content: Text('코인 개수가 적습니다.')),
                     );
                   }
                 },
