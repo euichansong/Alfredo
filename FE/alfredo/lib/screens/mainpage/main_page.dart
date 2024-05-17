@@ -58,7 +58,7 @@ class _MainPageState extends ConsumerState<MainPage> {
             child: Container(
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/image 13.png'),
+                  image: AssetImage('assets/image 11.png'),
                   fit: BoxFit.fill,
                 ),
               ),
@@ -78,8 +78,8 @@ class _MainPageState extends ConsumerState<MainPage> {
           ),
           Positioned.fill(
             top: MediaQuery.of(context).size.height * 0.48,
-            left: MediaQuery.of(context).size.height * 0.01,
-            right: MediaQuery.of(context).size.height * 0.01,
+            left: MediaQuery.of(context).size.height * 0.05,
+            right: MediaQuery.of(context).size.height * 0.05,
             bottom: MediaQuery.of(context).size.height * 0.01,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
@@ -109,7 +109,10 @@ class _MainPageState extends ConsumerState<MainPage> {
                       context: context,
                       isScrollControlled: true,
                       builder: (context) {
-                        return const ShopScreen();
+                        return const FractionallySizedBox(
+                          heightFactor: 0.9,
+                          child: ShopScreen(),
+                        );
                       },
                     );
                   },
