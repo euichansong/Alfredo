@@ -1,9 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:just_audio/just_audio.dart';
-import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 
 import '../../components/tts/animated_textframe.dart';
@@ -97,7 +98,7 @@ class TtsPage extends ConsumerWidget {
                   loading: () => const CircularProgressIndicator(),
                 ),
                 child: const Icon(
-                  Icons.mic,
+                  Icons.volume_up,
                   color: Colors.white,
                 ),
               ),
