@@ -8,6 +8,10 @@ import org.b104.alfredo.achieve.repository.AchieveRepository;
 import org.b104.alfredo.achieve.service.AchieveService;
 import org.b104.alfredo.coin.domain.Coin;
 import org.b104.alfredo.coin.repository.CoinRepository;
+import org.b104.alfredo.item.domain.UserItemInventory;
+import org.b104.alfredo.item.domain.UserItemStatus;
+import org.b104.alfredo.item.repository.UserItemInventoryRepository;
+import org.b104.alfredo.item.repository.UserItemStatusRepository;
 import org.b104.alfredo.routine.domain.Routine;
 import org.b104.alfredo.routine.response.RoutineDto;
 import org.b104.alfredo.user.Domain.Survey;
@@ -39,6 +43,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final AchieveRepository achieveRepository;
     private final CoinRepository coinRepository;
+    private final UserItemInventoryRepository userItemInventoryRepository;
+    private final UserItemStatusRepository userItemStatusRepository;
 
     @Autowired
     private SurveyRepository surveyRepository;
@@ -85,6 +91,22 @@ public class UserService {
                 .build();
 
         newCoin = coinRepository.save(newCoin);
+
+        UserItemInventory newUserItemInventory = new UserItemInventory();
+        newUserItemInventory.setUid(userCreateDto.getUid());
+        newUserItemInventory.setBackground1(true);
+        newUserItemInventory.setBackground2(false);
+        newUserItemInventory.setBackground3(false);
+        newUserItemInventory.setCharacter1(true);
+        newUserItemInventory.setCharacter2(false);
+        newUserItemInventory.setCharacter3(false);
+        userItemInventoryRepository.save(newUserItemInventory);
+
+        UserItemStatus newUserItemStatus = new UserItemStatus();
+        newUserItemStatus.setUid(userCreateDto.getUid());
+        newUserItemStatus.setBackground(1);
+        newUserItemStatus.setCharacterType(1);
+        userItemStatusRepository.save(newUserItemStatus);
 
         user.setNickname("사용자" + user.getUserId());
         return userRepository.save(user);
