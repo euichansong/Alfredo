@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../api/attendance/attendance_api.dart';
 import '../../components/todo/todo_list.dart'; // TodoList 위젯 import
 import '../../provider/achieve/achieve_provider.dart'; // achieveProvider import
 import '../../provider/attendance/attendance_provider.dart';
@@ -25,9 +26,11 @@ class MainPage extends ConsumerStatefulWidget {
 }
 
 class _MainPageState extends ConsumerState<MainPage> {
+  late AttendanceApi attendanceApi;
   @override
   void initState() {
     super.initState();
+    attendanceApi = AttendanceApi();
     _checkAttendance();
   }
 
@@ -35,6 +38,7 @@ class _MainPageState extends ConsumerState<MainPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? lastCheckDate = prefs.getString('lastCheckDate');
     final String todayDate = DateTime.now().toString().substring(0, 10);
+
     //TODO !=로 변경
     if (lastCheckDate != todayDate) {
       final idToken = await ref.read(authManagerProvider.future);
@@ -44,14 +48,25 @@ class _MainPageState extends ConsumerState<MainPage> {
         List<DateTime> attendanceHistory = await ref
             .read(attendanceProvider)
             .getAttendanceForCurrentWeek(idToken);
-        _showAttendanceModal(attendanceHistory);
+        int totalAttendanceDaysForWeek =
+            await attendanceApi.getTotalAttendanceDaysForWeek(idToken);
+        int consecutiveAttendanceDays =
+            await attendanceApi.getConsecutiveAttendanceDays(idToken);
+        int totalAttendanceDays =
+            await attendanceApi.getTotalAttendanceDays(idToken);
+        _showAttendanceModal(attendanceHistory, totalAttendanceDaysForWeek,
+            consecutiveAttendanceDays, totalAttendanceDays);
       } catch (error) {
         print('Failed to check attendance: $error');
       }
     }
   }
 
-  void _showAttendanceModal(List<DateTime> attendanceHistory) {
+  void _showAttendanceModal(
+      List<DateTime> attendanceHistory,
+      int totalAttendanceDaysForWeek,
+      int consecutiveAttendanceDays,
+      int totalAttendanceDays) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -84,6 +99,7 @@ class _MainPageState extends ConsumerState<MainPage> {
               maxHeight: 200, // 모달의 최대 높이를 설정
             ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
                 FittedBox(
@@ -91,11 +107,20 @@ class _MainPageState extends ConsumerState<MainPage> {
                     children: _buildAttendanceList(attendanceHistory),
                   ),
                 ),
-                // const SizedBox(height: 10),
-                // const Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [Text("hi"), Text("hello")],
-                // )
+                const SizedBox(height: 14),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("이번 주 출석 일수: $totalAttendanceDaysForWeek 일",
+                        style: const TextStyle(color: Colors.white)),
+                    const SizedBox(height: 4),
+                    Text("이번 주 연속 출석 일수: $consecutiveAttendanceDays 일",
+                        style: const TextStyle(color: Colors.white)),
+                    const SizedBox(height: 4),
+                    Text("총 출석 일수: $totalAttendanceDays 일",
+                        style: const TextStyle(color: Colors.white)),
+                  ],
+                )
               ],
             ),
           ),
