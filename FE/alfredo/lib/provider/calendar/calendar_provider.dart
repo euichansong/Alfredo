@@ -118,7 +118,7 @@ final loadiCalendar =
     if (iCalendarJson != null) {
       for (Map? datas in iCalendarJson['data']) {
         if (datas!['dtstart'] != null) {
-          print(datas);
+          // print(datas);
           DateTime startDateTime = DateTime.parse(datas['dtstart']['dt']);
           DateTime endDateTime = DateTime.parse(datas['dtend']['dt']);
           if (startDateTime.hour == 0 &&
@@ -190,7 +190,7 @@ final loadiCalendar =
           iCalendarJson = iCalendar!.toJson();
         }
         await getCalendarDataSource(iCalendarJson);
-        print("aaa");
+        // print("aaa");
       } else {
         throw Exception('Failed to load iCal data');
       }
