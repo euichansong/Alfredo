@@ -34,7 +34,8 @@ void main() async {
   FirebaseMessagingService fcmService = FirebaseMessagingService();
   await fcmService.setupInteractions();
 
-  Workmanager().initialize(callbackDispatcher, isInDebugMode: true);
+  // 여기서 isInDebugMode를 false로 설정
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: false);
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -59,6 +60,17 @@ class MyAppState extends State<MyApp> with WidgetsBindingObserver {
       "1",
       "simplePeriodicTask",
       frequency: const Duration(minutes: 50),
+      initialDelay: Duration.zero,
+      constraints: Constraints(
+        networkType: NetworkType.not_required,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresStorageNotLow: false,
+      ),
+      backoffPolicy: BackoffPolicy.linear,
+      backoffPolicyDelay: const Duration(minutes: 1),
+      existingWorkPolicy: ExistingWorkPolicy.keep,
     );
   }
 
