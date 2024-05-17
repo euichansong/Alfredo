@@ -91,11 +91,6 @@ class _MainPageState extends ConsumerState<MainPage> {
                     children: _buildAttendanceList(attendanceHistory),
                   ),
                 ),
-                // const SizedBox(height: 10),
-                // const Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [Text("hi"), Text("hello")],
-                // )
               ],
             ),
           ),
@@ -161,6 +156,22 @@ class _MainPageState extends ConsumerState<MainPage> {
     return attendanceWidgets;
   }
 
+  Future<void> _openShopScreen() async {
+    // 코인 상태를 갱신
+    ref.refresh(coinProvider);
+    // 상점 화면을 모달로 띄움
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return const FractionallySizedBox(
+          heightFactor: 0.9,
+          child: ShopScreen(),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var mainStatus = ref.watch(shopStatusProvider);
@@ -176,122 +187,98 @@ class _MainPageState extends ConsumerState<MainPage> {
     };
 
     return mainStatus.when(
-        data: (data) {
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: Stack(
-              children: [
-                // 배경 이미지
-                Container(
+      data: (data) {
+        return Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Stack(
+            children: [
+              // 배경 이미지
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(backgroundStatus[data['background']]),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                top: MediaQuery.of(context).size.height * 0.1,
+                left: MediaQuery.of(context).size.height * 0,
+                right: MediaQuery.of(context).size.height * 0,
+                bottom: MediaQuery.of(context).size.height * 0.1,
+                child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage(backgroundStatus[data['background']]),
-                      fit: BoxFit.cover,
+                      image: AssetImage(
+                          characterTypeStatus[data['characterType']]),
+                      fit: BoxFit.contain,
                     ),
                   ),
                 ),
-                Positioned.fill(
-                  top: MediaQuery.of(context).size.height * 0.1,
-                  left: MediaQuery.of(context).size.height * 0,
-                  right: MediaQuery.of(context).size.height * 0,
-                  bottom: MediaQuery.of(context).size.height * 0.1,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(
-                            characterTypeStatus[data['characterType']]),
-                        fit: BoxFit.contain,
+              ),
+              Positioned.fill(
+                top: MediaQuery.of(context).size.height * 0.4,
+                child: Container(
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/image 11.png'),
+                      fit: BoxFit.fill,
+                    ),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                top: MediaQuery.of(context).size.height * 0.05,
+                left: MediaQuery.of(context).size.height * 0,
+                right: MediaQuery.of(context).size.height * 0,
+                bottom: MediaQuery.of(context).size.height * 0.07,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: SizedBox(
+                    child: TtsPage(),
+                  ),
+                ),
+              ),
+              Positioned.fill(
+                top: MediaQuery.of(context).size.height * 0.48,
+                left: MediaQuery.of(context).size.height * 0.05,
+                right: MediaQuery.of(context).size.height * 0.05,
+                bottom: MediaQuery.of(context).size.height * 0.01,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  // ignore: prefer_const_constructors
+                  child: SizedBox(
+                    child: const TodoList(),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: MediaQuery.of(context).size.height * 0.11,
+                left: MediaQuery.of(context).size.height * 0.02,
+                child: Column(
+                  children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              const Color(0xFF0D2338)),
+                          padding: MaterialStateProperty.all(
+                              const EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 0))),
+                      onPressed: _openShopScreen,
+                      child: const Icon(
+                        Icons.shopping_cart,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                Positioned.fill(
-                  top: MediaQuery.of(context).size.height * 0.4,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage('assets/image 11.png'),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  top: MediaQuery.of(context).size.height * 0.05,
-                  left: MediaQuery.of(context).size.height * 0,
-                  right: MediaQuery.of(context).size.height * 0,
-                  bottom: MediaQuery.of(context).size.height * 0.07,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: SizedBox(
-                      child: TtsPage(),
-                    ),
-                  ),
-                ),
-                Positioned.fill(
-                  top: MediaQuery.of(context).size.height * 0.48,
-                  left: MediaQuery.of(context).size.height * 0.05,
-                  right: MediaQuery.of(context).size.height * 0.05,
-                  bottom: MediaQuery.of(context).size.height * 0.01,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    // ignore: prefer_const_constructors
-                    child: SizedBox(
-                      // width: MediaQuery.of(context).size.width,
-                      // height: MediaQuery.of(context).size.height,
-                      child: const TodoList(),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.11,
-                  left: MediaQuery.of(context).size.height * 0.02,
-                  child: Column(
-                    children: [
-                      ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xFF0D2338)),
-                            padding: MaterialStateProperty.all(
-                                const EdgeInsets.symmetric(
-                                    vertical: 0, horizontal: 0))),
-                        onPressed: () {
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) {
-                              return const FractionallySizedBox(
-                                heightFactor: 0.9,
-                                child: ShopScreen(),
-                              );
-                            },
-                          );
-                        },
-                        child: const Icon(
-                          Icons.shopping_cart,
-                          color: Colors.white,
-                        ),
-                      ),
-                      // const SizedBox(height: 10), // 간격을 주기 위해 추가
-                      // ElevatedButton(
-                      //   onPressed: () {
-                      //     Navigator.push(
-                      //       context,
-                      //       MaterialPageRoute(
-                      //         builder: (context) => const AchieveDetailScreen(),
-                      //       ),
-                      //     );
-                      //   },
-                      //   child: const Text('Achievements'),
-                      // ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        error: (err, stack) => Text('shopDataError: $err'),
-        loading: () => const CircularProgressIndicator());
+              ),
+            ],
+          ),
+        );
+      },
+      error: (err, stack) => Text('shopDataError: $err'),
+      loading: () => const CircularProgressIndicator(),
+    );
   }
 }
