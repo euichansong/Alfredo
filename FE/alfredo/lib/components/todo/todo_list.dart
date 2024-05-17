@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/todo/todo_model.dart';
+import '../../provider/coin/coin_provider.dart'; // coin_provider를 import합니다.
 import '../../provider/todo/todo_provider.dart';
 import '../../screens/todo/todo_detail_screen.dart';
-import '../../provider/coin/coin_provider.dart'; // coin_provider를 import합니다.
 
 class TodoList extends ConsumerStatefulWidget {
   const TodoList({super.key});
@@ -78,6 +78,8 @@ class _TodoListState extends ConsumerState<TodoList> {
                             fontSize: 18,
                             color: Color.fromARGB(255, 8, 1, 1),
                           ),
+                          maxLines: 2, // 최대 줄 수를 2로 설정
+                          overflow: TextOverflow.ellipsis,
                         ),
                         onTap: () {
                           showDialog(

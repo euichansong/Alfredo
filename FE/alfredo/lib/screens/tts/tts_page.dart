@@ -41,7 +41,6 @@ class TtsPage extends ConsumerWidget {
           Positioned(
             top: MediaQuery.of(context).size.height * 0,
             left: MediaQuery.of(context).size.height * 0.02,
-            right: MediaQuery.of(context).size.height * 0.42,
             child: Center(
               child: ElevatedButton(
                 style: ButtonStyle(
