@@ -42,7 +42,7 @@
 
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=SQLite&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;">
 
-#### CLOUD
+#### Cloud
 
 <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" style="height : auto; margin-left : 10px; margin-right : 10px;">
 
