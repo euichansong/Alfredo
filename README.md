@@ -96,8 +96,7 @@
 
 <hr>
 
-![tts](./gif/tts.gif)
-
+<img src="./gif/tts.gif" alt="tts" width="300"/>
 
 <br />
 
