@@ -32,7 +32,7 @@
 
 #### Front
 
-  <img src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white"style="height : auto; margin-left : 10px; margin-right : 10px;"> <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/>
+  <img src="https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"> <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=Axios&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/>
 
 
 #### Back
