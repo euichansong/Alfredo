@@ -58,3 +58,32 @@
 
 <img src="https://img.shields.io/badge/Jira-0052CC?style=for-the-badge&logo=Jira&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/GitLab-FC6D26?style=for-the-badge&logo=GitLab&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/> <img src="https://img.shields.io/badge/Mattermost-0058CC?style=for-the-badge&logo=Mattermost&logoColor=white" style="height : auto; margin-left : 10px; margin-right : 10px;"/>
 
+
+<details><summary> <b> 상세 기술스택 및 버전</b> </summary>
+
+| 구분     | 기술스택           | 상세내용              | 버전   |
+| -------- | ------------------ | --------------------- | ------ |
+| 공통     | Gitlab             | 형상관리              | \-     |
+|          | Jira               | 이슈관리              | \-     |
+|          | Mattermost, Notion | 커뮤니케이션          | \-     |
+| FrontEnd | Flutter            | 프론트 프레임워크     | 3.19.5 |
+|          | axios              | API 통신 라이브러리   | 1.6.7  |
+|          | IDE                | Visual Studio Code    | \-     |
+| BackEnd  | Java               | OpenJDK               | 17     |
+|          | Spring Boot        | Java Server Framework | 3.2.5  |
+|          | JPA                |                       | 3.2.4  |
+|          | IntelliJ           | IDE                   | \-     |
+|          | Flask              |                       | \-     |
+|          | OAuth2             |                       | \-     |
+|          | Gradle             | Build                 | 8.5    |
+| DB       | MySQL              | DBMS                  | 8.0.36 |
+|          | SQLLITE            |                       |        |
+| Cloud    | Firebase           |                       |        |      
+| Server   | AWS EC2            | Server                | \-     |
+|          | Nginx              |                       | 1.24.0 |
+|          | Docker             |                       | 25.0.4 |
+|          | Jenkins            |                       | 2.448  |
+
+</details>
+
+<br />
