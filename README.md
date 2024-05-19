@@ -410,8 +410,8 @@
 
 
 
-
-
+## ERD
+<img src="./gif/erd.png" alt="erd"/>
 
 ## 시스템 아키텍처
 <img src="./gif/시스템아키텍처.png" alt="시스템 아키텍처"/>
