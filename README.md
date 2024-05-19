@@ -320,3 +320,7 @@
     - SharedPreferences 활용해서 유저 디바이스에 현재 날짜 저장합니다.
 </details>
 
+
+## 시스템 아키텍처
+<img src="./gif/시스템아키텍처.png" alt="시스템 아키텍처"/>
+
