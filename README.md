@@ -92,10 +92,6 @@
 
 ## 실제 서비스 화면
 
-| 메인페이지(TTS 기능) | 할 일 |
-|----------------------|--------|
-| <hr> <img src="./gif/tts.gif" alt="tts" width="300"/> | <hr> <img src="./gif/todolist.gif" alt="todolist" width="300"/> |
-
 <details>
 <summary>tts(todo, 일정) open ai tts</summary>
 
@@ -112,6 +108,12 @@
 이러한 과정을 통해, 저희 앱은 사용자에게 정확한 TTS 기능을 제공하며, 사용자의 편의성을 높입니다.
 
 </details>
+
+| 메인페이지(TTS 기능) | 할 일 |
+|----------------------|--------|
+| <hr> <img src="./gif/tts.gif" alt="tts" width="300"/> | <hr> <img src="./gif/todolist.gif" alt="todolist" width="300"/> |
+
+
 
 | 일정 | 일정 알람 |
 |------|----------|
