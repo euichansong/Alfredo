@@ -197,32 +197,11 @@
   </tr>
 </table>
 
-
-<!-- ### 시작페이지(루틴 추천, 출석체크)
-<img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/>
-
-<details>
-<summary>루틴 추천(flask,cosine유사도)</summary>
-
-<img src="./gif/cosine.png" alt="cosine" width="350"/>
-
-- 유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.<br>
-- 파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.
-</details>
-
-<details>
-<summary>출석체크(푸시알림)</summary>
-
-- 사용자가 메인화면에 진입할 때, 출석 체크 및 최근 로그인 시간을 업데이트합니다.<br>
-- 사용자가 하루 중 맨 처음으로 메인화면에 진입할 때만, 유저의 해당 주 출석 캘린더 제공하는 모달을 띄워줍니다.<br>
-    - SharedPreferences 활용해서 유저 디바이스에 현재 날짜 저장합니다.
-</details> -->
-
 ### 할 일 등록
 
 <table style="width: 100%; table-layout: fixed;">
   <tr>
-    <td style="width: 300px; vertical-align: top;">
+    <td style="width: 320px; vertical-align: top;">
       <img src="./gif/투두영상.gif" alt="할 일" width="300" style="display: block;"/>
     </td>
     <td style="vertical-align: top;">
@@ -237,6 +216,7 @@
     </td>
   </tr>
 </table>
+
 
 
 
