@@ -220,12 +220,12 @@
 
 ### 할 일 등록
 
-<table>
+<table style="width: 100%;">
   <tr>
-    <td>
+    <td style="width: 300px; vertical-align: top;">
       <img src="./gif/투두영상.gif" alt="할 일" width="300"/>
     </td>
-    <td>
+    <td style="vertical-align: top;">
       <details>
         <summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
         <ul>
@@ -237,6 +237,7 @@
     </td>
   </tr>
 </table>
+
 
 
 
