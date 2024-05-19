@@ -239,23 +239,28 @@
 
 
 ### 할 일 완료, 음성서비스
-<img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="300"/>
-<details>
-<summary>음성서비스 tts(todo, 일정) open ai tts</summary>
 
-첫 번째로, 서버는 인증된 사용자의 당일 할 일과 일정 데이터를 문자열(String) 형태로 가공합니다.
+<table style="width: 100%; table-layout: fixed;">
+  <tr>
+    <td style="width: 320px; vertical-align: top;">
+      <img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="300" style="display: block;"/>
+    </td>
+    <td style="vertical-align: top;">
+      <details>
+        <summary>음성서비스 tts(todo, 일정) open ai tts</summary>
+        <ul>
+          <li>첫 번째로, 서버는 인증된 사용자의 당일 할 일과 일정 데이터를 문자열(String) 형태로 가공합니다.</li>
+          <li>두 번째로, 서버는 OpenAI의 TTS API를 호출하여 오디오 스트림 데이터를 받아옵니다.</li>
+          <li>세 번째로, 서버는 OpenAI로부터 받은 오디오 스트림 데이터를 수집하여 하나의 바이트 배열(byte array)로 변환합니다.</li>
+          <li>네 번째로, 변환된 오디오 데이터를 클라이언트에 스트리밍 방식으로 전달합니다.</li>
+          <li>마지막으로, 클라이언트는 수신한 오디오 데이터를 파일로 저장한 후 재생하여 데이터의 정확성을 보장합니다.</li>
+          <li>이러한 과정을 통해, 저희 앱은 사용자에게 정확한 TTS 기능을 제공하며, 사용자의 편의성을 높입니다.</li>
+        </ul>
+      </details>
+    </td>
+  </tr>
+</table>
 
-두 번째로, 서버는 OpenAI의 TTS API를 호출하여 오디오 스트림 데이터를 받아옵니다.
-
-세 번째로, 서버는 OpenAI로부터 받은 오디오 스트림 데이터를 수집하여 하나의 바이트 배열(byte array)로 변환합니다.
-
-네 번째로, 변환된 오디오 데이터를 클라이언트에 스트리밍 방식으로 전달합니다.
-
-마지막으로, 클라이언트는 수신한 오디오 데이터를 파일로 저장한 후 재생하여 데이터의 정확성을 보장합니다.
-
-이러한 과정을 통해, 저희 앱은 사용자에게 정확한 TTS 기능을 제공하며, 사용자의 편의성을 높입니다.
-
-</details>
 
 ### 일정 알람
 <img src="./gif/일정알람-영상.gif" alt="일정알람" width="300"/>
