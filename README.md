@@ -1,5 +1,3 @@
-![alfredo](./gif/alfredo.png)
-
 <img src="./gif/alfredo.png" alt="alfredo" style="width:100%; height:auto;">
 
 # 알프레도 Project
