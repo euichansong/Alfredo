@@ -222,7 +222,7 @@
 
 <table style="width: 100%; table-layout: fixed;">
   <tr>
-    <td style="width: 320px; vertical-align: top;">
+    <td style="width: 300px; vertical-align: top;">
       <img src="./gif/투두영상.gif" alt="할 일" width="300" style="display: block;"/>
     </td>
     <td style="vertical-align: top;">
@@ -237,6 +237,7 @@
     </td>
   </tr>
 </table>
+
 
 
 
