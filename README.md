@@ -190,7 +190,7 @@
 </details>
 
 ### 할 일 등록
-<img src="./gif/투두영상.gif" alt="할 일" width="700"/>
+<img src="./gif/투두영상.gif" alt="할 일" width="700px"/>
 
 <details>
 <summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
