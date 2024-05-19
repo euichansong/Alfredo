@@ -170,12 +170,12 @@
 ## 실제 서비스 화면
 
 ### 시작페이지(루틴 추천, 출석체크)
-<img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/>
+<img src="./gif/회원가입-영상.gif" alt="시작페이지" width="700"/>
 
 <details>
 <summary>루틴 추천(flask,cosine유사도)</summary>
 
-<img src="./gif/cosine.png" alt="cosine" width="300"/>
+<img src="./gif/cosine.png" alt="cosine" width="500"/>
 
 - 유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.<br>
 - 파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.
@@ -189,18 +189,26 @@
     - SharedPreferences 활용해서 유저 디바이스에 현재 날짜 저장합니다.
 </details>
 
-
-### 할 일, 음성서비스
-<img src="./gif/투두영상.gif" alt="할 일, tts" width="300"/>
-
-### 일정
-<img src="./gif/일정생성-달력-조회.gif" alt="일정" width="300"/>
-
-### 일정 알람
-<img src="./gif/일정알람-영상.gif" alt="일정알람" width="300"/>
+### 할 일 등록
+<img src="./gif/투두영상.gif" alt="할 일" width="700"/>
 
 <details>
-<summary>tts(todo, 일정) open ai tts</summary>
+<summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
+
+- timer : 할 일 별 타이머를 만들어 수행시간을 측정할 수 있는 기능을 만들었습니다. 또한 할 일 시간을 모두 더하여 5분 이상을 넘을 경우, 업적을 달성할 수 있도록 하였습니다.
+
+- 반복 등록, 수정, 삭제 : UUID를 사용한 subIndex를 활용하여 할 일을 반복해서 등록, 수정하고 삭제할 수 있는 기능을 만들었습니다. 처음 반복 등록할 때 사용자가 시작, 종료 날짜와 요일을 설정하면 해당하는 날짜 모두에 todolist가 등록될 수 있도록 했습니다. 반복 할 일 등록을 할 때만 subIndex를 생성하도록 설정하였고, subIndex를 통해 수정과 삭제가 한꺼번에 가능하도록 설정했습니다.
+
+- 4개월 테이블 분리 : 저희는 db조회속도 증가를 위해서 todo테이블과 oldtodo테이블 두 개의  todolist 관련 테이블을 만들었습니다. 새롭게 등록하는 todo는 우선적으로 todo테이블에 저장하도록 했습니다. 그리고 Scheduling을 활용하여, 매월 1일 오전 5시에 4개월 전의 데이터를 Oldtodo 라는 테이블로 이동하도록 함과 동시에 todo에서 4개월 전 데이터는 삭제하도록 구성했습니다.
+일정또한 같은 형식으로 관리하여, 일정 조회속도도 증가시킬 수 있었습니다.
+
+</details>
+
+
+### 할 일 완료, 음성서비스
+<img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="700"/>
+<details>
+<summary>음성서비스 tts(todo, 일정) open ai tts</summary>
 
 첫 번째로, 서버는 인증된 사용자의 당일 할 일과 일정 데이터를 문자열(String) 형태로 가공합니다.
 
@@ -216,27 +224,29 @@
 
 </details>
 
+### 일정 알람
+<img src="./gif/일정알람-영상.gif" alt="일정알람" width="700"/>
 <details>
-<summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
+<summary>일정(푸시알림)-fcm</summary>
 
-- timer : 할 일 별 타이머를 만들어 수행시간을 측정할 수 있는 기능을 만들었습니다. 또한 할 일 시간을 모두 더하여 5분 이상을 넘을 경우, 업적을 달성할 수 있도록 하였습니다.
-
-- 반복 등록, 수정, 삭제 : UUID를 사용한 subIndex를 활용하여 할 일을 반복해서 등록, 수정하고 삭제할 수 있는 기능을 만들었습니다. 처음 반복 등록할 때 사용자가 시작, 종료 날짜와 요일을 설정하면 해당하는 날짜 모두에 todolist가 등록될 수 있도록 했습니다. 반복 할 일 등록을 할 때만 subIndex를 생성하도록 설정하였고, subIndex를 통해 수정과 삭제가 한꺼번에 가능하도록 설정했습니다.
-
-- 4개월 테이블 분리 : 저희는 db조회속도 증가를 위해서 todo테이블과 oldtodo테이블 두 개의  todolist 관련 테이블을 만들었습니다. 새롭게 등록하는 todo는 우선적으로 todo테이블에 저장하도록 했습니다. 그리고 Scheduling을 활용하여, 매월 1일 오전 5시에 4개월 전의 데이터를 Oldtodo 라는 테이블로 이동하도록 함과 동시에 todo에서 4개월 전 데이터는 삭제하도록 구성했습니다.
-일정또한 같은 형식으로 관리하여, 일정 조회속도도 증가시킬 수 있었습니다.
+- 일정
+    - 사용자는 일정의 시작 종료 날짜를 선택하고, 하루 종일 선택하지 않은 경우 일정의 시작시간, 종료시간을 입력할 수 있습니다.
+    - 알림 사용 선택한 경우 일정 시작전 혹은 커스텀을 통해 원하는 시간에 알림을 받을 수 있습니다.
+- FCM
+    - Quartz를 사용해 구현했습니다.
+        - Quartz - java 기반 작업 스케쥴링 라이브러리
+    - 구동 순서
+        1. Job으로 보낼 메세지 정의합니다.
+        2. SimpleTrigger로  알림시간 설정합니다.
+        3. Scheduler로 Job과 trigger를 연결후 실행합니다.
 
 </details>
 
+### 일정
+<img src="./gif/일정생성-달력-조회.gif" alt="일정" width="700"/>
 
-
-
-
-<br />
-
-
-
-
+### 캘린더
+<img src="./gif/캘린더-기능.gif" alt="캘린더" width="700"/>
 <details>
 <summary>캘린더_ical(kakao,google 캘린더)</summary>
 
@@ -262,6 +272,16 @@
 
 </details>
 
+
+
+
+
+<br />
+
+
+
+
+
 <details>
 <summary>업적, 상점(재미요소)</summary>
 
@@ -277,21 +297,7 @@
 </details>
 
 
-<details>
-<summary>일정(푸시알림)-fcm</summary>
 
-- 일정
-    - 사용자는 일정의 시작 종료 날짜를 선택하고, 하루 종일 선택하지 않은 경우 일정의 시작시간, 종료시간을 입력할 수 있습니다.
-    - 알림 사용 선택한 경우 일정 시작전 혹은 커스텀을 통해 원하는 시간에 알림을 받을 수 있습니다.
-- FCM
-    - Quartz를 사용해 구현했습니다.
-        - Quartz - java 기반 작업 스케쥴링 라이브러리
-    - 구동 순서
-        1. Job으로 보낼 메세지 정의합니다.
-        2. SimpleTrigger로  알림시간 설정합니다.
-        3. Scheduler로 Job과 trigger를 연결후 실행합니다.
-
-</details>
 
 
 <details>
