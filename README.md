@@ -170,12 +170,12 @@
 ## 실제 서비스 화면
 
 ### 시작페이지(루틴 추천, 출석체크)
-<img src="./gif/회원가입-영상.gif" alt="시작페이지" width="700"/>
+<img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/>
 
 <details>
 <summary>루틴 추천(flask,cosine유사도)</summary>
 
-<img src="./gif/cosine.png" alt="cosine" width="500"/>
+<img src="./gif/cosine.png" alt="cosine" width="350"/>
 
 - 유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.<br>
 - 파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.
@@ -190,7 +190,7 @@
 </details>
 
 ### 할 일 등록
-<img src="./gif/투두영상.gif" alt="할 일" width="400"/>
+<img src="./gif/투두영상.gif" alt="할 일" width="300"/>
 
 <details>
 <summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
@@ -206,7 +206,7 @@
 
 
 ### 할 일 완료, 음성서비스
-<img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="400"/>
+<img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="300"/>
 <details>
 <summary>음성서비스 tts(todo, 일정) open ai tts</summary>
 
@@ -225,7 +225,7 @@
 </details>
 
 ### 일정 알람
-<img src="./gif/일정알람-영상.gif" alt="일정알람" width="400"/>
+<img src="./gif/일정알람-영상.gif" alt="일정알람" width="300"/>
 <details>
 <summary>일정(푸시알림)-fcm</summary>
 
@@ -243,14 +243,14 @@
 </details>
 
 ### 일정
-<img src="./gif/일정생성-달력-조회.gif" alt="일정" width="400"/>
+<img src="./gif/일정생성-달력-조회.gif" alt="일정" width="300"/>
 
 ### 루틴
-<img src="./gif/루틴움짤.gif" alt="일정" width="400"/>
+<img src="./gif/루틴움짤.gif" alt="일정" width="300"/>
 
 
 ### 캘린더
-<img src="./gif/캘린더-기능.gif" alt="캘린더" width="400"/>
+<img src="./gif/캘린더-기능.gif" alt="캘린더" width="300"/>
 <details>
 <summary>캘린더_ical(kakao,google 캘린더)</summary>
 
@@ -276,9 +276,9 @@
 </details>
 
 ### 업적
-<img src="./gif/생일-알림-및-업적-리스트.gif" alt="업적" width="400"/>
+<img src="./gif/생일-알림-및-업적-리스트.gif" alt="업적" width="300"/>
 ### 상점
-<img src="./gif/상점-캐릭-배경-변경.gif" alt="상점" width="400"/>
+<img src="./gif/상점-캐릭-배경-변경.gif" alt="상점" width="300"/>
 <details>
 <summary>업적, 상점(재미요소)</summary>
 
