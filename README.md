@@ -100,6 +100,6 @@
 |------|----------|
 | <hr> <img src="./gif/schedule.gif" alt="schedule" width="300"/> | <hr> <img src="./gif/schedule_alarm.gif" alt="schedule_alarm" width="300"/> |
 
-<br />
+<!-- <br /> -->
 
 
