@@ -1,4 +1,4 @@
-![img01](https://github.com/Sungju-Cho/ssafypractice01/assets/139518254/0f85eece-37da-4c93-9fad-6ed834fc8477)
+<img src="./gif/alfredo.png" alt="alfredo"/>
 
 # 알프레도 Project
 
