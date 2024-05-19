@@ -169,19 +169,6 @@
 
 ## 실제 서비스 화면
 
-
-| 시작페이지 | 기능상세설명 |
-|------------|---------------|
-| <img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/> | <details><summary>루틴 추천(flask,cosine유사도)</summary><img src="./gif/cosine.png" alt="cosine" width="350"/><ul><li>유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.</li><li>파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.</li></ul></details><details><summary>출석체크(푸시알림)</summary><ul><li>사용자가 메인화면에 진입할 때, 출석 체크 및 최근 로그인 시간을 업데이트합니다.</li><li>사용자가 하루 중 맨 처음으로 메인화면에 진입할 때만, 유저의 해당 주 출석 캘린더를 제공하는 모달을 띄워줍니다.</li><li>SharedPreferences를 활용해서 유저 디바이스에 현재 날짜를 저장합니다.</li></ul></details> |
-
-### 할 일 등록
-
-| 할 일 등록 | 기능상세설명 |
-|------------|--------------|
-| <img src="./gif/투두영상.gif" alt="할 일" width="300"/> | <details><summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary><ul><li><strong>timer</strong>: 할 일 별 타이머를 만들어 수행시간을 측정할 수 있는 기능을 만들었습니다. 또한 할 일 시간을 모두 더하여 5분 이상을 넘을 경우, 업적을 달성할 수 있도록 하였습니다.</li><li><strong>반복 등록, 수정, 삭제</strong>: UUID를 사용한 subIndex를 활용하여 할 일을 반복해서 등록, 수정하고 삭제할 수 있는 기능을 만들었습니다. 처음 반복 등록할 때 사용자가 시작, 종료 날짜와 요일을 설정하면 해당하는 날짜 모두에 todolist가 등록될 수 있도록 했습니다. 반복 할 일 등록을 할 때만 subIndex를 생성하도록 설정하였고, subIndex를 통해 수정과 삭제가 한꺼번에 가능하도록 설정했습니다.</li><li><strong>4개월 테이블 분리</strong>: 저희는 db조회속도 증가를 위해서 todo테이블과 oldtodo테이블 두 개의 todolist 관련 테이블을 만들었습니다. 새롭게 등록하는 todo는 우선적으로 to
-
-
-
 ### 시작페이지(루틴 추천, 출석체크)
 
 <table>
@@ -276,22 +263,42 @@
 
 
 ### 일정 알람
-<img src="./gif/일정알람-영상.gif" alt="일정알람" width="300"/>
-<details>
-<summary>일정(푸시알림)-fcm</summary>
 
-- 일정
-    - 사용자는 일정의 시작 종료 날짜를 선택하고, 하루 종일 선택하지 않은 경우 일정의 시작시간, 종료시간을 입력할 수 있습니다.
-    - 알림 사용 선택한 경우 일정 시작전 혹은 커스텀을 통해 원하는 시간에 알림을 받을 수 있습니다.
-- FCM
-    - Quartz를 사용해 구현했습니다.
-        - Quartz - java 기반 작업 스케쥴링 라이브러리
-    - 구동 순서
-        1. Job으로 보낼 메세지 정의합니다.
-        2. SimpleTrigger로  알림시간 설정합니다.
-        3. Scheduler로 Job과 trigger를 연결후 실행합니다.
+<table style="width: 100%; table-layout: fixed;">
+  <tr>
+    <td style="width: 320px; vertical-align: top;">
+      <img src="./gif/일정알람-영상.gif" alt="일정알람" width="300" style="display: block;"/>
+    </td>
+    <td style="vertical-align: top;">
+      <details>
+        <summary>일정(푸시알림)-fcm</summary>
+        <ul>
+          <li><strong>일정</strong>
+            <ul>
+              <li>사용자는 일정의 시작 종료 날짜를 선택하고, 하루 종일 선택하지 않은 경우 일정의 시작시간, 종료시간을 입력할 수 있습니다.</li>
+              <li>알림 사용 선택한 경우 일정 시작전 혹은 커스텀을 통해 원하는 시간에 알림을 받을 수 있습니다.</li>
+            </ul>
+          </li>
+          <li><strong>FCM</strong>
+            <ul>
+              <li>Quartz를 사용해 구현했습니다.</li>
+              <ul>
+                <li>Quartz - java 기반 작업 스케쥴링 라이브러리</li>
+              </ul>
+              <li>구동 순서</li>
+              <ul>
+                <li>Job으로 보낼 메세지를 정의합니다.</li>
+                <li>SimpleTrigger로 알림시간을 설정합니다.</li>
+                <li>Scheduler로 Job과 trigger를 연결후 실행합니다.</li>
+              </ul>
+            </ul>
+          </li>
+        </ul>
+      </details>
+    </td>
+  </tr>
+</table>
 
-</details>
 
 ### 일정
 <img src="./gif/일정생성-달력-조회.gif" alt="일정" width="300"/>
