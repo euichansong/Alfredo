@@ -50,7 +50,7 @@
   <tr> 
     <td align="center">
       할 일 컴포넌트 FE/BE구현<br>
-      요일별 할 일 완료 API구현<br>
+      요일별 할 일 완료 개수 API구현<br>
       유저별 전체 수행시간 API 구현<br>
       데이터 분할 관리 구현<br>
       업적 페이지 FE 구현
