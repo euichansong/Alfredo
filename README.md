@@ -2,7 +2,7 @@
 
 <br>
 
-<img src="./gif/alfredo.png" alt="alfredo" style="width:100%; height:auto;">
+<img src="./gif/alfredo1.png" alt="alfredo1" style="width:100%; height:auto;">
 
 
 
