@@ -92,32 +92,13 @@
 
 ## 실제 서비스 화면
 
-#### 메인페이지(TTS 기능)
+| 메인페이지(TTS 기능) | 할 일 |
+|----------------------|--------|
+| <hr> <img src="./gif/tts.gif" alt="tts" width="300"/> | <hr> <img src="./gif/todolist.gif" alt="todolist" width="300"/> |
 
-<hr>
-
-<img src="./gif/tts.gif" alt="tts" width="300"/>
-
-<br />
-
-#### 할 일
-
-<hr>
-
-<img src="./gif/todolist.gif" alt="todolist" width="300"/>
-
-<br />
-
-#### 일정
-<hr>
-
-<img src="./gif/schedule.gif" alt="schedule" width="300"/>
-
-<br />
-
-### 일정 알람
-
-<img src="./gif/schedule_alarm.gif" alt="schedule_alarm" width="300"/>
+| 일정 | 일정 알람 |
+|------|----------|
+| <hr> <img src="./gif/schedule.gif" alt="schedule" width="300"/> | <hr> <img src="./gif/schedule_alarm.gif" alt="schedule_alarm" width="300"/> |
 
 <br />
 
