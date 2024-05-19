@@ -190,7 +190,7 @@
 </details>
 
 ### 할 일 등록
-<img src="./gif/투두영상.gif" alt="할 일" width="700px"/>
+<img src="./gif/투두영상.gif" alt="할 일" width="400"/>
 
 <details>
 <summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
@@ -206,7 +206,7 @@
 
 
 ### 할 일 완료, 음성서비스
-<img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="700"/>
+<img src="./gif/할일-체크-집사-대화.gif" alt="할 일 체크, tts" width="400"/>
 <details>
 <summary>음성서비스 tts(todo, 일정) open ai tts</summary>
 
@@ -225,7 +225,7 @@
 </details>
 
 ### 일정 알람
-<img src="./gif/일정알람-영상.gif" alt="일정알람" width="700"/>
+<img src="./gif/일정알람-영상.gif" alt="일정알람" width="400"/>
 <details>
 <summary>일정(푸시알림)-fcm</summary>
 
@@ -243,10 +243,14 @@
 </details>
 
 ### 일정
-<img src="./gif/일정생성-달력-조회.gif" alt="일정" width="700"/>
+<img src="./gif/일정생성-달력-조회.gif" alt="일정" width="400"/>
+
+### 루틴
+<img src="./gif/루틴움짤.gif" alt="일정" width="400"/>
+
 
 ### 캘린더
-<img src="./gif/캘린더-기능.gif" alt="캘린더" width="700"/>
+<img src="./gif/캘린더-기능.gif" alt="캘린더" width="400"/>
 <details>
 <summary>캘린더_ical(kakao,google 캘린더)</summary>
 
@@ -269,19 +273,12 @@
 - 모형 month: 각 날짜 누르거나 위로 올리면 컴포넌트를 볼 수 있는 공간이 나옵니다., 위로 한번더 올리면 위 공간이 선택한 날 기준 1주로 바뀌며 컴포넌트를 보는 공간이 늘어남
 
 - 모형 schedule: 무한 스크롤로 데이터를 계속 볼 수 있습니다.
-
 </details>
 
-
-
-
-
-<br />
-
-
-
-
-
+### 업적
+<img src="./gif/생일-알림-및-업적-리스트.gif" alt="업적" width="400"/>
+### 상점
+<img src="./gif/상점-캐릭-배경-변경.gif" alt="상점" width="400"/>
 <details>
 <summary>업적, 상점(재미요소)</summary>
 
@@ -296,22 +293,6 @@
 
 </details>
 
-
-
-
-
-<details>
-<summary>시스템 아키텍쳐</summary>
-
-1. **GitLab Webhook을 통한 Jenkins CI/CD**:
-    - GitLab의 Webhook을 사용하여 Jenkins에서 CI/CD 파이프라인을 트리거합니다. 이를 통해 코드가 커밋되면 자동으로 빌드 및 배포가 이루어집니다.
-2. **개발 서버와 배포 서버의 트래픽 분리**:
-    - NGINX 리버스 프록시를 사용하여 개발 서버(dev.myalfredo.me)와 배포 서버(myalfredo.me)의 트래픽을 분리합니다.
-    - 배포 서버는 포트 8080에서, 개발 서버는 포트 8082에서 각각 Spring 애플리케이션으로의 요청을 처리합니다.
-3. **Docker 네트워크 구성을 통한 외부 통신 차단**:
-    - Docker 네트워크를 사용하여 각 서비스 간의 내부 통신을 관리하고, 외부 네트워크로의 접근을 제한합니다.
-    - 배포와 개발 환경 모두에서 독립적인 네트워크를 사용하여 격리된 환경을 제공합니다.
-</details>
 
 
 <details>
@@ -335,8 +316,37 @@
 
 
 
+<br />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## 시스템 아키텍처
 <img src="./gif/시스템아키텍처.png" alt="시스템 아키텍처"/>
+
+<details>
+<summary>시스템 아키텍쳐</summary>
+
+1. **GitLab Webhook을 통한 Jenkins CI/CD**:
+    - GitLab의 Webhook을 사용하여 Jenkins에서 CI/CD 파이프라인을 트리거합니다. 이를 통해 코드가 커밋되면 자동으로 빌드 및 배포가 이루어집니다.
+2. **개발 서버와 배포 서버의 트래픽 분리**:
+    - NGINX 리버스 프록시를 사용하여 개발 서버(dev.myalfredo.me)와 배포 서버(myalfredo.me)의 트래픽을 분리합니다.
+    - 배포 서버는 포트 8080에서, 개발 서버는 포트 8082에서 각각 Spring 애플리케이션으로의 요청을 처리합니다.
+3. **Docker 네트워크 구성을 통한 외부 통신 차단**:
+    - Docker 네트워크를 사용하여 각 서비스 간의 내부 통신을 관리하고, 외부 네트워크로의 접근을 제한합니다.
+    - 배포와 개발 환경 모두에서 독립적인 네트워크를 사용하여 격리된 환경을 제공합니다.
+</details>
 
 
 ## 협업 관리
