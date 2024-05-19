@@ -206,7 +206,7 @@
 
 | 일정 | 일정 알람 |
 |------|----------|
-| <hr> <img src="./gif/schedule.gif" alt="schedule" width="300"/> | <hr> <img src="./gif/schedule_alarm.gif" alt="schedule_alarm" width="300"/> |
+| <hr> <img src="./gif/schedule.gif" alt="schedule" width="300"/> | <hr> <img src="./gif/test.gif" alt="test" width="300"/> |
 
 
 
@@ -324,3 +324,45 @@
 ## 시스템 아키텍처
 <img src="./gif/시스템아키텍처.png" alt="시스템 아키텍처"/>
 
+
+## 협업 관리
+
+### Git Flow
+git flow 사용을 위해 우아한 형제들의 git flow 사용을 참고했습니다. 각자 맡은 기능에 맞게 feature 브랜치를 생성하고, 완료된 기능은 develop에 merge하여 사용했습니다. 충돌 상황을 최소화하고자 매일 오전 스크럼에 develop 최신 버전을 pull받고 시작할 것을 강조했습니다.<br/>
+**브랜치 작성 방법** : `FE/feature/기능이름 or BE/feature/기능이름`<br/>
+**예시** : FE/feature/user
+
+#### commit convention
+
+##### 커밋 타입
+| 타입     | 설명                                   |
+|----------|----------------------------------------|
+| Feat     | 새로운 기능 추가                       |
+| Fix      | 버그 수정                              |
+| Refactor | 코드 리팩토링                          |
+| Test     | 테스트 코드 추가, 테스트 코드 리팩토링 |
+| Rename   | 파일명(or 폴더명) 수정                 |
+| Move     | 파일 또는 폴더 경로 변경               |
+| Remove   | 코드 또는 파일 삭제                    |
+| Depend   | 의존성 추가, 삭제                      |
+| Conf     | 설정 파일 변경                         |
+| Comment  | 주석 수정                              |
+| Docs     | 문서 수정 (ex README.md)               |
+| Design   | CSS 수정                               |
+| Chore    | 기타 작업                              |
+| Init     | 초기 생성                              |
+
+
+### 📋 Jira
+
+매주 월요일 오전 데일리 스크럼에서 차주에 진행되어야 할 이슈를 백로그에 등록했습니다. 금주에 완료하지 못한 이슈나, 앞으로 진행할 이슈들을 추가했습니다.
+
+- 에픽은 가장 큰 단위 기준으로 구성하였습니다.
+
+- 스토리는 실제 유저 플로우를 고려하여 `홈페이지에서 로그인 창을 통해 로그인 한다` 와 같이 작성하였으며,
+
+- 이슈는 스토리를 완료하기 위한 작은 업무 단위로 생성했습니다.
+- 에픽링크 태그를 사용하여 이슈를 구별하기 쉽게 했습니다.
+- 무엇보다 담당자와 스토리 포인트 설정, 현재 작업중인 내용 지라에 실시간으로 반영하는 것을 가장 중요하게 생각했습니다.
+
+<br/>
