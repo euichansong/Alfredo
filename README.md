@@ -360,6 +360,7 @@
   </tr>
 </table>
 
+### 업적
 <table style="width: 100%; table-layout: fixed;">
   <tr>
     <td style="width: 320px; vertical-align: top;">
@@ -392,7 +393,7 @@
 
 ### 상점
 <img src="./gif/상점-캐릭-배경-변경.gif" alt="상점" width="300"/>
-<details>
+
 
 
 ### 마이페이지
@@ -405,20 +406,7 @@
 
 
 
-
-
-
-
 <br />
-
-
-
-
-
-
-
-
-
 
 
 
