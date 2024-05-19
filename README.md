@@ -220,23 +220,24 @@
 
 ### 할 일 등록
 
-<table>
+<table style="width: 100%; table-layout: fixed;">
   <tr>
-    <td>
-      <img src="./gif/투두영상.gif" alt="할 일" width="300"/>
+    <td style="width: 320px; vertical-align: top;">
+      <img src="./gif/투두영상.gif" alt="할 일" width="300" style="display: block;"/>
     </td>
-    <td>
+    <td style="vertical-align: top;">
       <details>
         <summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
         <ul>
-          <li>timer: 할 일 별 타이머를 만들어 수행시간을 측정할 수 있는 기능을 만들었습니다. 또한 할 일 시간을 모두 더하여 5분 이상을 넘을 경우, 업적을 달성할 수 있도록 하였습니다.</li>
-          <li>반복 등록, 수정, 삭제: UUID를 사용한 subIndex를 활용하여 할 일을 반복해서 등록, 수정하고 삭제할 수 있는 기능을 만들었습니다. 처음 반복 등록할 때 사용자가 시작, 종료 날짜와 요일을 설정하면 해당하는 날짜 모두에 todolist가 등록될 수 있도록 했습니다. 반복 할 일 등록을 할 때만 subIndex를 생성하도록 설정하였고, subIndex를 통해 수정과 삭제가 한꺼번에 가능하도록 설정했습니다.</li>
-          <li>4개월 테이블 분리: 저희는 db조회속도 증가를 위해서 todo테이블과 oldtodo테이블 두 개의 todolist 관련 테이블을 만들었습니다. 새롭게 등록하는 todo는 우선적으로 todo테이블에 저장하도록 했습니다. 그리고 Scheduling을 활용하여, 매월 1일 오전 5시에 4개월 전의 데이터를 Oldtodo라는 테이블로 이동하도록 함과 동시에 todo에서 4개월 전 데이터는 삭제하도록 구성했습니다. 일정 또한 같은 형식으로 관리하여, 일정 조회 속도도 증가시킬 수 있었습니다.</li>
+          <li><strong>timer</strong>: 할 일 별 타이머를 만들어 수행시간을 측정할 수 있는 기능을 만들었습니다. 또한 할 일 시간을 모두 더하여 5분 이상을 넘을 경우, 업적을 달성할 수 있도록 하였습니다.</li>
+          <li><strong>반복 등록, 수정, 삭제</strong>: UUID를 사용한 subIndex를 활용하여 할 일을 반복해서 등록, 수정하고 삭제할 수 있는 기능을 만들었습니다. 처음 반복 등록할 때 사용자가 시작, 종료 날짜와 요일을 설정하면 해당하는 날짜 모두에 todolist가 등록될 수 있도록 했습니다. 반복 할 일 등록을 할 때만 subIndex를 생성하도록 설정하였고, subIndex를 통해 수정과 삭제가 한꺼번에 가능하도록 설정했습니다.</li>
+          <li><strong>4개월 테이블 분리</strong>: 저희는 db조회속도 증가를 위해서 todo테이블과 oldtodo테이블 두 개의 todolist 관련 테이블을 만들었습니다. 새롭게 등록하는 todo는 우선적으로 todo테이블에 저장하도록 했습니다. 그리고 Scheduling을 활용하여, 매월 1일 오전 5시에 4개월 전의 데이터를 Oldtodo라는 테이블로 이동하도록 함과 동시에 todo에서 4개월 전 데이터는 삭제하도록 구성했습니다. 일정 또한 같은 형식으로 관리하여, 일정 조회 속도도 증가시킬 수 있었습니다.</li>
         </ul>
       </details>
     </td>
   </tr>
 </table>
+
 
 
 
