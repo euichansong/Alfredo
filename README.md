@@ -1,8 +1,10 @@
-<img src="./gif/alfredo.png" alt="alfredo" style="width:100%; height:auto;">
-
-# 알프레도 Project
+# 알프레도
 
 <br>
+
+<img src="./gif/alfredo.png" alt="alfredo" style="width:100%; height:auto;">
+
+
 
 ## 👪 개발 멤버 소개
 
