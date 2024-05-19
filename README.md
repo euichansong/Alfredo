@@ -1,4 +1,4 @@
-<img src="./gif/alfredo.png" alt="alfredo"/>
+<img src="./gif/alfredo.png" alt="alfredo" style="width:100%; height:auto;/>
 
 # 알프레도 Project
 
