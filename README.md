@@ -168,8 +168,25 @@
 
 
 ## 실제 서비스 화면
+<table>
+  <tr>
+    <td>
+      <img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/>
+    </td>
+    <td>
+      <details>
+        <summary>루틴 추천(flask,cosine유사도)</summary>
+        <img src="./gif/cosine.png" alt="cosine" width="350"/>
+        <ul>
+          <li>유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.</li>
+          <li>파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.</li>
+        </ul>
+      </details>
+    </td>
+  </tr>
+</table>
 
-### 시작페이지(루틴 추천, 출석체크)
+<!-- ### 시작페이지(루틴 추천, 출석체크)
 <img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/>
 
 <details>
@@ -179,7 +196,7 @@
 
 - 유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.<br>
 - 파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.
-</details>
+</details> -->
 
 <details>
 <summary>출석체크(푸시알림)</summary>
