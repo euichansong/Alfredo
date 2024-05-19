@@ -446,22 +446,71 @@ git flow 사용을 위해 우아한 형제들의 git flow 사용을 참고했습
 - **feature** : 기능 단위 개발을 위한 브랜치로 develop에서 분기하여 개발이 끝나면 각각 베이스 브랜치로 병합됩니다.
 
 #### 커밋 타입
-| 타입     | 설명                                   |
-|----------|----------------------------------------|
-| Feat     | 새로운 기능 추가                       |
-| Fix      | 버그 수정                              |
-| Refactor | 코드 리팩토링                          |
-| Test     | 테스트 코드 추가, 테스트 코드 리팩토링 |
-| Rename   | 파일명(or 폴더명) 수정                 |
-| Move     | 파일 또는 폴더 경로 변경               |
-| Remove   | 코드 또는 파일 삭제                    |
-| Depend   | 의존성 추가, 삭제                      |
-| Conf     | 설정 파일 변경                         |
-| Comment  | 주석 수정                              |
-| Docs     | 문서 수정 (ex README.md)               |
-| Design   | CSS 수정                               |
-| Chore    | 기타 작업                              |
-| Init     | 초기 생성                              |
+<details>
+  <summary>커밋 타입</summary>
+  <table>
+    <tr>
+      <th>타입</th>
+      <th>설명</th>
+    </tr>
+    <tr>
+      <td>Feat</td>
+      <td>새로운 기능 추가</td>
+    </tr>
+    <tr>
+      <td>Fix</td>
+      <td>버그 수정</td>
+    </tr>
+    <tr>
+      <td>Refactor</td>
+      <td>코드 리팩토링</td>
+    </tr>
+    <tr>
+      <td>Test</td>
+      <td>테스트 코드 추가, 테스트 코드 리팩토링</td>
+    </tr>
+    <tr>
+      <td>Rename</td>
+      <td>파일명(or 폴더명) 수정</td>
+    </tr>
+    <tr>
+      <td>Move</td>
+      <td>파일 또는 폴더 경로 변경</td>
+    </tr>
+    <tr>
+      <td>Remove</td>
+      <td>코드 또는 파일 삭제</td>
+    </tr>
+    <tr>
+      <td>Depend</td>
+      <td>의존성 추가, 삭제</td>
+    </tr>
+    <tr>
+      <td>Conf</td>
+      <td>설정 파일 변경</td>
+    </tr>
+    <tr>
+      <td>Comment</td>
+      <td>주석 수정</td>
+    </tr>
+    <tr>
+      <td>Docs</td>
+      <td>문서 수정 (ex README.md)</td>
+    </tr>
+    <tr>
+      <td>Design</td>
+      <td>CSS 수정</td>
+    </tr>
+    <tr>
+      <td>Chore</td>
+      <td>기타 작업</td>
+    </tr>
+    <tr>
+      <td>Init</td>
+      <td>초기 생성</td>
+    </tr>
+  </table>
+</details>
 
 
 ### 📋 Jira
