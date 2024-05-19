@@ -198,15 +198,15 @@
 
 </details>
 
-| 메인페이지(TTS 기능) | 할 일 |
-|----------------------|--------|
-| <hr> <img src="./gif/tts.gif" alt="tts" width="300"/> | <hr> <img src="./gif/todolist.gif" alt="todolist" width="300"/> |
+| 시작페이지(루틴 추천, 출석체크) | 할 일, 음성서비스 |
+|------------------------------|--------|
+| <hr> <img src="./gif/회원가입-영상.gif" alt="시작페이지" width="300"/> | <hr> <img src="./할일-체크-집사-대화.gif" alt="할 일, tts" width="300"/> |
 
 
 
 | 일정 | 일정 알람 |
 |------|----------|
-| <hr> <img src="./gif/schedule.gif" alt="schedule" width="300"/> | <hr> <img src="./gif/test.gif" alt="test" width="300"/> |
+| <hr> <img src="./gif/일정생성-달력-조회.gif" alt="일정" width="300"/> | <hr> <img src="./gif/일정알람-영상" alt="일정알람" width="300"/> |
 
 
 
