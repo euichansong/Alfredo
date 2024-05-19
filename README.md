@@ -222,10 +222,10 @@
 
 <table style="width: 100%; table-layout: fixed;">
   <tr>
-    <td style="width: 320px; vertical-align: top;">
+    <td style="width: 300px; vertical-align: top;">
       <img src="./gif/투두영상.gif" alt="할 일" width="300"/>
     </td>
-    <td style="vertical-align: top;">
+    <td style="vertical-align: top; overflow: hidden;">
       <details>
         <summary>todo-timer, 반복 등록*수정*삭제, db조회속도 증가를 위한 4개월 테이블 분리</summary>
         <ul>
