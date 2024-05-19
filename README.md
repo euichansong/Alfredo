@@ -135,6 +135,17 @@
 
 
 
-<!-- <br /> -->
+<br />
+
+
+<details>
+<summary>루틴 추천(flask,cosine유사도)</summary>
+
+<img src="./gif/cosine.png" alt="cosine" width="300"/>
+
+- 유저의 설문조사 답변을 기반으로 가장 유사한 유저들을 찾아, 그들이 사용하는 기본 루틴을 추천합니다.
+- 파이썬의 다양한 라이브러리들을 활용하기 위해 따로 flask서버를 구축하고 메인서버인 spring boot 서버와 통신합니다.
+
+</details>
 
 
