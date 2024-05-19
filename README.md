@@ -304,9 +304,31 @@
 <img src="./gif/일정생성-달력-조회.gif" alt="일정" width="300"/>
 
 ### 루틴
-<img src="./gif/루틴움짤.gif" alt="일정" width="300"/>
+<table style="width: 100%; table-layout: fixed;">
+  <tr>
+    <td style="width: 320px; vertical-align: top;">
+      <img src="./gif/루틴움짤.gif" alt="일정" width="300" style="display: block;"/>
+    </td>
+    <td style="vertical-align: top;">
+      <details>
+        <summary>루틴(푸시알림)-fcm, 기본루틴</summary>
+        <ul>
+          <li>루틴 제목, 시간, 요일, 메모 설정으로 루틴을 생성할 수 있습니다.</li>
+          <li>루틴 리스트로 설정된 루틴 확인 및 수정, 삭제 기능이 있습니다.</li>
+          <li>기본루틴 뱃지 선택을 통해, 시간, 요일 등의 기본설정으로 루틴 생성에 도움을 줍니다. (추후 루틴 추천에 활용)</li>
+          <li>FCM으로 설정된 루틴 시간에 푸시알람을 보내줍니다. (포그라운드, 백그라운드알람)
+            <ul>
+              <li>유저 로그인 시, FCM 토큰(기기 토큰)을 유저 정보에 저장합니다.</li>
+              <li>@scheduled, cron표현식으로 매 분 마다, 현재시간과 루틴 시간을 비교하여 같은 경우 FCM에 알림을 요청합니다. (FCM 토큰과 routine 제목을 넘겨 줍니다.)</li>
+            </ul>
+          </li>
+        </ul>
+      </details>
+    </td>
+  </tr>
+</table>
 
-
+### 캘린더
 <table style="width: 100%; table-layout: fixed;">
   <tr>
     <td style="width: 320px; vertical-align: top;">
@@ -338,26 +360,42 @@
   </tr>
 </table>
 
-### 업적
-<img src="./gif/생일-알림-및-업적-리스트.gif" alt="업적" width="300"/>
+<table style="width: 100%; table-layout: fixed;">
+  <tr>
+    <td style="width: 320px; vertical-align: top;">
+      <img src="./gif/생일-알림-및-업적-리스트.gif" alt="업적" width="300" style="display: block;"/>
+    </td>
+    <td style="vertical-align: top;">
+      <details>
+        <summary>업적, 상점(재미요소)</summary>
+        <ul>
+          <li><strong>업적</strong>
+            <ul>
+              <li>사용자가 특정 조건을 만족하면 업적 자동으로 달성합니다.</li>
+              <ul>
+                <li>총 일정의 갯수, 총 출석일수, 로그인한 날이 생일인 경우 등등</li>
+              </ul>
+              <li>업적 달성시 푸쉬알림과 함께 50개의 코인 얻을 수 있습니다.</li>
+            </ul>
+          </li>
+          <li><strong>코인</strong>
+            <ul>
+              <li>업적 1개 달성시 50개 획득</li>
+              <li>할 일을 체크하면 5개씩 하루에 최대 50개 얻을 수 있습니다.</li>
+            </ul>
+          </li>
+        </ul>
+      </details>
+    </td>
+  </tr>
+</table>
+
 ### 상점
 <img src="./gif/상점-캐릭-배경-변경.gif" alt="상점" width="300"/>
 <details>
-<summary>업적, 상점(재미요소)</summary>
-
-- 업적
-    - 사용자가 특정 조건을 만족하면 업적 자동으로 달성합니다.
-        - 총 일정의 갯수, 총 출석일수, 로그인한 날이 생일인 경우 등등
-    - 업적 달성시 푸쉬알림과 함께 50개의 코인 얻을 수 있습니다.
-- 코인
-    - 업적 1개 달성시 50개 획득
-    - 할 일을 체크하면 5개씩 하루에 최대 50개 얻을 수 있습니다.
-- 상점
-
-</details>
 
 
-
+### 마이페이지
 <details>
 <summary>마이페이지(ical링크 등록, 할 일 개수 차트)</summary>
 
@@ -365,15 +403,7 @@
 - 완료한 할 일 개수를 차트에서 1주일 단위로 보여줍니다.
 </details>
 
-<details>
-<summary>루틴(푸시알림)-fcm, 기본루틴</summary>
-- 루틴 제목,시간,요일,메모 설정으로 루틴을 생성할 수 있습니다.
-- 루틴 리스트로 설정된 루틴 확인 및 수정,삭제 기능이 있습니다.
-- 기본루틴 뱃지 선택을 통해, 시간,요일 등의 기본설정으로 루틴생성에 도움을 줍니다.(추후 루틴 추천에 활용)
-- FCM으로 설정된 루틴 시간에 푸시알람을 보내줍니다.(포그라운드, 백그라운드알람)
-    - 유저 로그인 시, FCM 토큰(기기 토큰)을 유저 정보에 저장합니다.
-    - @scheduled, cron표현식으로 매 분 마다, 현재시간과 루틴 시간을 비교하여 같은 경우 FCM에 알림을 요청합니다.(FCM 토큰과 routine제목을 넘겨 줍니다.)
-</details>
+
 
 
 
