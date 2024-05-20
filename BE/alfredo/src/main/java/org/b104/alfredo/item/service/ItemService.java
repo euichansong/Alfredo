@@ -73,6 +73,8 @@ public class ItemService {
         }
 
         userItemStatusRepository.save(userItemStatus);
+        System.out.println("확인");
+
     }
 
 
