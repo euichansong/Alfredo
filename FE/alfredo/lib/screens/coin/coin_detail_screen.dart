@@ -12,7 +12,7 @@ class CoinDetailScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("코인 상세", style: TextStyle(color: Colors.white)),
+        title: const Text("코인 상세들", style: TextStyle(color: Colors.white)),
         backgroundColor: const Color(0xff0d2338),
         iconTheme: const IconThemeData(color: Colors.white),
       ),
